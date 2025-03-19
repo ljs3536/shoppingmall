@@ -1,4 +1,4 @@
-package com.hertz.shoppingMall.member;
+package com.hertz.shoppingMall.member.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class Member {
+public class MemberVO {
 
 
     @Id
