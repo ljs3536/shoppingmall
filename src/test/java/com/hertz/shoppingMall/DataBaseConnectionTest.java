@@ -1,6 +1,6 @@
 package com.hertz.shoppingMall;
 
-import com.hertz.shoppingMall.member.model.MemberVO;
+import com.hertz.shoppingMall.member.model.Member;
 import com.hertz.shoppingMall.member.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,17 +22,17 @@ public class DataBaseConnectionTest {
     @DisplayName("회원 저장 및 조회 테스트")
     void saveAndFindMember(){
         // Given (테스트 데이터 준비)
-        MemberVO member = new MemberVO();
-        member.setName("Test1");
-        member.setEmail("test@example.com");
+        Member member = new Member();
+        member.setUsername("Test1");
+        member.setEmailAddress("test@example.com");
 
         // When (저장)
-        MemberVO saveMember = memberRepository.save(member);
+        Member saveMember = memberRepository.save(member);
 
         // Then (검증)
-        MemberVO foundMember = memberRepository.findById(saveMember.getId()).orElse(null);
+        Member foundMember = memberRepository.findById(saveMember.getId()).orElse(null);
         assertThat(foundMember).isNotNull();
-        assertThat(foundMember.getName()).isEqualTo("Test1");
-        assertThat(foundMember.getEmail()).isEqualTo("test@example.com");
+        assertThat(foundMember.getUsername()).isEqualTo("Test1");
+        assertThat(foundMember.getEmailAddress()).isEqualTo("test@example.com");
     }
 }
