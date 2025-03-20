@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header" />
+<body>
+
+<div class="container">
+    <div th:replace="fragments/bodyHeader :: bodyHeader" />
+    <div>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>이름</th>
+                <th>별명</th>
+                <th>지역</th>
+                <th>나이</th>
+                <th>성별</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="member : ${members}">
+                <td>
+                    <a th:href="@{/members/view/{id}(id=${member.id})}" th:text="${member.id}"></a>
+                </td>
+                <td th:text="${member.username}"></td>
+                <td th:text="${member.nickname}"></td>
+                <td th:text="${member.region}"></td>
+                <td th:text="${member.age}"></td>
+                <td th:text="${member.gender}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:replace="fragments/footer :: footer" />
+
+</div> <!-- /container -->
+
+</body>
+</html>

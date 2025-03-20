@@ -1,7 +1,10 @@
 package com.hertz.shoppingMall.member.repository;
 
-import com.hertz.shoppingMall.member.model.MemberVO;
+import com.hertz.shoppingMall.member.model.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface MemberRepository extends JpaRepository<MemberVO, Long> {
+import java.util.List;
+
+public interface MemberRepository extends JpaRepository<Member, Long> {
+    List<Member> findByUsername(String username);
 }

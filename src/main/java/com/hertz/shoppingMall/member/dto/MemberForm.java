@@ -13,5 +13,7 @@ public class MemberForm {
     private String region;
     private String age;
     private String gender;
-
+    private String realAddress;
+    private String emailAddress;
+    private String cellNo;
 }

@@ -10,14 +10,21 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class MemberVO {
+public class Member {
 
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
-    private String email;
-
+    private String username;
+    private String nickname;
+    private String region;
+    private String realAddress;
+    private String age;
+    private String gender;
+    private String emailAddress;
+    private String cellNo;
+    private String createdDate;
+    private String updatedDate;
 }
