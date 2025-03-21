@@ -1,5 +1,6 @@
 package com.hertz.shoppingMall.member.model;
 
+import com.hertz.shoppingMall.config.jpa.BaseDateEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,7 +12,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class Member {
+public class Member extends BaseDateEntity {
 
 
     @Id
@@ -27,8 +28,6 @@ public class Member {
     private String gender;
     private String emailAddress;
     private String cellNo;
-    private String createdDate;
-    private String updatedDate;
 
     @NotEmpty
     private String loginId;
