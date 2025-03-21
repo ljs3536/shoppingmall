@@ -5,6 +5,7 @@ import com.hertz.shoppingMall.member.model.Member;
 import com.hertz.shoppingMall.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,6 +18,8 @@ import java.util.List;
 public class MemberController {
 
     private final MemberService memberService;
+
+    private final PasswordEncoder pwEncoder;
 
     // 회원 등록 폼 페이지
     @GetMapping("/members/form")
@@ -42,6 +45,8 @@ public class MemberController {
         member.setGender(form.getGender());
         member.setEmailAddress(form.getEmailAddress());
         member.setCellNo(form.getCellNo());
+        member.setLoginId(form.getLoginId());
+        member.setPassword(pwEncoder.encode(form.getPassword()));
         memberService.saveMember(member);
         return "redirect:/";
     }

@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,6 +18,7 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotEmpty
     private String username;
     private String nickname;
     private String region;
@@ -27,4 +29,9 @@ public class Member {
     private String cellNo;
     private String createdDate;
     private String updatedDate;
+
+    @NotEmpty
+    private String loginId;
+    @NotEmpty
+    private String password;
 }
