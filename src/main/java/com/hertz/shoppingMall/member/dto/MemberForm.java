@@ -1,5 +1,6 @@
 package com.hertz.shoppingMall.member.dto;
 
+import com.hertz.shoppingMall.member.model.Role;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,4 +23,6 @@ public class MemberForm {
     private String loginId;
     @NotEmpty(message="비밀번호는 필수 입니다.")
     private String password;
+
+    private Role role;
 }

@@ -40,4 +40,7 @@ public class Member extends BaseDateEntity {
 
     @OneToMany(mappedBy = "modifiedBy")
     private List<Product> modifiedProducts = new ArrayList<>();
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 }

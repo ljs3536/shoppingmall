@@ -27,26 +27,26 @@ public class LoginController {
         return "login/loginForm";
     }
 
-    @PostMapping("/login")
-    public String login(@Valid @ModelAttribute("loginForm") LoginForm form, BindingResult bindingResult,
-                        @RequestParam(name = "redirectURL", defaultValue = "/") String redirectURL,
-                        HttpServletRequest request){
-        if(bindingResult.hasErrors()){
-            return "login/loginForm";
-        }
-        Member loginMember = loginService.login(form.getLoginId(), form.getPassword());
-
-        if(loginMember == null){
-            bindingResult.reject("loginFail", "아이디 또는 비밀번호가 맞지 않습니다.");
-            return "login/loginForm";
-        }
-
-        //로그인 성공 시
-        HttpSession session = request.getSession();
-        session.setAttribute("loginMember", loginMember);
-
-        return "redirect:"+redirectURL;
-    }
+//    @PostMapping("/login")
+//    public String login(@Valid @ModelAttribute("loginForm") LoginForm form, BindingResult bindingResult,
+//                        @RequestParam(name = "redirectURL", defaultValue = "/") String redirectURL,
+//                        HttpServletRequest request){
+//        if(bindingResult.hasErrors()){
+//            return "login/loginForm";
+//        }
+//        Member loginMember = loginService.login(form.getLoginId(), form.getPassword());
+//
+//        if(loginMember == null){
+//            bindingResult.reject("loginFail", "아이디 또는 비밀번호가 맞지 않습니다.");
+//            return "login/loginForm";
+//        }
+//
+//        //로그인 성공 시
+//        HttpSession session = request.getSession();
+//        session.setAttribute("loginMember", loginMember);
+//
+//        return "redirect:"+redirectURL;
+//    }
 
     @PostMapping("/logout")
     public String logoutV3(HttpServletRequest request){
@@ -55,5 +55,10 @@ public class LoginController {
             session.invalidate();
         }
         return "redirect:/";
+    }
+
+    @GetMapping("/access-denied")
+    public String accessDenied() {
+        return "error/accessDenied";
     }
 }
