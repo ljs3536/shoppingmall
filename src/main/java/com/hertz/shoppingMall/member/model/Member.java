@@ -1,13 +1,14 @@
 package com.hertz.shoppingMall.member.model;
 
 import com.hertz.shoppingMall.config.jpa.BaseDateEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.hertz.shoppingMall.product.model.Product;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -33,4 +34,10 @@ public class Member extends BaseDateEntity {
     private String loginId;
     @NotEmpty
     private String password;
+
+    @OneToMany(mappedBy = "createdBy")
+    private List<Product> createdProducts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "modifiedBy")
+    private List<Product> modifiedProducts = new ArrayList<>();
 }
