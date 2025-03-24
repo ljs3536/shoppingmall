@@ -5,6 +5,7 @@ import com.hertz.shoppingMall.member.model.Member;
 import com.hertz.shoppingMall.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -47,12 +48,14 @@ public class MemberController {
         member.setCellNo(form.getCellNo());
         member.setLoginId(form.getLoginId());
         member.setPassword(pwEncoder.encode(form.getPassword()));
+        member.setRole(form.getRole());
         memberService.saveMember(member);
         return "redirect:/";
     }
 
     // 회원 전체 조회
-    @GetMapping("/members")
+    @GetMapping("/admin/members")
+    @PreAuthorize("hasRole('ADMIN')")
     public String list(Model model){
         List<Member> members = memberService.getAllMembers();
         model.addAttribute("members", members);
@@ -64,5 +67,15 @@ public class MemberController {
         Member member = memberService.getMember(id);
         model.addAttribute("member", member);
         return "members/memberView";
+    }
+
+    @GetMapping("/test/{loginId}")
+    @ResponseBody
+    public String testMember(@PathVariable("loginId") String loginId) {
+        Member member = memberService.getMemberByLoginId(loginId);
+        if (member == null) {
+            return "회원을 찾을 수 없습니다: " + loginId;
+        }
+        return "회원 정보: ID=" + member.getLoginId() + ", 역할=" + member.getRole();
     }
 }
