@@ -1,5 +1,6 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="fragments/header :: header" />
 <body>
 
@@ -24,9 +25,12 @@
         <td th:text="${product.price}"></td>
         <td th:text="${product.stockQuantity}"></td>
         <td>
-          <a href="#" th:href="@{/product/{id}/edit (id=${product.id})}" class="btn btn-primary" role="button">수정</a>
+          <a sec:authorize="hasRole('SELLER')"
+             href="#" th:href="@{/seller/products/{id}/edit (id=${product.id})}"
+             class="btn btn-primary" role="button">수정</a>
         </td>
       </tr>
+      <a class="btn btn-lg btn-info" href="/">메인페이지</a>
       </tbody>
     </table>
   </div>
