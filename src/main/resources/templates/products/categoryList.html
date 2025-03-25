@@ -1,0 +1,105 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header" />
+<body>
+
+<div class="container">
+    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+
+    <div>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>id</th>
+                <th>이름</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="category : ${categoryList}">
+                <td th:text="${category.id}"></td>
+                <td>
+                    <span th:text="${category.name}" class="category-name"></span>
+                    <input type="text" class="category-input form-control d-none" th:value="${category.name}">
+                </td>
+                <td>
+                    <button class="btn btn-primary edit-btn">수정</button>
+                    <button class="btn btn-success save-btn d-none">저장</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <button id="addCategoryBtn" class="btn btn-secondary">추가</button>
+        <div id="newCategoryContainer"></div>
+    </div>
+
+    <div th:replace="fragments/footer :: footer"/>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // 수정 버튼 클릭 시 input 필드로 변경
+        document.querySelectorAll(".edit-btn").forEach((button) => {
+            button.addEventListener("click", function() {
+                let row = this.closest("tr");
+                row.querySelector(".category-name").classList.add("d-none");
+                row.querySelector(".category-input").classList.remove("d-none");
+                row.querySelector(".save-btn").classList.remove("d-none");
+                this.classList.add("d-none");
+            });
+        });
+
+        // 저장 버튼 클릭 시 AJAX 요청
+        document.querySelectorAll(".save-btn").forEach((button) => {
+            button.addEventListener("click", function() {
+                let row = this.closest("tr");
+                let id = row.querySelector("td:first-child").textContent.trim();
+                let input = row.querySelector(".category-input");
+                let newName = input.value;
+
+                fetch("/admin/products/category/edit", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ id: id, name: newName })
+                }).then(response => response.json())
+                  .then(data => {
+                    alert(data.message);
+                    row.querySelector(".category-name").textContent = newName;
+                    row.querySelector(".category-name").classList.remove("d-none");
+                    input.classList.add("d-none");
+                    button.classList.add("d-none");
+                    row.querySelector(".edit-btn").classList.remove("d-none");
+                });
+            });
+        });
+
+        // 추가 버튼 클릭 시 새로운 입력 필드 생성
+        document.getElementById("addCategoryBtn").addEventListener("click", function() {
+            let newCategoryContainer = document.getElementById("newCategoryContainer");
+            let newRow = document.createElement("div");
+            newRow.innerHTML = `
+                <input type="text" class="form-control new-category-input" placeholder="새 카테고리 이름">
+                <button class="btn btn-success new-save-btn">저장</button>
+            `;
+            newCategoryContainer.appendChild(newRow);
+
+            newRow.querySelector(".new-save-btn").addEventListener("click", function() {
+                let newName = newRow.querySelector(".new-category-input").value;
+
+                fetch("/admin/products/category/new", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name: newName })
+                }).then(response => response.json())
+                  .then(data => {
+                    alert(data.message);
+                    location.reload();
+                });
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

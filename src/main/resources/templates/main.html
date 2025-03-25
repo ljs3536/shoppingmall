@@ -32,8 +32,11 @@
         </p>
         <p class="lead">상품 기능</p>
         <p>
-            <a class="btn btn-lg btn-dark" href="/products/new">상품 등록</a>
-            <a class="btn btn-lg btn-dark" href="/products">상품 목록</a>
+            <a sec:authorize="hasRole('ADMIN')" class="btn btn-lg btn-dark" href="/admin/products/categoryList">카테고리 등록</a>
+            <a sec:authorize="hasRole('SELLER')" class="btn btn-lg btn-dark" href="/seller/products/new">상품 등록</a>
+            <a sec:authorize="hasRole('SELLER')" class="btn btn-lg btn-dark" href="/seller/products/mylist">상품 목록</a>
+            <a sec:authorize="hasRole('BUYER')" class="btn btn-lg btn-dark" href="/buyer/products/list">상품 목록</a>
+            <a sec:authorize="hasRole('BUYER')" class="btn btn-lg btn-dark" href="/buyer/cartItems">장바구니 목록</a>
         </p>
         <p class="lead">주문 기능</p>
         <p>

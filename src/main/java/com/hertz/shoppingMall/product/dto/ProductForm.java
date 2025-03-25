@@ -1,5 +1,6 @@
 package com.hertz.shoppingMall.product.dto;
 
+import com.hertz.shoppingMall.product.model.Category;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,5 +18,6 @@ public class ProductForm {
     private int price;
     private int stockQuantity;
 
-    private String creator;
+    private Category category;
+
 }
