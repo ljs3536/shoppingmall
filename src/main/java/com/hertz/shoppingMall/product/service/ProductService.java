@@ -35,4 +35,8 @@ public class ProductService {
     public Product findOne(Long productId){
         return productRepository.findById(productId).orElse(null);
     }
+
+    public List<Product> findProductListBySeller(Long memberId){
+        return productRepository.findByCreatedBy(memberId);
+    }
 }
