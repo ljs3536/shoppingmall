@@ -110,13 +110,7 @@ public class SecurityConfiguration {
                     throw new BadCredentialsException("사용자를 찾을 수 없습니다: " + loginId);
                 }
 
-                System.out.println("User found: " + member.getLoginId());
-                System.out.println("Role: " + member.getRole().name());
-
-                List<GrantedAuthority> authorities = new ArrayList<>();
-                authorities.add(new SimpleGrantedAuthority("ROLE_" + member.getRole().name()));
-
-                return new User(member.getLoginId(), member.getPassword(), authorities);
+                return new CustomUserDetails(member);
             }
         };
     }
