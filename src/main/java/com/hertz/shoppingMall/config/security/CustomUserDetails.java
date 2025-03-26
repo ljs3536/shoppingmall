@@ -15,13 +15,14 @@ public class CustomUserDetails implements UserDetails {
     private final Long memberId;
     private final String username;
     private final String password;
+    private final String nickname;
     private final Collection<? extends GrantedAuthority> authorities;
 
     public CustomUserDetails(Member member) {
         this.memberId = member.getId();
         this.username = member.getLoginId();
         this.password = member.getPassword();
-
+        this.nickname = member.getNickname();
         // Convert Enum role to GrantedAuthorities
         this.authorities = convertRoleToAuthorities(member.getRole());
     }

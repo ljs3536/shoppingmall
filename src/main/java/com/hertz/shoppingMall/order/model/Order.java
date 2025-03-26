@@ -11,10 +11,12 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@Table(name = "orders") // order는 SQL예약어로 테이블 이름 수정
 public class Order extends BaseDateEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_id")
     private Long id;
 
     //주문자 정보
@@ -28,7 +30,8 @@ public class Order extends BaseDateEntity {
 
     private String orderNumber; // 주문번호
     // 주문 상태 정보
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
     // 총 결제 금액
     private int totalPrice;
 
@@ -43,4 +46,16 @@ public class Order extends BaseDateEntity {
     // 배송비
     private int shoppingFee;
 
+    // 연관관계 편의 메서드
+    public void addOrderItem(OrderItem orderItem) {
+        orderItems.add(orderItem);
+        orderItem.setOrder(this);
+    }
+
+    // 총 가격 계산 메서드
+    public void calculateTotalPrice() {
+        this.totalPrice = orderItems.stream()
+                .mapToInt(item -> item.getProduct().getPrice() * item.getQuantity())
+                .sum() + this.shoppingFee;
+    }
 }
