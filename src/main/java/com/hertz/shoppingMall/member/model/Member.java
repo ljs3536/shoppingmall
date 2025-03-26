@@ -24,13 +24,17 @@ public class Member extends BaseDateEntity {
     private String username;
     private String nickname;
     private String region;
+    @NotEmpty
     private String realAddress;
-    private String age;
+    private Integer age;
     private String gender;
+    @NotEmpty
     private String emailAddress;
+    @NotEmpty
     private String cellNo;
 
     @NotEmpty
+    @Column(unique = true)
     private String loginId;
     @NotEmpty
     private String password;
