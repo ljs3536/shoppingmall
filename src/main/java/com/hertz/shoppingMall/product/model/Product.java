@@ -15,6 +15,7 @@ public class Product extends BaseDateEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "product_id")
     private Long id;
 
     @NotEmpty
