@@ -9,3 +9,11 @@ web, devtools, validation, lombok, jpa, thymeleaf
 ## 2025-03-25
 Buyer의 상품목록 조회 시 상품 상세정보 페이지 작업 필요
 ErrorPage 및 Exception 처리 필요
+
+## 2025-03-26
+상품 상세정보 페이지 작업 완료
+ErrorPage 및 Exception 처리 추가 완료
+
+Buyer의 상품 주문 기능 구현 필요
+상품정보에서 Image 추가 필요
+Validation 기능 강화 필요
