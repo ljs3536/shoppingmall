@@ -3,6 +3,7 @@ package com.hertz.shoppingMall.member.service;
 
 import com.hertz.shoppingMall.member.model.Member;
 import com.hertz.shoppingMall.member.repository.MemberRepository;
+import com.hertz.shoppingMall.utils.exception.custom.DuplicateMemberException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +24,7 @@ public class MemberService {
     private void validateDuplicateMember(Member member) {
         List<Member> findMembers = memberRepository.findByUsername(member.getUsername());
         if(!findMembers.isEmpty()){
-            throw new IllegalStateException("이미 존재하는 회원입니다.");
+            throw new DuplicateMemberException("이미 존재하는 회원입니다.");
         }
     }
 

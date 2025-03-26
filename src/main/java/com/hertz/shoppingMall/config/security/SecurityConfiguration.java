@@ -6,9 +6,7 @@ import com.hertz.shoppingMall.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.*;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -53,8 +51,20 @@ public class SecurityConfiguration {
         return (request, response, exception) -> {
             System.out.println("Login failed: " + exception.getMessage());
 
+            String errorMessage;
+            if (exception instanceof BadCredentialsException) {
+                errorMessage = "아이디 또는 비밀번호가 맞지 않습니다. 다시 확인해 주세요.";
+            } else if (exception instanceof UsernameNotFoundException) {
+                errorMessage = "계정이 존재하지 않습니다. 회원가입 진행 후 로그인 해주세요.";
+            } else if (exception instanceof AuthenticationCredentialsNotFoundException) {
+                errorMessage = "인증 요청이 거부되었습니다. 관리자에게 문의하세요.";
+            } else if (exception instanceof InternalAuthenticationServiceException){
+                errorMessage = exception.getMessage();
+            }else {
+                errorMessage = "알 수 없는 이유로 로그인에 실패하였습니다 관리자에게 문의하세요.";
+            }
             // 예외 메시지를 세션에 저장하여 화면에서 표시 가능
-            request.getSession().setAttribute("errorMessage", exception.getMessage());
+            request.getSession().setAttribute("errorMessage", errorMessage);
 
             response.sendRedirect("/login?error=true");
         };

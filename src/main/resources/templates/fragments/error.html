@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div class="error" th:fragment="error">
+    <div th:if="${errorResponse}" class="error-box">
+        <p th:text="|Error Code: ${errorResponse.code}|"></p>
+        <p th:text="${errorResponse.message}"></p>
+    </div>
+</div>

@@ -37,17 +37,18 @@ public class ProductService {
         }
     }
 
-    public List<Product> findProductAll(){
+    public List<Product> getProductAll(){
         return productRepository.findAll();
     }
 
-    public Product findOne(Long productId){
+    public Product getProduct(Long productId){
         return productRepository.findById(productId).orElse(null);
     }
 
-    public List<Product> findProductListBySeller(Long memberId){
+    public List<Product> getProductListBySeller(Long memberId){
         Member member = new Member();
         member.setId(memberId);
         return productRepository.findByCreatedBy(member);
     }
+
 }

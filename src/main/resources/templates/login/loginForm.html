@@ -17,7 +17,7 @@
         <h2>로그인</h2>
     </div>
     <div th:if="${param.error}">
-        <p class="error">아이디 또는 비밀번호가 맞지 않습니다.</p>
+        <p class="error" th:text="${session.errorMessage}"></p>
     </div>
     <div th:if="${param.logout}">
         <p class="info">로그아웃되었습니다.</p>

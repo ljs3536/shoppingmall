@@ -21,10 +21,16 @@ public class BuyerProductController {
 
     @GetMapping("/list")
     public String list(Model model){
-        List<Product> products = productService.findProductAll();
+        List<Product> products = productService.getProductAll();
         model.addAttribute("products",products);
         return "products/productList";
     }
 
+    @GetMapping("/view/{productId}")
+    public String view(@PathVariable("productId")Long productId, Model model){
+        Product product = productService.getProduct(productId);
+        model.addAttribute("product", product);
+        return "/products/productView";
+    }
 
 }
