@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>주문하기</title>
+</head>
+<body>
+<div class="container">
+    <div th:replace="fragments/bodyHeader :: bodyHeader" />
+    <h2>주문서 작성</h2>
+
+    <form th:action="@{/buyer/order/new}" method="post" th:object="${orderForm}">
+        <h3>상품 정보</h3>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>상품명</th>
+                <th>수량</th>
+                <th>가격</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item, stat : *{orderItems}">
+                <td>
+                    <input type="hidden" th:field="*{orderItems[__${stat.index}__].productId}"/>
+                    <span th:text="*{orderItems[__${stat.index}__].productName}"></span>
+                </td>
+                <td>
+                    <input type="number" th:field="*{orderItems[__${stat.index}__].quantity}" min="1"/>
+                </td>
+                <td>
+                    <span th:text="*{orderItems[__${stat.index}__].price}"></span> 원
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3>배송 정보</h3>
+        <label>수령인:</label>
+        <input type="text" th:field="*{recipient}" required/><br>
+
+        <label>연락처:</label>
+        <input type="text" th:field="*{phoneNumber}" required/><br>
+
+        <label>주소:</label>
+        <input type="text" th:field="*{address}" required/><br>
+
+        <label>요청 사항:</label>
+        <textarea th:field="*{orderRequest}"></textarea><br>
+
+        <button type="submit">주문하기</button>
+    </form>
+    <div th:replace="fragments/footer :: footer" />
+</div>
+</body>
+</html>

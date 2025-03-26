@@ -64,14 +64,14 @@ public class SellerProductController {
     public String list(@AuthenticationPrincipal CustomUserDetails userDetails, HttpServletRequest request,Model model){
         Long memberId = userDetails.getMemberId();
 
-        List<Product> products = productService.findProductListBySeller(memberId);
+        List<Product> products = productService.getProductListBySeller(memberId);
         model.addAttribute("products",products);
         return "products/productList";
     }
 
     @GetMapping("/{productId}/edit")
     public String updateProductForm(@PathVariable("productId")Long productId, Model model){
-        Product product = productService.findOne(productId);
+        Product product = productService.getProduct(productId);
 
         ProductForm productForm = new ProductForm();
         productForm.setId(product.getId());
