@@ -11,7 +11,6 @@ import lombok.Setter;
 @Entity
 @Setter
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderItem extends BaseDateEntity {
 
     @Id
@@ -29,4 +28,11 @@ public class OrderItem extends BaseDateEntity {
 
     private int quantity;
 
+    // 생성 메서드 추가
+    public static OrderItem createOrderItem(Product product, int quantity) {
+        OrderItem orderItem = new OrderItem();
+        orderItem.setProduct(product);
+        orderItem.setQuantity(quantity);
+        return orderItem;
+    }
 }

@@ -25,4 +25,7 @@ public class OrderForm {
     // 주문 요청사항
     @Size(max = 500, message = "주문 요청사항은 500자를 초과할 수 없습니다")
     private String orderRequest;
+
+    // Validation시 처리하기 위한 파라미터
+    private Long productId;
 }
