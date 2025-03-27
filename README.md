@@ -17,3 +17,6 @@ ErrorPage 및 Exception 처리 추가 완료
 Buyer의 상품 주문 기능 구현 필요
 상품정보에서 Image 추가 필요
 Validation 기능 강화 필요
+
+## 2025-03-27
+주문등록, 주문목록, 주문상세 기능 구현 완료
