@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>주문 완료</title>
+</head>
+<body>
+<div class="container">
+    <h1>주문 완료</h1>
+
+    <div class="order-info">
+        <h2>주문 정보</h2>
+        <p>주문 번호: <span th:text="${order.id}"></span></p>
+        <p>주문 날짜: <span th:text="${#temporals.format(order.createdDateTime, 'yyyy-MM-dd HH:mm:ss')}"></span></p>
+        <p>총 주문 금액: <span th:text="${#numbers.formatInteger(order.totalPrice, 3, 'COMMA')}"></span>원</p>
+    </div>
+
+    <div class="shipping-info">
+        <h2>배송 정보</h2>
+        <p>수령인: <span th:text="${order.recipient}"></span></p>
+        <p>연락처: <span th:text="${order.phoneNumber}"></span></p>
+        <p>배송 주소: <span th:text="${order.address}"></span></p>
+        <p>요청사항: <span th:text="${order.orderRequest ?: '없음'}"></span></p>
+    </div>
+
+    <div class="order-items">
+        <h2>주문 상품</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>상품명</th>
+                <th>수량</th>
+                <th>가격</th>
+                <th>소계</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${order.orderItems}">
+                <td th:text="${item.product.name}"></td>
+                <td th:text="${item.quantity}"></td>
+                <td th:text="${#numbers.formatInteger(item.product.price, 3, 'COMMA')}">원</td>
+                <td th:text="${#numbers.formatInteger(item.product.price * item.quantity, 3, 'COMMA')}">원</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="navigation-buttons">
+        <a th:href="@{/buyer/order/list}" class="btn">주문 목록</a>
+        <a th:href="@{/}" class="btn">메인 페이지</a>
+    </div>
+</div>
+</body>
+</html>

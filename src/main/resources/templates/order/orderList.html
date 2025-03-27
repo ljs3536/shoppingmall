@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments/header :: header" />
+<body>
+
+<div class="container">
+  <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+
+  <div>
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th>#</th>
+        <th>수령인</th>
+        <th>배송주소</th>
+        <th>총 결제 금액</th>
+        <th>주문 상태</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="order : ${orders}">
+        <td>
+          <a th:href="@{/buyer/order/view/{id}(id=${order.id})}" th:text="${order.id}"></a>
+        </td>
+        <td th:text="${order.recipient}"></td>
+        <td th:text="${order.address}"></td>
+        <td th:text="${order.totalPrice}"></td>
+        <td th:text="${order.status.description}"></td>
+        <td>
+        </td>
+      </tr>
+      <a class="btn btn-lg btn-info" href="/">메인페이지</a>
+      </tbody>
+    </table>
+  </div>
+
+  <div th:replace="fragments/footer :: footer"/>
+
+</div> <!-- /container -->
+
+</body>
+</html>
