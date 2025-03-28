@@ -4,9 +4,11 @@ import com.hertz.shoppingMall.product.model.Category;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
 @Getter
 @Setter
@@ -24,5 +26,8 @@ public class ProductForm implements Serializable {
     private int stockQuantity;
 
     private Category category;
+
+    private MultipartFile mainImage;  // 메인 이미지 (썸네일)
+    private List<MultipartFile> subImages;  // 서브 이미지 리스트
 
 }

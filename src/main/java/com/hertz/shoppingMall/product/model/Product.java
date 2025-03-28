@@ -4,6 +4,7 @@ package com.hertz.shoppingMall.product.model;
 import com.hertz.shoppingMall.config.jpa.BaseDateEntity;
 import com.hertz.shoppingMall.member.model.Member;
 import com.hertz.shoppingMall.utils.exception.custom.NotEnoughStockException;
+import com.hertz.shoppingMall.utils.exception.image.model.Image;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
@@ -11,6 +12,7 @@ import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Getter
@@ -43,6 +45,11 @@ public class Product extends BaseDateEntity implements Serializable {
     @JoinColumn(name = "modified_by") // 마지막으로 수정한 회원
     private Member modifiedBy;
 
+    // 서브 이미지 리스트 (1:N 관계)
+    @OneToMany
+    @JoinColumn(name = "reference_id", referencedColumnName = "product_id", insertable = false, updatable = false)
+    private List<Image> subImages;
+
     // 재고 감소 메서드
     public void removeStock(int quantity) {
         int restStock = this.stockQuantity - quantity;
@@ -50,5 +57,13 @@ public class Product extends BaseDateEntity implements Serializable {
             throw new NotEnoughStockException("need more stock");
         }
         this.stockQuantity = restStock;
+    }
+
+    // 메인 이미지
+    public Image getMainImage() {
+        return subImages.stream()
+                .filter(Image::isMain) // isMain이 true인 이미지 필터링
+                .findFirst()
+                .orElse(null); // 없으면 null 반환
     }
 }
