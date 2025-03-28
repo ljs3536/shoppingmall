@@ -8,10 +8,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 @Entity
 @Setter
 @Getter
-public class OrderItem extends BaseDateEntity {
+public class OrderItem extends BaseDateEntity implements Serializable {
+
+    @Serial //클래스 버전 관리를 위해
+    private static final long serialVersionUID = 1L;    //고유 식별자 필드
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
