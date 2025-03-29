@@ -7,6 +7,9 @@ import com.hertz.shoppingMall.product.model.Category;
 import com.hertz.shoppingMall.product.model.Product;
 import com.hertz.shoppingMall.product.service.CategoryService;
 import com.hertz.shoppingMall.product.service.ProductService;
+import com.hertz.shoppingMall.utils.exception.image.component.SaveImageUtil;
+import com.hertz.shoppingMall.utils.exception.image.model.Image;
+import com.hertz.shoppingMall.utils.exception.image.model.ImageType;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +19,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -30,6 +35,7 @@ public class SellerProductController {
 
     private final CategoryService categoryService;
 
+
     @GetMapping("/new")
     public String createForm(Model model){
 
@@ -40,7 +46,7 @@ public class SellerProductController {
     }
 
     @PostMapping("/new")
-    public String create(@AuthenticationPrincipal CustomUserDetails userDetails, ProductForm form){
+    public String create(@AuthenticationPrincipal CustomUserDetails userDetails, ProductForm form) throws IOException {
         Product product = new Product();
         // 멤버 데이터 세팅
         Member member = new Member();
@@ -55,7 +61,9 @@ public class SellerProductController {
         product.setCategory(form.getCategory());
         product.setCreatedBy(member);
         product.setModifiedBy(member);
-        productService.saveProduct(product);
+
+        //productService.saveProduct(product);
+        productService.saveProductWithImages(product, form.getMainImage(), form.getSubImages());
 
         return "redirect:/";
     }

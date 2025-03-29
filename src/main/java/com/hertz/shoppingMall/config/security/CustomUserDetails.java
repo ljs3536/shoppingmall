@@ -12,7 +12,7 @@ import java.util.Collections;
 
 @Getter
 public class CustomUserDetails implements UserDetails {
-    private static final long serialVersionUID = 6529685098267757690L;
+    private static final long serialVersionUID = 2L;
     private final Long memberId;
     private final String username;
     private final String password;

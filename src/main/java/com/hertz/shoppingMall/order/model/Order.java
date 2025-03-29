@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +15,10 @@ import java.util.List;
 @Getter
 @Setter
 @Table(name = "orders") // order는 SQL예약어로 테이블 이름 수정
-public class Order extends BaseDateEntity {
+public class Order extends BaseDateEntity implements Serializable {
+
+    @Serial //클래스 버전 관리를 위해
+    private static final long serialVersionUID = 1L;    //고유 식별자 필드
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

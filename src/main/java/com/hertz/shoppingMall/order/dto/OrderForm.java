@@ -5,11 +5,16 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class OrderForm {
+public class OrderForm implements Serializable {
+
+    @Serial //클래스 버전 관리를 위해
+    private static final long serialVersionUID = 1L;    //고유 식별자 필드
 
     private List<OrderItemDto> orderItems = new ArrayList<>();
 

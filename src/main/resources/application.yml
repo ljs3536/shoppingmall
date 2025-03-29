@@ -14,9 +14,16 @@ spring:
         format_sql: true
         default_batch_fetch_size: 100
     open-in-view: true
-
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 5MB
+      max-request-size: 10MB
 logging:
   level:
     org.hibernate.SQL: INFO
     org.springframework.security: DEBUG
     org.springframework.security.authentication: TRACE
+
+file:
+  upload-path: C:/upload/images/
