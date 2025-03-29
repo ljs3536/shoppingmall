@@ -33,7 +33,7 @@
             <form id="cartForm" th:action="@{/buyer/cart/add}" method="post">
                 <input type="hidden" name="productId" th:value="${product.id}"/>
                 <input type="hidden" name="quantity" id="cartQuantity"/>
-                <button type="submit" class="btn btn-success" onclick="setQuantity('cart')">장바구니 추가</button>
+                <button type="submit" class="btn btn-success" onclick="addToCart()">장바구니 추가</button>
             </form>
         </div>
         <div class="col">
@@ -51,14 +51,41 @@
 <script>
     function setQuantity(type) {
         const quantity = document.getElementById('quantity').value;
-
-        if (type === 'cart') {
-            document.getElementById('cartQuantity').value = quantity;
-            document.getElementById('cartForm').submit();
-        } else if (type === 'order') {
+        if (type === 'order') {
             document.getElementById('orderQuantity').value = quantity;
             document.getElementById('orderForm').submit();
         }
+    }
+
+    function addToCart() {
+        const quantity = document.getElementById('quantity').value;
+        const productId = document.querySelector('input[name="productId"]').value;
+
+        // AJAX로 장바구니 추가 요청
+        fetch('/cart/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                productId: productId,
+                quantity: quantity
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('장바구니 추가 실패');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // 장바구니 추가 성공 알림
+            alert('장바구니에 상품이 추가되었습니다.');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('장바구니 추가 중 오류가 발생했습니다.');
+        });
     }
 </script>
 </body>
