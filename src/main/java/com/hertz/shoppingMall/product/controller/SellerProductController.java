@@ -2,6 +2,7 @@ package com.hertz.shoppingMall.product.controller;
 
 import com.hertz.shoppingMall.config.security.CustomUserDetails;
 import com.hertz.shoppingMall.member.model.Member;
+import com.hertz.shoppingMall.product.component.ProductConverter;
 import com.hertz.shoppingMall.product.dto.ProductForm;
 import com.hertz.shoppingMall.product.model.Category;
 import com.hertz.shoppingMall.product.model.Product;
@@ -35,6 +36,7 @@ public class SellerProductController {
 
     private final CategoryService categoryService;
 
+    private final ProductConverter productConverter;
 
     @GetMapping("/new")
     public String createForm(Model model){
@@ -73,7 +75,8 @@ public class SellerProductController {
         Long memberId = userDetails.getMemberId();
 
         List<Product> products = productService.getProductListBySeller(memberId);
-        model.addAttribute("products",products);
+        List<ProductForm> productForms = productConverter.convertToFormList(products);
+        model.addAttribute("products", productForms);
         return "products/productList";
     }
 
@@ -81,14 +84,7 @@ public class SellerProductController {
     public String updateProductForm(@PathVariable("productId")Long productId, Model model){
         Product product = productService.getProduct(productId);
 
-        ProductForm productForm = new ProductForm();
-        productForm.setId(product.getId());
-        productForm.setName(product.getName());
-        productForm.setPrice(product.getPrice());
-        productForm.setCategory(product.getCategory());
-        productForm.setStockQuantity(product.getStockQuantity());
-        productForm.setDescription(product.getDescription());
-        productForm.setCategory(product.getCategory());
+        ProductForm productForm = productConverter.convertToForm(product);
 
         List<Category> categoryList = categoryService.getCategoryListAll();
         model.addAttribute("categoryList", categoryList);
@@ -97,9 +93,9 @@ public class SellerProductController {
     }
 
     @PostMapping("/{productId}/edit")
-    public String updateProduct(@AuthenticationPrincipal CustomUserDetails userDetails, @ModelAttribute("form")ProductForm form){
+    public String updateProduct(@AuthenticationPrincipal CustomUserDetails userDetails, @ModelAttribute("form")ProductForm form) throws IOException {
         Long memberId = userDetails.getMemberId();
-        productService.updateProduct(form.getId(), form.getName(), form.getPrice(), form.getStockQuantity(), form.getDescription(), memberId);
+        productService.updateProduct(form, memberId);
         return "redirect:/seller/products/mylist";
     }
 }

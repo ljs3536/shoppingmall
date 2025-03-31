@@ -12,6 +12,7 @@
       <thead>
       <tr>
         <th>#</th>
+        <th>상품이미지</th>
         <th>상품명</th>
         <th>가격</th>
         <th>재고수량</th>
@@ -23,6 +24,7 @@
         <td>
           <a th:href="@{/buyer/products/view/{id}(id=${product.id})}" th:text="${product.id}"></a>
         </td>
+        <td><img th:src="${product.mainImageUrl}" alt="상품 이미지" width="150"></td>
         <td th:text="${product.name}"></td>
         <td th:text="${product.price}"></td>
         <td th:text="${product.stockQuantity}"></td>
