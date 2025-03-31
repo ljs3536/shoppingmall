@@ -1,6 +1,40 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/header :: header"/>
+<head>
+    <th:block th:replace="fragments/header :: header"/>
+ <style>
+.main-image {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    display: block;
+    margin: 0 auto 15px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.sub-images {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.sub-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+.sub-image:hover {
+    transform: scale(1.1);
+}
+
+ </style>
+</head>
 <body>
 <div class="container">
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
@@ -9,6 +43,13 @@
 
     <div class="card">
         <div class="card-body">
+            <!-- 상품 이미지 섹션 -->
+            <div class="product-images text-center">
+                <img th:src="${product.mainImageUrl}" alt="상품 이미지" class="main-image">
+                <div class="sub-images">
+                    <img th:each="imageUrl : ${product.subImageUrl}" th:src="${imageUrl}" alt="서브 이미지" class="sub-image">
+                </div>
+            </div>
             <h3 class="card-title" th:text="${product.name}"></h3>
             <p class="card-text"><strong>가격:</strong> <span th:text="${product.price}"></span> 원</p>
             <p class="card-text"><strong>수량:</strong> <span th:text="${product.stockQuantity}"></span> 개</p>

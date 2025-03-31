@@ -66,4 +66,15 @@ public class Product extends BaseDateEntity implements Serializable {
                 .findFirst()
                 .orElse(null); // 없으면 null 반환
     }
+    // 서브 이미지
+    public List<Image> getSubImage() {
+        return subImages.stream()
+                .filter(image -> !image.isMain()) // isMain이 true인 이미지 필터링
+                .toList(); // 없으면 null 반환
+    }
+
+    public String getMainImageUrl() {
+        Image mainImage = getMainImage();
+        return (mainImage != null) ? mainImage.getFileName() : "/images/default.jpg";
+    }
 }
