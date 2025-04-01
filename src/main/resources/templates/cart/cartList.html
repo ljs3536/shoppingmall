@@ -68,7 +68,7 @@
     function updateQuantity(input, productId) {
         const quantity = input.value;
 
-        fetch('/cart/update', {
+        fetch('/buyer/cart/update', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -95,7 +95,7 @@
     }
 
     function removeCartItem(cartItemId) {
-        fetch(`/cart/remove/${cartItemId}`, {
+        fetch(`/buyer/cart/remove/${cartItemId}`, {
             method: 'DELETE',
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').getAttribute('content')
