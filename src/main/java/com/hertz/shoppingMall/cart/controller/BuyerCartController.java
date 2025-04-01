@@ -23,13 +23,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
+@RequestMapping("/buyer/cart")
 @Slf4j
 @RequiredArgsConstructor
-public class CartController {
+public class BuyerCartController {
 
     private final CartService cartService;
     private final ImageService imageService;
-    @GetMapping("/cart/list")
+    @GetMapping("/list")
     public String list(@AuthenticationPrincipal CustomUserDetails userDetails, Model model){
 
         Long memberId = userDetails.getMemberId();
@@ -54,7 +55,7 @@ public class CartController {
         return "cart/cartList";
     }
 
-    @PostMapping("/cart/add")
+    @PostMapping("/add")
     @ResponseBody
     public ResponseEntity<CartItemDto> addToCart(
             @AuthenticationPrincipal CustomUserDetails userDetails,
