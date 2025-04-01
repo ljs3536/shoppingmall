@@ -8,6 +8,8 @@ import com.hertz.shoppingMall.utils.exception.image.component.SaveImageUtil;
 import com.hertz.shoppingMall.utils.exception.image.model.Image;
 import com.hertz.shoppingMall.utils.exception.image.model.ImageType;
 import com.hertz.shoppingMall.utils.exception.image.repository.ImageRepository;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,12 +52,17 @@ public class ProductService {
             findProduct.setModifiedBy(modifiedBy);
 
             // 메인 이미지 처리
-            if(form.getMainImage() != null && !form.getMainImage().isEmpty()){
-                if(findProduct.getMainImageUrl() != null){
+            if(form.getMainImage() != null && !form.getMainImage().isEmpty()) {
+                if (findProduct.getMainImageUrl() != null) {
                     saveImageUtil.deleteImageFile(findProduct.getMainImage());
                 }
-
-                saveImageUtil.saveImage(findProduct.getMainImage(), form.getMainImage(), ImageType.PRODUCT, findProduct.getId(), true);
+                //새로운 메인 이미지 등록일 시
+                if (findProduct.getMainImage() == null) {
+                    Image saveImage = saveImageUtil.saveImage(new Image(), form.getMainImage(), ImageType.PRODUCT, findProduct.getId(), true);
+                    imageRepository.save(saveImage);
+                } else {    // 메인 이미지 수정 시
+                    saveImageUtil.saveImage(findProduct.getMainImage(), form.getMainImage(), ImageType.PRODUCT, findProduct.getId(), true);
+                }
             }
 
             // 서브 이미지 처리
@@ -121,4 +128,7 @@ public class ProductService {
     }
 
 
+    public List<Product> getProductsByIds(List<Long> productIds) {
+        return productRepository.findByIdIn(productIds);
+    }
 }

@@ -56,8 +56,12 @@ public class SaveImageUtil {
     }
     public void deleteImageFile(Image image){
         try {
-            Path filePath = Paths.get(image.getFilePath() + "/" + image.getFileName());
-            Files.deleteIfExists(filePath);
+            if(image != null) {
+                Path filePath = Paths.get(image.getFilePath() + "/" + image.getFileName());
+                if (Files.exists(filePath)) {
+                    Files.deleteIfExists(filePath);
+                }
+            }
         } catch (IOException e) {
             // 로그 기록하고 계속 진행
             log.error("이미지 파일 삭제 실패: " + e.getMessage());
