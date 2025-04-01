@@ -107,16 +107,16 @@ public class ProductService {
 
 
     public void saveProductWithImages(Product product, MultipartFile mainImage, List<MultipartFile> subImages) throws IOException {
-        // 1️⃣ 상품 저장 (먼저 저장해야 ID를 사용할 수 있음)
+        // 상품 저장 (먼저 저장해야 ID를 사용할 수 있음)
         productRepository.save(product);
 
-        // 2️⃣ 메인 이미지 저장
+        // 메인 이미지 저장
         if (mainImage != null && !mainImage.isEmpty()) {
             Image saveImage = saveImageUtil.saveImage(new Image(),mainImage, ImageType.PRODUCT, product.getId(), true);
             imageRepository.save(saveImage);
         }
 
-        // 3️⃣ 서브 이미지 저장
+        // 서브 이미지 저장
         if (subImages != null) {
             for (MultipartFile subImage : subImages) {
                 if (!subImage.isEmpty()) {
