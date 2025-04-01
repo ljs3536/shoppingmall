@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Setter
 public class CartItemDto implements Serializable {
     @Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
 
     private Long cartItemId;
     private Long productId;
@@ -19,6 +19,7 @@ public class CartItemDto implements Serializable {
     private int quantity;
     private int price;
     private int totalPrice;
+    private String mainImageUrl;
 
     public CartItemDto(Long cartItemId, Long productId, @NotEmpty String productName, int quantity, int price, int totalPrice) {
         this.cartItemId = cartItemId;
@@ -27,5 +28,14 @@ public class CartItemDto implements Serializable {
         this.quantity = quantity;
         this.price = price;
         this.totalPrice = totalPrice;
+    }
+    public CartItemDto(Long cartItemId, Long productId, @NotEmpty String productName, int quantity, int price, int totalPrice, String mainImageUrl) {
+        this.cartItemId = cartItemId;
+        this.productId = productId;
+        this.productName = productName;
+        this.quantity = quantity;
+        this.price = price;
+        this.totalPrice = totalPrice;
+        this.mainImageUrl = mainImageUrl;
     }
 }

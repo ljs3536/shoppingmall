@@ -2,6 +2,7 @@ package com.hertz.shoppingMall.order.controller;
 
 import com.hertz.shoppingMall.config.security.CustomUserDetails;
 import com.hertz.shoppingMall.member.model.Member;
+import com.hertz.shoppingMall.order.dto.CartOrderForm;
 import com.hertz.shoppingMall.order.dto.OrderForm;
 import com.hertz.shoppingMall.order.dto.OrderItemDto;
 import com.hertz.shoppingMall.order.model.Order;
@@ -19,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -107,22 +109,37 @@ public class BuyerOrderController {
         }
     }
 
-    @PostMapping("/new/cart")
-    public String orderFromCart(Model model) {
-//        List<CartItem> cartItems = cartService.getCartItems();
-//
-//        OrderForm orderForm = new OrderForm();
-//        for (CartItem cartItem : cartItems) {
-//            OrderItemDto itemDto = new OrderItemDto();
-//            itemDto.setProductId(cartItem.getProduct().getId());
-//            itemDto.setProductName(cartItem.getProduct().getName());
-//            itemDto.setQuantity(cartItem.getQuantity());
-//            itemDto.setPrice(cartItem.getProduct().getPrice());
-//
-//            orderForm.getOrderItems().add(itemDto);
-//        }
-//
-//        model.addAttribute("orderForm", orderForm);
+    @PostMapping("/new/cartOrders")
+    public String orderFromCart(@ModelAttribute @Valid CartOrderForm cartForm
+            , BindingResult result
+            , Model model) {
+
+        if (result.hasErrors()) {
+            return "redirect:/cart/list"; // 유효성 검사 실패 시 다시 장바구니 페이지로 이동
+        }
+
+        List<Product> products = productService.getProductsByIds(cartForm.getProductId()); // 개선된 상품 조회 방식
+        OrderForm orderForm = new OrderForm();
+
+        for (int i = 0; i < cartForm.getProductId().size(); i++) {
+            Long productId = cartForm.getProductId().get(i);
+            Integer quantity = cartForm.getQuantity().get(i);
+
+            // 제품 리스트에서 해당 상품 찾기 (Optional 활용)
+            Product product = products.stream()
+                    .filter(p -> p.getId().equals(productId))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException("잘못된 상품 ID: " + productId));
+
+            OrderItemDto itemDto = new OrderItemDto();
+            itemDto.setProductId(product.getId());
+            itemDto.setProductName(product.getName());
+            itemDto.setQuantity(quantity);
+            itemDto.setPrice(product.getPrice());
+            orderForm.getOrderItems().add(itemDto);
+        }
+
+        model.addAttribute("orderForm", orderForm);
         return "order/createOrderForm";
     }
 

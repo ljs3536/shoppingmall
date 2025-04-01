@@ -7,6 +7,7 @@ import com.hertz.shoppingMall.cart.model.CartItem;
 import com.hertz.shoppingMall.cart.service.CartService;
 import com.hertz.shoppingMall.config.security.CustomUserDetails;
 import com.hertz.shoppingMall.member.model.Member;
+import com.hertz.shoppingMall.utils.exception.image.service.ImageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
 public class CartController {
 
     private final CartService cartService;
-
+    private final ImageService imageService;
     @GetMapping("/cart/list")
     public String list(@AuthenticationPrincipal CustomUserDetails userDetails, Model model){
 
@@ -42,7 +43,8 @@ public class CartController {
                                 cartItem.getProduct().getName(),
                                 cartItem.getQuantity(),
                                 cartItem.getProduct().getPrice(),
-                                cartItem.getTotalPrice()
+                                cartItem.getTotalPrice(),
+                                imageService.getImageUrl(cartItem.getProduct().getMainImage())
                         )).toList();
 
         int totalCartPrice = cartItems.stream().mapToInt(CartItemDto::getTotalPrice).sum();
@@ -77,7 +79,8 @@ public class CartController {
                     cartItem.getProduct().getName(),
                     cartItem.getQuantity(),
                     cartItem.getProduct().getPrice(),
-                    cartItem.getTotalPrice()
+                    cartItem.getTotalPrice(),
+                    imageService.getImageUrl(cartItem.getProduct().getMainImage())
             );
 
             return ResponseEntity.ok(responseDto);
