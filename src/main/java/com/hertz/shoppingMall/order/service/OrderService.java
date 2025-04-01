@@ -1,5 +1,6 @@
 package com.hertz.shoppingMall.order.service;
 
+import com.hertz.shoppingMall.order.dto.OrderDetailDto;
 import com.hertz.shoppingMall.order.model.Order;
 import com.hertz.shoppingMall.order.model.OrderItem;
 import com.hertz.shoppingMall.order.repository.OrderRepository;
@@ -53,7 +54,6 @@ public class OrderService {
         }
         // 총 주문 가격 다시 한 번 계산 (보안을 위해)
         order.calculateTotalPrice();
-        order.setStatus(PROCESSING);
 
         return orderRepository.save(order);
     }
@@ -68,4 +68,14 @@ public class OrderService {
         return orderRepository.findTopByMemberIdOrderByCreatedDateTimeDesc(memberId);
     }
 
+    // 배송 정보
+    public OrderDetailDto getOrderDetail(Long orderId) {
+        return orderRepository.findById(orderId)
+                .map(order -> new OrderDetailDto(
+                        order.getRecipient(),
+                        order.getAddress(),
+                        order.getPhoneNumber(),
+                        order.getOrderRequest()
+                )).orElse(null);
+    }
 }

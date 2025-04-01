@@ -17,7 +17,7 @@ import java.io.Serializable;
 public class OrderItem extends BaseDateEntity implements Serializable {
 
     @Serial //클래스 버전 관리를 위해
-    private static final long serialVersionUID = 1L;    //고유 식별자 필드
+    private static final long serialVersionUID = 2L;    //고유 식별자 필드
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,11 +34,18 @@ public class OrderItem extends BaseDateEntity implements Serializable {
 
     private int quantity;
 
+    // 주문 상태 정보
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status = OrderStatus.PROCESSING;
+
+    private Long sellerId;
+
     // 생성 메서드 추가
     public static OrderItem createOrderItem(Product product, int quantity) {
         OrderItem orderItem = new OrderItem();
         orderItem.setProduct(product);
         orderItem.setQuantity(quantity);
+        orderItem.setSellerId(product.getCreatedBy().getId());
         return orderItem;
     }
 }
