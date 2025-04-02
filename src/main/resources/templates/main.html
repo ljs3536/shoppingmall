@@ -17,7 +17,7 @@
         <p>
 
             <a sec:authorize="!isAuthenticated()" class="btn btn-lg btn-dark" href="/login">로그인</a>
-            <div sec:authorize="isAuthenticated()">
+        <div sec:authorize="isAuthenticated()">
             <h4 class="mb-3" sec:authentication="name">로그인 사용자 이름</h4>
             <!--<h4 class="mb-3" sec:authentication="principal.authorities">ROLE</h4>-->
             <h4 class="mb-3" th:text="${#authentication.principal.nickname}">닉네임</h4>
@@ -26,12 +26,12 @@
                     로그아웃
                 </button>
             </form>
-            </div>
+        </div>
         </p>
         <p class="lead">회원 기능</p>
         <p>
             <a sec:authorize="!isAuthenticated()"
-                class="btn btn-lg btn-secondary" href="/members/form">회원 가입</a>
+               class="btn btn-lg btn-secondary" href="/members/form">회원 가입</a>
             <a sec:authorize="hasRole('ADMIN')"
                class="btn btn-lg btn-secondary" href="/admin/members">회원 목록</a>
         </p>
@@ -41,13 +41,12 @@
             <a sec:authorize="hasRole('SELLER')" class="btn btn-lg btn-dark" href="/seller/products/new">상품 등록</a>
             <a sec:authorize="hasRole('SELLER')" class="btn btn-lg btn-dark" href="/seller/products/mylist">상품 목록</a>
             <a sec:authorize="hasRole('BUYER')" class="btn btn-lg btn-dark" href="/buyer/products/list">상품 목록</a>
-            <a sec:authorize="hasRole('BUYER')" class="btn btn-lg btn-dark" href="/cart/list">장바구니 목록</a>
+            <a sec:authorize="hasRole('BUYER')" class="btn btn-lg btn-dark" href="/buyer/cart/list">장바구니 목록</a>
         </p>
         <p class="lead">주문 기능</p>
         <p>
-            <a class="btn btn-lg btn-info" href="/order">상품 주문</a>
-            <!--<a class="btn btn-lg btn-info" href="/orders">주문 내역</a>-->
             <a sec:authorize="hasRole('BUYER')" class="btn btn-lg btn-info" href="/buyer/order/list">주문 목록</a>
+            <a sec:authorize="hasRole('SELLER')" class="btn btn-lg btn-info" href="/seller/order/list">주문 목록</a>
         </p>
     </div>
 
