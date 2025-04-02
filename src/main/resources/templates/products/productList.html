@@ -8,6 +8,7 @@
   <div th:replace="fragments/bodyHeader :: bodyHeader"/>
 
   <div>
+    <a class="btn btn-lg btn-info" href="/">메인페이지</a>
     <table class="table table-striped">
       <thead>
       <tr>
@@ -35,11 +36,46 @@
              class="btn btn-primary" role="button">수정</a>
         </td>
       </tr>
-      <a class="btn btn-lg btn-info" href="/">메인페이지</a>
       </tbody>
     </table>
+    <div th:remove="tag"
+         th:with="baseUrl=${#authorization.expression('hasRole(''BUYER'')')} ?
+                   '/buyer/products/list' :
+                   '/seller/products/mylist'">
+    <div class="pagination">
+      <!-- 첫 번째 페이지 이동 -->
+      <li class="page-item" th:classappend="${productPage.first} ? 'disabled'">
+        <a class="page-link" th:href="@{${baseUrl}(page=0, size=${productPage.size})}">
+          &laquo;&laquo;
+        </a>
+      </li>
+      <!-- 이전 페이지 -->
+      <li class="page-item" th:classappend="${productPage.first} ? 'disabled'">
+        <a class="page-link" th:href="@{${baseUrl}(page=${productPage.number - 1}, size=${productPage.size})}">
+          &laquo;
+        </a>
+      </li>
+      <!-- 페이지 번호 반복 -->
+      <li class="page-item" th:each="i : ${#numbers.sequence(0, productPage.totalPages - 1)}" th:classappend="${productPage.number == i} ? 'active' : ''">
+        <a class="page-link" th:href="@{${baseUrl}(page=${i}, size=${productPage.size})}"
+           th:text="${i + 1}">
+        </a>
+      </li>
+      <!-- 다음 페이지 -->
+      <li class="page-item" th:classappend="${productPage.last} ? 'disabled'">
+        <a class="page-link" th:href="@{${baseUrl}(page=${productPage.number + 1}, size=${productPage.size})}">
+          &raquo;
+        </a>
+      </li>
+      <!-- 마지막 페이지 이동 -->
+      <li class="page-item" th:classappend="${productPage.last} ? 'disabled'">
+        <a class="page-link" th:href="@{${baseUrl}(page=${productPage.totalPages - 1}, size=${productPage.size})}">
+          &raquo;&raquo;
+        </a>
+      </li>
+    </div>
   </div>
-
+</div>
   <div th:replace="fragments/footer :: footer"/>
 
 </div> <!-- /container -->

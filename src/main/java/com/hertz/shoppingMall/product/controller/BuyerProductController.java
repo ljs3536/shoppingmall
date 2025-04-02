@@ -4,9 +4,11 @@ import com.hertz.shoppingMall.product.component.ProductConverter;
 import com.hertz.shoppingMall.product.dto.ProductForm;
 import com.hertz.shoppingMall.product.model.Product;
 import com.hertz.shoppingMall.product.service.ProductService;
+import com.hertz.shoppingMall.utils.page.PageRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -27,10 +29,11 @@ public class BuyerProductController {
     private String accessUrl;
 
     @GetMapping("/list")
-    public String list(Model model){
-        List<Product> products = productService.getProductAll();
-        List<ProductForm> productForms = productConverter.convertToFormList(products);
-        model.addAttribute("products", productForms);
+    public String list(PageRequestDto pageRequestDto,Model model){
+        Page<Product> products = productService.getProductAll(pageRequestDto);
+        Page<ProductForm> productForms = productConverter.convertToFormPage(products);
+        model.addAttribute("products", productForms.getContent());
+        model.addAttribute("productPage", productForms);
         return "products/productList";
     }
 

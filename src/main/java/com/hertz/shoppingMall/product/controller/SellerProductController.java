@@ -11,10 +11,12 @@ import com.hertz.shoppingMall.product.service.ProductService;
 import com.hertz.shoppingMall.utils.exception.image.component.SaveImageUtil;
 import com.hertz.shoppingMall.utils.exception.image.model.Image;
 import com.hertz.shoppingMall.utils.exception.image.model.ImageType;
+import com.hertz.shoppingMall.utils.page.PageRequestDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -71,12 +73,14 @@ public class SellerProductController {
     }
 
     @GetMapping("/mylist")
-    public String list(@AuthenticationPrincipal CustomUserDetails userDetails, HttpServletRequest request,Model model){
+    public String list(@AuthenticationPrincipal CustomUserDetails userDetails,
+                       PageRequestDto pageRequestDto, Model model){
         Long memberId = userDetails.getMemberId();
 
-        List<Product> products = productService.getProductListBySeller(memberId);
-        List<ProductForm> productForms = productConverter.convertToFormList(products);
-        model.addAttribute("products", productForms);
+        Page<Product> products = productService.getProductListBySeller(pageRequestDto,memberId);
+        Page<ProductForm> productForms = productConverter.convertToFormPage(products);
+        model.addAttribute("products", productForms.getContent());
+        model.addAttribute("productPage", productForms);
         return "products/productList";
     }
 

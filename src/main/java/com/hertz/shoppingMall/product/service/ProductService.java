@@ -8,9 +8,14 @@ import com.hertz.shoppingMall.utils.exception.image.component.SaveImageUtil;
 import com.hertz.shoppingMall.utils.exception.image.model.Image;
 import com.hertz.shoppingMall.utils.exception.image.model.ImageType;
 import com.hertz.shoppingMall.utils.exception.image.repository.ImageRepository;
+import com.hertz.shoppingMall.utils.page.PageRequestDto;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -95,6 +100,11 @@ public class ProductService {
         return productRepository.findAll();
     }
 
+    public Page<Product> getProductAll(PageRequestDto pageRequestDto){
+        Pageable pageable = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), Sort.by(pageRequestDto.getSort()).descending());
+        return productRepository.findAll(pageable);
+    }
+
     public Product getProduct(Long productId){
         return productRepository.findById(productId).orElse(null);
     }
@@ -105,6 +115,12 @@ public class ProductService {
         return productRepository.findByCreatedBy(member);
     }
 
+    public Page<Product> getProductListBySeller(PageRequestDto pageRequestDto, Long memberId){
+        Member member = new Member();
+        member.setId(memberId);
+        Pageable pageable = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), Sort.by(pageRequestDto.getSort()).descending());
+        return productRepository.findByCreatedBy(pageable, member);
+    }
 
     public void saveProductWithImages(Product product, MultipartFile mainImage, List<MultipartFile> subImages) throws IOException {
         // 상품 저장 (먼저 저장해야 ID를 사용할 수 있음)
