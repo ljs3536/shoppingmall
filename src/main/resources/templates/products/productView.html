@@ -71,10 +71,10 @@
 
     <div class="row">
         <div class="col">
-            <form id="cartForm" th:action="@{/buyer/cart/add}" method="post">
+            <form id="cartForm" method="post">
                 <input type="hidden" name="productId" th:value="${product.id}"/>
                 <input type="hidden" name="quantity" id="cartQuantity"/>
-                <button type="submit" class="btn btn-success" onclick="addToCart()">장바구니 추가</button>
+                <button type="button" class="btn btn-success" onclick="addToCart()">장바구니 추가</button>
             </form>
         </div>
         <div class="col">
@@ -102,11 +102,15 @@
         const quantity = document.getElementById('quantity').value;
         const productId = document.querySelector('input[name="productId"]').value;
 
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
         // AJAX로 장바구니 추가 요청
-        fetch('/cart/add', {
+        fetch('/buyer/cart/add', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                [csrfHeader]: csrfToken // 동적으로 CSRF 헤더 키 설정
             },
             body: JSON.stringify({
                 productId: productId,
