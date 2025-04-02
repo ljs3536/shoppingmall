@@ -4,7 +4,12 @@ package com.hertz.shoppingMall.member.service;
 import com.hertz.shoppingMall.member.model.Member;
 import com.hertz.shoppingMall.member.repository.MemberRepository;
 import com.hertz.shoppingMall.utils.exception.custom.DuplicateMemberException;
+import com.hertz.shoppingMall.utils.page.PageRequestDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,8 +33,9 @@ public class MemberService {
         }
     }
 
-    public List<Member> getAllMembers(){
-        return memberRepository.findAll();
+    public Page<Member> getAllMembers(PageRequestDto pageRequestDto){
+        Pageable pageable = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), Sort.by(pageRequestDto.getSort()).descending());
+        return memberRepository.findAll(pageable);
     }
 
     public Member getMember(Long id) {

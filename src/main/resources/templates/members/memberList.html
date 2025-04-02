@@ -1,6 +1,28 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/header :: header" />
+<head th:replace="fragments/header :: header">
+<style>
+.pagination a {
+    padding: 8px 16px;
+    text-decoration: none;
+    color: black;
+    border: 1px solid #ddd;
+    margin: 0 4px;
+}
+
+.pagination a.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.pagination a.disabled {
+    pointer-events: none;
+    color: grey;
+    border-color: grey;
+}
+
+</style>
+</head>
 <body>
 
 <div class="container">
@@ -31,7 +53,38 @@
             </tbody>
         </table>
     </div>
-
+    <div class="pagination">
+        <!-- 첫 번째 페이지 이동 -->
+        <li class="page-item" th:classappend="${memberPage.first} ? 'disabled'">
+            <a class="page-link" th:href="@{/admin/members(page=0, size=${memberPage.size})}">
+                &laquo;&laquo;
+            </a>
+        </li>
+        <!-- 이전 페이지 -->
+        <li class="page-item" th:classappend="${memberPage.first} ? 'disabled'">
+            <a class="page-link" th:href="@{/admin/members(page=${memberPage.number - 1}, size=${memberPage.size})}">
+                &laquo;
+            </a>
+        </li>
+        <!-- 페이지 번호 반복 -->
+        <li class="page-item" th:each="i : ${#numbers.sequence(0, memberPage.totalPages - 1)}" th:classappend="${memberPage.number == i} ? 'active' : ''">
+            <a class="page-link" th:href="@{/admin/members(page=${i}, size=${memberPage.size})}"
+               th:text="${i + 1}">
+            </a>
+        </li>
+        <!-- 다음 페이지 -->
+        <li class="page-item" th:classappend="${memberPage.last} ? 'disabled'">
+            <a class="page-link" th:href="@{/admin/members(page=${memberPage.number + 1}, size=${memberPage.size})}">
+                &raquo;
+            </a>
+        </li>
+        <!-- 마지막 페이지 이동 -->
+        <li class="page-item" th:classappend="${memberPage.last} ? 'disabled'">
+            <a class="page-link" th:href="@{/admin/members(page=${memberPage.totalPages - 1}, size=${memberPage.size})}">
+                &raquo;&raquo;
+            </a>
+        </li>
+    </div>
     <div th:replace="fragments/footer :: footer" />
 
 </div> <!-- /container -->
