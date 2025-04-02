@@ -7,6 +7,7 @@ import com.hertz.shoppingMall.cart.model.CartItem;
 import com.hertz.shoppingMall.cart.service.CartService;
 import com.hertz.shoppingMall.config.security.CustomUserDetails;
 import com.hertz.shoppingMall.member.model.Member;
+import com.hertz.shoppingMall.utils.exception.image.service.ImageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,13 +23,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
+@RequestMapping("/buyer/cart")
 @Slf4j
 @RequiredArgsConstructor
-public class CartController {
+public class BuyerCartController {
 
     private final CartService cartService;
-
-    @GetMapping("/cart/list")
+    private final ImageService imageService;
+    @GetMapping("/list")
     public String list(@AuthenticationPrincipal CustomUserDetails userDetails, Model model){
 
         Long memberId = userDetails.getMemberId();
@@ -42,7 +44,8 @@ public class CartController {
                                 cartItem.getProduct().getName(),
                                 cartItem.getQuantity(),
                                 cartItem.getProduct().getPrice(),
-                                cartItem.getTotalPrice()
+                                cartItem.getTotalPrice(),
+                                imageService.getImageUrl(cartItem.getProduct().getMainImage())
                         )).toList();
 
         int totalCartPrice = cartItems.stream().mapToInt(CartItemDto::getTotalPrice).sum();
@@ -52,7 +55,7 @@ public class CartController {
         return "cart/cartList";
     }
 
-    @PostMapping("/cart/add")
+    @PostMapping("/add")
     @ResponseBody
     public ResponseEntity<CartItemDto> addToCart(
             @AuthenticationPrincipal CustomUserDetails userDetails,
@@ -77,7 +80,8 @@ public class CartController {
                     cartItem.getProduct().getName(),
                     cartItem.getQuantity(),
                     cartItem.getProduct().getPrice(),
-                    cartItem.getTotalPrice()
+                    cartItem.getTotalPrice(),
+                    imageService.getImageUrl(cartItem.getProduct().getMainImage())
             );
 
             return ResponseEntity.ok(responseDto);
