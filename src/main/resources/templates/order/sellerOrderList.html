@@ -76,10 +76,14 @@
   function updateOrderItemStatus(orderItemId){
     let status = document.getElementById('status-' + orderItemId).value;
 
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
     fetch('/seller/order/updateStatus',{
       method : 'POST',
       headers: {
-        'Content-Type' : 'application/json'
+        'Content-Type' : 'application/json',
+        [csrfHeader]: csrfToken // 동적으로 CSRF 헤더 키 설정
       },
       body : JSON.stringify({
         orderItemId : orderItemId,
