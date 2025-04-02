@@ -21,7 +21,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="item, stat : ${cartItems}">
+            <tr th:each="item, stat : ${cartItems}" class="cart-item-row" th:attr="data-id=${item.cartItemId}">
                 <td>
                     <input type="checkbox"
                            th:name="'productId['+${stat.index}+']'"
@@ -38,12 +38,14 @@
                            th:name="'quantity['+${stat.index}+']'"
                            th:value="${item.quantity}"
                            min="1"
-                           onchange="updateQuantity(this, [[${item.productId}]])"/>
+                           th:data-cart-item-id="${item.cartItemId}"
+                           th:data-index="${stat.index}"
+                           onchange="updateQuantity(this)">
                 </td>
-                <td th:text="${item.totalPrice}">총 가격</td>
+                <td class="item-total-price" th:text="${#numbers.formatInteger(item.totalPrice, 0, 'COMMA')}">총 가격</td>
                 <td>
-                    <button type="button" class="btn btn-danger btn-sm"
-                            onclick="removeCartItem([[${item.cartItemId}]])">
+                    <button type="button" class="delete-button btn btn-danger btn-sm"
+                            th:attr="data-cart-item-id=${item.cartItemId}">
                         삭제
                     </button>
                 </td>
@@ -53,7 +55,7 @@
 
         <div class="text-right">
             <strong>총 장바구니 금액: </strong>
-            <span th:text="${totalCartPrice}">0</span> 원
+            <span id="cart-total-price" th:text="${#numbers.formatInteger(totalCartPrice, 0, 'COMMA')}">0 원</span>
         </div>
 
         <div class="mt-3">
@@ -65,52 +67,92 @@
 </div>
 
 <script>
-    function updateQuantity(input, productId) {
-        const quantity = input.value;
 
+    document.addEventListener('DOMContentLoaded', function() {
+        const deleteButtons = document.querySelectorAll('.delete-button');
+
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const cartItemId = this.getAttribute('data-cart-item-id');
+                console.log("삭제할 cartItemId:", cartItemId); // 확인용 로그
+                if (!cartItemId) {
+                    alert("삭제할 상품 ID가 올바르지 않습니다.");
+                    return;
+                }
+                removeCartItem(cartItemId);
+            });
+        });
+    });
+     function updateQuantity(input) {
+        const cartItemId = input.getAttribute('data-cart-item-id');
+        const index = input.getAttribute('data-index');
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+        const quantity = input.value;
         fetch('/buyer/cart/update', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').getAttribute('content')
+                [csrfHeader]: csrfToken // 동적으로 CSRF 헤더 키 설정
             },
-            body: JSON.stringify({
-                productId: productId,
-                quantity: quantity
-            })
+            body: JSON.stringify({ cartItemId, quantity })
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('수량 업데이트 실패');
-            }
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
-            location.reload();
+            if (data.totalPrice !== undefined) {
+                document.querySelectorAll('.item-total-price')[index].textContent = data.totalPrice.toLocaleString();
+            }
+            updateTotalPrice();
+            alert(data.message);
         })
         .catch(error => {
-            console.error('Error:', error);
-            alert('수량 업데이트 중 오류가 발생했습니다.');
+            console.error("오류 발생:", error);
+            alert('수량 업데이트 중 오류 발생');
         });
     }
 
     function removeCartItem(cartItemId) {
+
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
         fetch(`/buyer/cart/remove/${cartItemId}`, {
             method: 'DELETE',
             headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').getAttribute('content')
+                'Content-Type': 'application/json',
+                [csrfHeader]: csrfToken // 동적으로 CSRF 헤더 키 설정
             }
         })
         .then(response => {
-            if (!response.ok) {
-                throw new Error('장바구니 아이템 삭제 실패');
+            if (response.ok) {
+                 // 장바구니 아이템이 삭제되었으므로 DOM에서 제거
+                const cartItemRow = document.querySelector(`tr[data-id="${cartItemId}"]`);
+                if (cartItemRow) {
+                    cartItemRow.remove();
+                    updateTotalPrice();
+                } else {
+                    window.location.reload();
+                }
+            } else {
+                alert('상품 삭제에 실패했습니다.');
             }
-            location.reload();
         })
         .catch(error => {
             console.error('Error:', error);
             alert('장바구니 아이템 삭제 중 오류가 발생했습니다.');
         });
+    }
+
+    function updateTotalPrice() {
+        const totalPriceElements = document.querySelectorAll('.item-total-price');
+        let sum = 0;
+
+        totalPriceElements.forEach(element => {
+            const price = parseInt(element.textContent.replace(/[^0-9]/g, ''));
+            sum += price;
+        });
+
+        document.getElementById('cart-total-price').textContent = `${sum.toLocaleString()} 원`;
     }
 
     // 전체 선택/해제 기능

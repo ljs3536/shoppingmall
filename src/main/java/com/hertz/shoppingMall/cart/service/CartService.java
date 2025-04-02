@@ -11,12 +11,15 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 public class CartService {
 
     private final CartRepository cartRepository;
@@ -39,7 +42,7 @@ public class CartService {
             Cart newCart = new Cart();
             newCart.setMember(member);
             return cartRepository.save(newCart);
-        });;
+        });
 
         // 상품 조회
         Product product = productRepository.findById(productId)
@@ -64,11 +67,4 @@ public class CartService {
         return cartItemRepository.save(cartItem);
     }
 
-    // 장바구니에서 상품 제거
-    public void removeCartItem(Long cartItemId) {
-        CartItem cartItem = cartItemRepository.findById(cartItemId)
-                .orElseThrow(() -> new EntityNotFoundException("Cart item not found"));
-
-        cartItemRepository.delete(cartItem);
-    }
 }
