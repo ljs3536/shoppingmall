@@ -2,8 +2,10 @@ package com.hertz.shoppingMall.cart.controller;
 
 import com.hertz.shoppingMall.cart.dto.CartForm;
 import com.hertz.shoppingMall.cart.dto.CartItemDto;
+import com.hertz.shoppingMall.cart.dto.CartUpdateDto;
 import com.hertz.shoppingMall.cart.model.Cart;
 import com.hertz.shoppingMall.cart.model.CartItem;
+import com.hertz.shoppingMall.cart.service.CartItemService;
 import com.hertz.shoppingMall.cart.service.CartService;
 import com.hertz.shoppingMall.config.security.CustomUserDetails;
 import com.hertz.shoppingMall.member.model.Member;
@@ -20,6 +22,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -29,6 +32,7 @@ import java.util.stream.Collectors;
 public class BuyerCartController {
 
     private final CartService cartService;
+    private final CartItemService cartItemService;
     private final ImageService imageService;
     @GetMapping("/list")
     public String list(@AuthenticationPrincipal CustomUserDetails userDetails, Model model){
@@ -91,20 +95,33 @@ public class BuyerCartController {
         }
     }
 
-    // 장바구니 아이템 삭제
-    @DeleteMapping("/cart/remove/{cartItemId}")
+    @PutMapping("/update")
     @ResponseBody
-    public ResponseEntity<Void> removeCartItem(
+    public ResponseEntity<?> updateCartItemQuantity(@RequestBody CartUpdateDto dto) {
+        try {
+            int totalPrice = cartItemService.updateCartItemQuantity(dto.getCartItemId(), dto.getQuantity());
+            return ResponseEntity.ok().body(Map.of(
+                    "message", "수량 업데이트 성공",
+                    "totalPrice", totalPrice));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "수량 업데이트 실패"));
+        }
+    }
+
+    // 장바구니 아이템 삭제
+    @DeleteMapping("/remove/{cartItemId}")
+    @ResponseBody
+    public ResponseEntity<?> removeCartItem(
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @PathVariable Long cartItemId
+            @PathVariable("cartItemId") Long cartItemId
     ) {
         Long memberId = userDetails.getMemberId();
         Member member = new Member();
         member.setId(memberId);
         try {
             // 장바구니 아이템 삭제
-            cartService.removeCartItem(cartItemId);
-            return ResponseEntity.ok().build();
+            cartItemService.removeCartItem(memberId, cartItemId);
+            return ResponseEntity.ok().body(Map.of("message","장바구니 상품 삭제 성공"));
         } catch (Exception e) {
             log.error("장바구니 아이템 삭제 중 오류 발생", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

@@ -7,6 +7,7 @@ import com.hertz.shoppingMall.order.dto.OrderForm;
 import com.hertz.shoppingMall.order.dto.OrderItemDto;
 import com.hertz.shoppingMall.order.model.Order;
 import com.hertz.shoppingMall.order.model.OrderItem;
+import com.hertz.shoppingMall.order.service.OrderFacadeService;
 import com.hertz.shoppingMall.order.service.OrderService;
 import com.hertz.shoppingMall.product.model.Product;
 import com.hertz.shoppingMall.product.service.ProductService;
@@ -31,6 +32,7 @@ public class BuyerOrderController {
 
     private final ProductService productService;
     private final OrderService orderService;
+    private final OrderFacadeService orderFacadeService;
 
     //주문 목록
     @GetMapping("/list")
@@ -55,7 +57,7 @@ public class BuyerOrderController {
 
         OrderForm orderForm = new OrderForm();
         orderForm.getOrderItems().add(itemDto);
-
+        orderForm.setFormCart(false);
         model.addAttribute("orderForm", orderForm);
         model.addAttribute("productId", productId);
         return "order/createOrderForm";
@@ -75,28 +77,10 @@ public class BuyerOrderController {
             return "order/createOrderForm";
         }
         try {
-                // Order 생성 로직
-                Order order = new Order();
-                for (OrderItemDto orderItemDto : form.getOrderItems()) {
-                    Product product = productService.getProduct(orderItemDto.getProductId());
-
-                    OrderItem orderItem = OrderItem.createOrderItem(product, orderItemDto.getQuantity());
-                    order.addOrderItem(orderItem);
-                }
-
-                // 주문 정보 설정
-                order.setRecipient(form.getRecipient());
-                order.setPhoneNumber(form.getPhoneNumber());
-                order.setAddress(form.getAddress());
-                order.setOrderRequest(form.getOrderRequest());
-
-                // 멤버 설정
                 Member member = new Member();
                 member.setId(userDetails.getMemberId());
-                order.setMember(member);
 
-                // 주문 저장 및 재고 처리
-                Order savedOrder = orderService.saveOrder(order);
+                Order savedOrder = orderFacadeService.saveOrder(form, member);
 
                 return "redirect:/buyer/order/view/" + savedOrder.getId();
 
@@ -122,23 +106,26 @@ public class BuyerOrderController {
         OrderForm orderForm = new OrderForm();
 
         for (int i = 0; i < cartForm.getProductId().size(); i++) {
+
             Long productId = cartForm.getProductId().get(i);
             Integer quantity = cartForm.getQuantity().get(i);
+            if(productId != null) {
+                // 제품 리스트에서 해당 상품 찾기 (Optional 활용)
+                Product product = products.stream()
+                        .filter(p -> p.getId().equals(productId))
+                        .findFirst()
+                        .orElseThrow(() -> new IllegalArgumentException("잘못된 상품 ID: " + productId));
 
-            // 제품 리스트에서 해당 상품 찾기 (Optional 활용)
-            Product product = products.stream()
-                    .filter(p -> p.getId().equals(productId))
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException("잘못된 상품 ID: " + productId));
-
-            OrderItemDto itemDto = new OrderItemDto();
-            itemDto.setProductId(product.getId());
-            itemDto.setProductName(product.getName());
-            itemDto.setQuantity(quantity);
-            itemDto.setPrice(product.getPrice());
-            orderForm.getOrderItems().add(itemDto);
+                OrderItemDto itemDto = new OrderItemDto();
+                itemDto.setProductId(product.getId());
+                itemDto.setProductName(product.getName());
+                itemDto.setQuantity(quantity);
+                itemDto.setPrice(product.getPrice());
+                orderForm.getOrderItems().add(itemDto);
+            }
         }
 
+        orderForm.setFormCart(true);
         model.addAttribute("orderForm", orderForm);
         return "order/createOrderForm";
     }

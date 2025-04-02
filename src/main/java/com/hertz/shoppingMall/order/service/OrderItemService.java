@@ -6,6 +6,7 @@ import com.hertz.shoppingMall.order.repository.OrderItemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -22,6 +23,7 @@ public class OrderItemService {
         return orderItemRepository.findBySellerId(memberId);
     }
 
+    @Transactional // 변경감지(dirty checking)
     public void updateOrderStatus(Long orderItemId, OrderStatus status) {
         OrderItem orderItem = orderItemRepository.findById(orderItemId).orElse(null);
         if(orderItem != null) {

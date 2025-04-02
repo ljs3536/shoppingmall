@@ -21,9 +21,10 @@
       </thead>
       <tbody>
       <tr th:each="product : ${products}">
-        <td>
+        <td sec:authorize="hasRole('BUYER')" >
           <a th:href="@{/buyer/products/view/{id}(id=${product.id})}" th:text="${product.id}"></a>
         </td>
+        <td sec:authorize="hasRole('SELLER')" th:text="${product.id}"></td>
         <td><img th:src="${product.mainImageUrl}" alt="상품 이미지" width="150"></td>
         <td th:text="${product.name}"></td>
         <td th:text="${product.price}"></td>
