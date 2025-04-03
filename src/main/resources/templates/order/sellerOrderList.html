@@ -47,6 +47,38 @@
       </tr>
       </tbody>
     </table>
+    <div class="pagination">
+      <!-- 첫 번째 페이지 이동 -->
+      <li class="page-item" th:classappend="${orderItemPage.first} ? 'disabled'">
+        <a class="page-link" th:href="@{/seller/order/list(page=0, size=${orderItemPage.size})}">
+          &laquo;&laquo;
+        </a>
+      </li>
+      <!-- 이전 페이지 -->
+      <li class="page-item" th:classappend="${orderItemPage.first} ? 'disabled'">
+        <a class="page-link" th:href="@{/seller/order/list(page=${orderItemPage.number - 1}, size=${orderItemPage.size})}">
+          &laquo;
+        </a>
+      </li>
+      <!-- 페이지 번호 반복 -->
+      <li class="page-item" th:each="i : ${#numbers.sequence(0, orderItemPage.totalPages - 1)}" th:classappend="${orderItemPage.number == i} ? 'active' : ''">
+        <a class="page-link" th:href="@{/seller/order/list(page=${i}, size=${orderItemPage.size})}"
+           th:text="${i + 1}">
+        </a>
+      </li>
+      <!-- 다음 페이지 -->
+      <li class="page-item" th:classappend="${orderItemPage.last} ? 'disabled'">
+        <a class="page-link" th:href="@{/seller/order/list(page=${orderItemPage.number + 1}, size=${orderItemPage.size})}">
+          &raquo;
+        </a>
+      </li>
+      <!-- 마지막 페이지 이동 -->
+      <li class="page-item" th:classappend="${orderItemPage.last} ? 'disabled'">
+        <a class="page-link" th:href="@{/seller/order/list(page=${orderItemPage.totalPages - 1}, size=${orderItemPage.size})}">
+          &raquo;&raquo;
+        </a>
+      </li>
+    </div>
     <!-- 모달 -->
     <div id="orderDetailModal" class="modal fade" tabindex="-1">
       <div class="modal-dialog">

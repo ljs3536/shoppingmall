@@ -32,6 +32,38 @@
       <a class="btn btn-lg btn-info" href="/">메인페이지</a>
       </tbody>
     </table>
+    <div class="pagination">
+      <!-- 첫 번째 페이지 이동 -->
+      <li class="page-item" th:classappend="${orderPage.first} ? 'disabled'">
+        <a class="page-link" th:href="@{/buyer/order/list(page=0, size=${orderPage.size})}">
+          &laquo;&laquo;
+        </a>
+      </li>
+      <!-- 이전 페이지 -->
+      <li class="page-item" th:classappend="${orderPage.first} ? 'disabled'">
+        <a class="page-link" th:href="@{/buyer/order/list(page=${orderPage.number - 1}, size=${orderPage.size})}">
+          &laquo;
+        </a>
+      </li>
+      <!-- 페이지 번호 반복 -->
+      <li class="page-item" th:each="i : ${#numbers.sequence(0, orderPage.totalPages - 1)}" th:classappend="${orderPage.number == i} ? 'active' : ''">
+        <a class="page-link" th:href="@{/buyer/order/list(page=${i}, size=${orderPage.size})}"
+           th:text="${i + 1}">
+        </a>
+      </li>
+      <!-- 다음 페이지 -->
+      <li class="page-item" th:classappend="${orderPage.last} ? 'disabled'">
+        <a class="page-link" th:href="@{/buyer/order/list(page=${orderPage.number + 1}, size=${orderPage.size})}">
+          &raquo;
+        </a>
+      </li>
+      <!-- 마지막 페이지 이동 -->
+      <li class="page-item" th:classappend="${orderPage.last} ? 'disabled'">
+        <a class="page-link" th:href="@{/buyer/order/list(page=${orderPage.totalPages - 1}, size=${orderPage.size})}">
+          &raquo;&raquo;
+        </a>
+      </li>
+    </div>
   </div>
 
   <div th:replace="fragments/footer :: footer"/>
