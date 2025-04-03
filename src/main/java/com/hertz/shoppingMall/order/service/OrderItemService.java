@@ -22,14 +22,11 @@ public class OrderItemService {
 
     private final OrderItemRepository orderItemRepository;
 
-    public List<OrderItem> getOrderItemListBySellerId(Long memberId) {
-        return orderItemRepository.findBySellerId(memberId);
-    }
-
     public Page<OrderItem> getOrderItemListBySellerId(PageRequestDto pageRequestDto, Long memberId) {
         Pageable pageable = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), Sort.by(pageRequestDto.getSort()).descending());
         return orderItemRepository.findBySellerId(pageable, memberId);
     }
+
     @Transactional // 변경감지(dirty checking)
     public void updateOrderStatus(Long orderItemId, OrderStatus status) {
         OrderItem orderItem = orderItemRepository.findById(orderItemId).orElse(null);
@@ -40,8 +37,5 @@ public class OrderItemService {
         }
     }
 
-    public OrderItem getOrderItem(Long orderItemId) {
-        return orderItemRepository.findById(orderItemId).orElseThrow();
-    }
 
 }

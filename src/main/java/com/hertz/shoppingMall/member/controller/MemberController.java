@@ -4,6 +4,7 @@ import com.hertz.shoppingMall.member.dto.MemberForm;
 import com.hertz.shoppingMall.member.model.Member;
 import com.hertz.shoppingMall.member.service.MemberService;
 import com.hertz.shoppingMall.utils.page.PageRequestDto;
+import com.hertz.shoppingMall.utils.search.SearchRequestDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -58,8 +59,8 @@ public class MemberController {
     // 회원 전체 조회
     @GetMapping("/admin/members")
     @PreAuthorize("hasRole('ADMIN')")
-    public String list(PageRequestDto pageRequestDto, Model model){
-        Page<Member> memberPage  = memberService.getAllMembers(pageRequestDto);
+    public String list(@ModelAttribute SearchRequestDto searchRequestDto, PageRequestDto pageRequestDto, Model model){
+        Page<Member> memberPage  = memberService.getAllMembers(searchRequestDto,pageRequestDto);
         model.addAttribute("members", memberPage.getContent());  // 현재 페이지의 데이터
         model.addAttribute("memberPage", memberPage);  // 페이지 정보
         return "members/memberList";

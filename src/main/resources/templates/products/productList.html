@@ -9,6 +9,29 @@
 
   <div>
     <a class="btn btn-lg btn-info" href="/">메인페이지</a>
+    <div th:remove="tag"
+         th:with="baseUrl=${#authorization.expression('hasRole(''BUYER'')')} ?
+                   '/buyer/products/list' :
+                   '/seller/products/mylist'"></div>
+    <form th:action="@{${baseUrl}}" method="get" class="mb-4">
+      <div class="row">
+        <div class="col-md-3">
+          <select name="searchType" class="form-control">
+            <option value="">검색 유형 선택</option>
+            <option value="productName" th:selected="${searchRequestDto.searchType == 'productName'}">상품명</option>
+            <option value="createdBy" th:selected="${searchRequestDto.searchType == 'createdBy'}">등록자</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <input type="text" name="keyword" class="form-control"
+                 th:value="${searchRequestDto.keyword}" placeholder="검색어 입력">
+        </div>
+        <div class="col-md-3">
+          <button type="submit" class="btn btn-primary">검색</button>
+          <a th:href="@{${baseUrl}}" class="btn btn-secondary">초기화</a>
+        </div>
+      </div>
+    </form>
     <table class="table table-striped">
       <thead>
       <tr>
@@ -38,38 +61,36 @@
       </tr>
       </tbody>
     </table>
-    <div th:remove="tag"
-         th:with="baseUrl=${#authorization.expression('hasRole(''BUYER'')')} ?
-                   '/buyer/products/list' :
-                   '/seller/products/mylist'">
     <div class="pagination">
       <!-- 첫 번째 페이지 이동 -->
       <li class="page-item" th:classappend="${productPage.first} ? 'disabled'">
-        <a class="page-link" th:href="@{${baseUrl}(page=0, size=${productPage.size})}">
+        <a class="page-link" th:href="@{${baseUrl}(page=0, size=${productPage.size}, searchType=${searchRequestDto.searchType}, keyword=${searchRequestDto.keyword})}">
           &laquo;&laquo;
         </a>
       </li>
       <!-- 이전 페이지 -->
       <li class="page-item" th:classappend="${productPage.first} ? 'disabled'">
-        <a class="page-link" th:href="@{${baseUrl}(page=${productPage.number - 1}, size=${productPage.size})}">
+        <a class="page-link" th:href="@{${baseUrl}(page=${productPage.number - 1}, size=${productPage.size}, searchType=${searchRequestDto.searchType}, keyword=${searchRequestDto.keyword})}">
           &laquo;
         </a>
       </li>
       <!-- 페이지 번호 반복 -->
-      <li class="page-item" th:each="i : ${#numbers.sequence(0, productPage.totalPages - 1)}" th:classappend="${productPage.number == i} ? 'active' : ''">
-        <a class="page-link" th:href="@{${baseUrl}(page=${i}, size=${productPage.size})}"
+      <li class="page-item" th:each="i : ${#numbers.sequence(0, productPage.totalPages - 1)}"
+          th:classappend="${productPage.number == i} ? 'active' : ''">
+        <a class="page-link"
+           th:href="@{${baseUrl}(page=${i}, size=${productPage.size}, searchType=${searchRequestDto.searchType}, keyword=${searchRequestDto.keyword})}"
            th:text="${i + 1}">
         </a>
       </li>
       <!-- 다음 페이지 -->
       <li class="page-item" th:classappend="${productPage.last} ? 'disabled'">
-        <a class="page-link" th:href="@{${baseUrl}(page=${productPage.number + 1}, size=${productPage.size})}">
+        <a class="page-link" th:href="@{${baseUrl}(page=${productPage.number + 1}, size=${productPage.size}, searchType=${searchRequestDto.searchType}, keyword=${searchRequestDto.keyword})}">
           &raquo;
         </a>
       </li>
       <!-- 마지막 페이지 이동 -->
       <li class="page-item" th:classappend="${productPage.last} ? 'disabled'">
-        <a class="page-link" th:href="@{${baseUrl}(page=${productPage.totalPages - 1}, size=${productPage.size})}">
+        <a class="page-link" th:href="@{${baseUrl}(page=${productPage.totalPages - 1}, size=${productPage.size}, searchType=${searchRequestDto.searchType}, keyword=${searchRequestDto.keyword})}">
           &raquo;&raquo;
         </a>
       </li>

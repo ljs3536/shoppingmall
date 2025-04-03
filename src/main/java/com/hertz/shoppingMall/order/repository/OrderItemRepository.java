@@ -15,9 +15,6 @@ import java.util.List;
 @Repository
 public interface OrderItemRepository extends JpaRepository<OrderItem,Long> {
 
-    @Query("SELECT oi FROM OrderItem oi JOIN FETCH oi.order WHERE oi.sellerId = :sellerId")
-    List<OrderItem> findBySellerId(@Param("sellerId") Long sellerId);
-
     // 데이터 조회용 쿼리
     @EntityGraph(attributePaths = {"order", "product"})
     Page<OrderItem> findBySellerId(Pageable pageable, Long sellerId);

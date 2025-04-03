@@ -5,6 +5,7 @@ import com.hertz.shoppingMall.product.dto.ProductForm;
 import com.hertz.shoppingMall.product.model.Product;
 import com.hertz.shoppingMall.product.service.ProductService;
 import com.hertz.shoppingMall.utils.page.PageRequestDto;
+import com.hertz.shoppingMall.utils.search.SearchRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,8 +30,8 @@ public class BuyerProductController {
     private String accessUrl;
 
     @GetMapping("/list")
-    public String list(PageRequestDto pageRequestDto,Model model){
-        Page<Product> products = productService.getProductAll(pageRequestDto);
+    public String list(@ModelAttribute SearchRequestDto searchRequestDto, PageRequestDto pageRequestDto, Model model){
+        Page<Product> products = productService.getProductAll(searchRequestDto,pageRequestDto);
         Page<ProductForm> productForms = productConverter.convertToFormPage(products);
         model.addAttribute("products", productForms.getContent());
         model.addAttribute("productPage", productForms);

@@ -30,16 +30,8 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
-    //주문 목록
-    public List<Order> getOrderList(){
-        return orderRepository.findAll();
-    }
 
     // 구매자의 주문 목록
-    public List<Order> getOrderListByMemberId(Long memberId) {
-        return orderRepository.findByMemberIdOrderByCreatedDateTimeDesc(memberId);
-    }
-
     public Page<Order> getOrderListByMemberId(PageRequestDto pageRequestDto, Long memberId){
         Pageable pageable = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), Sort.by(pageRequestDto.getSort()).descending());
         return orderRepository.findByMemberIdOrderByCreatedDateTimeDesc(pageable, memberId);
@@ -71,11 +63,6 @@ public class OrderService {
     //주문 상세
     public Order getOrder(Long orderId){
         return orderRepository.findById(orderId).orElse(null);
-    }
-
-    //사용자 마지막 주문 조회
-    public Order getLatestOrderByMemberId(Long memberId) {
-        return orderRepository.findTopByMemberIdOrderByCreatedDateTimeDesc(memberId);
     }
 
     // 배송 정보

@@ -9,6 +9,7 @@ import com.hertz.shoppingMall.utils.exception.image.model.Image;
 import com.hertz.shoppingMall.utils.exception.image.model.ImageType;
 import com.hertz.shoppingMall.utils.exception.image.repository.ImageRepository;
 import com.hertz.shoppingMall.utils.page.PageRequestDto;
+import com.hertz.shoppingMall.utils.search.SearchRequestDto;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
@@ -96,30 +97,21 @@ public class ProductService {
         }
     }
 
-    public List<Product> getProductAll(){
-        return productRepository.findAll();
-    }
-
-    public Page<Product> getProductAll(PageRequestDto pageRequestDto){
+    public Page<Product> getProductAll(SearchRequestDto searchRequestDto,PageRequestDto pageRequestDto){
         Pageable pageable = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), Sort.by(pageRequestDto.getSort()).descending());
-        return productRepository.findAll(pageable);
+        return productRepository.searchProducts(searchRequestDto,pageable);
     }
 
     public Product getProduct(Long productId){
         return productRepository.findById(productId).orElse(null);
     }
 
-    public List<Product> getProductListBySeller(Long memberId){
-        Member member = new Member();
-        member.setId(memberId);
-        return productRepository.findByCreatedBy(member);
-    }
 
-    public Page<Product> getProductListBySeller(PageRequestDto pageRequestDto, Long memberId){
+    public Page<Product> getProductListBySeller(SearchRequestDto searchRequestDto, PageRequestDto pageRequestDto, Long memberId){
         Member member = new Member();
         member.setId(memberId);
         Pageable pageable = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), Sort.by(pageRequestDto.getSort()).descending());
-        return productRepository.findByCreatedBy(pageable, member);
+        return productRepository.searchProductsByCreatedBy(searchRequestDto, member, pageable);
     }
 
     public void saveProductWithImages(Product product, MultipartFile mainImage, List<MultipartFile> subImages) throws IOException {

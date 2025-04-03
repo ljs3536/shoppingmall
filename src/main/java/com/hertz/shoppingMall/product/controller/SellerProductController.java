@@ -12,6 +12,7 @@ import com.hertz.shoppingMall.utils.exception.image.component.SaveImageUtil;
 import com.hertz.shoppingMall.utils.exception.image.model.Image;
 import com.hertz.shoppingMall.utils.exception.image.model.ImageType;
 import com.hertz.shoppingMall.utils.page.PageRequestDto;
+import com.hertz.shoppingMall.utils.search.SearchRequestDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -74,10 +75,11 @@ public class SellerProductController {
 
     @GetMapping("/mylist")
     public String list(@AuthenticationPrincipal CustomUserDetails userDetails,
+                       @ModelAttribute SearchRequestDto searchRequestDto,
                        PageRequestDto pageRequestDto, Model model){
         Long memberId = userDetails.getMemberId();
 
-        Page<Product> products = productService.getProductListBySeller(pageRequestDto,memberId);
+        Page<Product> products = productService.getProductListBySeller(searchRequestDto, pageRequestDto,memberId);
         Page<ProductForm> productForms = productConverter.convertToFormPage(products);
         model.addAttribute("products", productForms.getContent());
         model.addAttribute("productPage", productForms);
