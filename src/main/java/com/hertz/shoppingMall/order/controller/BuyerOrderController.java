@@ -12,9 +12,11 @@ import com.hertz.shoppingMall.order.service.OrderService;
 import com.hertz.shoppingMall.product.model.Product;
 import com.hertz.shoppingMall.product.service.ProductService;
 import com.hertz.shoppingMall.utils.exception.custom.NotEnoughStockException;
+import com.hertz.shoppingMall.utils.page.PageRequestDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,10 +38,13 @@ public class BuyerOrderController {
 
     //주문 목록
     @GetMapping("/list")
-    public String list(@AuthenticationPrincipal CustomUserDetails userDetails
-            ,Model model){
-        List<Order> orders = orderService.getOrderListByMemberId(userDetails.getMemberId());
-        model.addAttribute("orders", orders);
+    public String list(@AuthenticationPrincipal CustomUserDetails userDetail
+            , PageRequestDto pageRequestDto
+            , Model model){
+        //List<Order> orders = orderService.getOrderListByMemberId(userDetails.getMemberId());
+        Page<Order> orders = orderService.getOrderListByMemberId(pageRequestDto, userDetail.getMemberId());
+        model.addAttribute("orders", orders.getContent());
+        model.addAttribute("orderPage", orders);
         return "order/orderList";
     }
     //주문 등록

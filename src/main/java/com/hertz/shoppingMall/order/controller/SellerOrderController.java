@@ -3,12 +3,15 @@ package com.hertz.shoppingMall.order.controller;
 import com.hertz.shoppingMall.config.security.CustomUserDetails;
 import com.hertz.shoppingMall.order.dto.OrderDetailDto;
 import com.hertz.shoppingMall.order.dto.OrderStatusUpdateDto;
+import com.hertz.shoppingMall.order.model.Order;
 import com.hertz.shoppingMall.order.model.OrderItem;
 import com.hertz.shoppingMall.order.model.OrderStatus;
 import com.hertz.shoppingMall.order.service.OrderItemService;
 import com.hertz.shoppingMall.order.service.OrderService;
+import com.hertz.shoppingMall.utils.page.PageRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -30,9 +33,12 @@ public class SellerOrderController {
 
     @GetMapping("/list")
     public String list(@AuthenticationPrincipal CustomUserDetails userDetails
+            , PageRequestDto pageRequestDto
             , Model model){
-        List<OrderItem> orderItems = orderItemService.getOrderItemListBySellerId(userDetails.getMemberId());
-        model.addAttribute("orderItems", orderItems);
+        //List<OrderItem> orderItems = orderItemService.getOrderItemListBySellerId(userDetails.getMemberId());
+        Page<OrderItem> orderItems = orderItemService.getOrderItemListBySellerId(pageRequestDto, userDetails.getMemberId());
+        model.addAttribute("orderItems", orderItems.getContent());
+        model.addAttribute("orderItemPage", orderItems);
         return "order/sellerOrderList";
     }
 

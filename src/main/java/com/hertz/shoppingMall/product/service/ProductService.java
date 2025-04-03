@@ -8,9 +8,15 @@ import com.hertz.shoppingMall.utils.exception.image.component.SaveImageUtil;
 import com.hertz.shoppingMall.utils.exception.image.model.Image;
 import com.hertz.shoppingMall.utils.exception.image.model.ImageType;
 import com.hertz.shoppingMall.utils.exception.image.repository.ImageRepository;
+import com.hertz.shoppingMall.utils.page.PageRequestDto;
+import com.hertz.shoppingMall.utils.search.SearchRequestDto;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -91,20 +97,22 @@ public class ProductService {
         }
     }
 
-    public List<Product> getProductAll(){
-        return productRepository.findAll();
+    public Page<Product> getProductAll(SearchRequestDto searchRequestDto,PageRequestDto pageRequestDto){
+        Pageable pageable = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), Sort.by(pageRequestDto.getSort()).descending());
+        return productRepository.searchProducts(searchRequestDto,pageable);
     }
 
     public Product getProduct(Long productId){
         return productRepository.findById(productId).orElse(null);
     }
 
-    public List<Product> getProductListBySeller(Long memberId){
+
+    public Page<Product> getProductListBySeller(SearchRequestDto searchRequestDto, PageRequestDto pageRequestDto, Long memberId){
         Member member = new Member();
         member.setId(memberId);
-        return productRepository.findByCreatedBy(member);
+        Pageable pageable = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), Sort.by(pageRequestDto.getSort()).descending());
+        return productRepository.searchProductsByCreatedBy(searchRequestDto, member, pageable);
     }
-
 
     public void saveProductWithImages(Product product, MultipartFile mainImage, List<MultipartFile> subImages) throws IOException {
         // 상품 저장 (먼저 저장해야 ID를 사용할 수 있음)

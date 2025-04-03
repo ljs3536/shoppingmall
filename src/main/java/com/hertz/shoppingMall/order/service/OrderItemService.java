@@ -1,10 +1,13 @@
 package com.hertz.shoppingMall.order.service;
 
+import com.hertz.shoppingMall.order.model.Order;
 import com.hertz.shoppingMall.order.model.OrderItem;
 import com.hertz.shoppingMall.order.model.OrderStatus;
 import com.hertz.shoppingMall.order.repository.OrderItemRepository;
+import com.hertz.shoppingMall.utils.page.PageRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,8 +22,9 @@ public class OrderItemService {
 
     private final OrderItemRepository orderItemRepository;
 
-    public List<OrderItem> getOrderItemListBySellerId(Long memberId) {
-        return orderItemRepository.findBySellerId(memberId);
+    public Page<OrderItem> getOrderItemListBySellerId(PageRequestDto pageRequestDto, Long memberId) {
+        Pageable pageable = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), Sort.by(pageRequestDto.getSort()).descending());
+        return orderItemRepository.findBySellerId(pageable, memberId);
     }
 
     @Transactional // 변경감지(dirty checking)
@@ -33,7 +37,5 @@ public class OrderItemService {
         }
     }
 
-    public OrderItem getOrderItem(Long orderItemId) {
-        return orderItemRepository.findById(orderItemId).orElseThrow();
-    }
+
 }
