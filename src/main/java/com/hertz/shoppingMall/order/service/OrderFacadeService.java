@@ -8,11 +8,16 @@ import com.hertz.shoppingMall.order.model.Order;
 import com.hertz.shoppingMall.order.model.OrderItem;
 import com.hertz.shoppingMall.product.model.Product;
 import com.hertz.shoppingMall.product.service.ProductService;
+import com.hertz.shoppingMall.utils.log.event.model.OrderCompletedEvent;
+import com.hertz.shoppingMall.utils.log.model.OrderLog;
+import com.hertz.shoppingMall.utils.log.repository.OrderLogRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,6 +28,7 @@ public class OrderFacadeService {
     private final OrderService orderService;
     private final ProductService productService;
     private final CartItemService cartItemService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public Order saveOrder(OrderForm form, Member member){
         // Order 생성 로직
@@ -51,6 +57,8 @@ public class OrderFacadeService {
             cartItemService.removeCartItemsByProductIds(member.getId(), productIds);
         }
         orderService.saveOrder(order);
+
+        applicationEventPublisher.publishEvent(new OrderCompletedEvent(order, member));
         return order;
     }
 }
