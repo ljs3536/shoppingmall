@@ -40,6 +40,9 @@ public class OrderLog {
     private Integer productQuantity;
     @Field(type = FieldType.Text)
     private String productDescription;
+    @Field(type = FieldType.Keyword)
+    private String productCategory;
+
 
     public static OrderLog createOrderLog(Member member, OrderItem item){
         OrderLog log = new OrderLog();
@@ -52,6 +55,7 @@ public class OrderLog {
         log.setProductPrice(item.getProduct().getPrice());
         log.setProductDescription(item.getProduct().getDescription());
         log.setProductQuantity(item.getQuantity());
+        log.setProductCategory(item.getProduct().getCategory().getName());
         return log;
     }
 }

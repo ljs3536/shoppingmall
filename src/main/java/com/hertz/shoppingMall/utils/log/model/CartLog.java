@@ -43,9 +43,13 @@ public class CartLog {
     private Integer productQuantity;
     @Field(type = FieldType.Text)
     private String productDescription;
+    @Field(type = FieldType.Keyword)
+    private String productCategory;
+
 
     public static CartLog createCartLog(CartItem item, Member member, String actionType){
         CartLog log = new CartLog();
+        log.setTimestamp(LocalDateTime.now());
         log.setUsername(member.getUsername());
         log.setUserRegion(member.getRegion());
         log.setUserAge(member.getAge());
@@ -54,6 +58,7 @@ public class CartLog {
         log.setProductPrice(item.getProduct().getPrice());
         log.setProductQuantity(item.getQuantity());
         log.setActionType(actionType);  // 로그에도 액션 타입 추가
+        log.setProductCategory(item.getProduct().getCategory().getName());
         return log;
     }
 
