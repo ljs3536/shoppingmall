@@ -65,9 +65,7 @@ public class BuyerCartController {
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody @Valid CartForm cartForm
     ) {
-        Long memberId = userDetails.getMemberId();
-        Member member = new Member();
-        member.setId(memberId);
+        Member member = Member.createMember(userDetails);
 
         try {
             // 장바구니에 상품 추가

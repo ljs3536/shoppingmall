@@ -46,6 +46,7 @@ public class CartLog {
 
     public static CartLog createCartLog(CartItem item, Member member, String actionType){
         CartLog log = new CartLog();
+        log.setTimestamp(LocalDateTime.now());
         log.setUsername(member.getUsername());
         log.setUserRegion(member.getRegion());
         log.setUserAge(member.getAge());
