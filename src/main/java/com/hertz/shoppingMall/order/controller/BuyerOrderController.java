@@ -82,9 +82,7 @@ public class BuyerOrderController {
             return "order/createOrderForm";
         }
         try {
-                Member member = new Member();
-                member.setId(userDetails.getMemberId());
-
+                Member member = Member.createMember(userDetails);
                 Order savedOrder = orderFacadeService.saveOrder(form, member);
 
                 return "redirect:/buyer/order/view/" + savedOrder.getId();
