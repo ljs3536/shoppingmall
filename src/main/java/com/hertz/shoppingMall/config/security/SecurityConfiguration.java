@@ -86,7 +86,7 @@ public class SecurityConfiguration {
                         // csrf 토큰을 쿠키로 저장, HttpOnly 설정 비활성화
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/**","/api/**").hasRole("ADMIN")
                         .requestMatchers("/seller/**").hasRole("SELLER")
                         .requestMatchers("/buyer/**").hasRole("BUYER")
                         // 여기에 메인 페이지("/")를 permitAll에 추가

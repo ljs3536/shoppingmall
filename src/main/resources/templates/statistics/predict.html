@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>상품 예측</title></head>
+<body>
+<h2>상품 수요 예측</h2>
+
+<form th:action="@{/admin/statistics/predictions}" method="post">
+  <label>상품명: <input type="text" name="productName" required></label><br/>
+  <label>알고리즘 선택:
+    <select name="algorithm">
+      <option th:each="algo : ${algorithms}" th:value="${algo}" th:text="${algo}"></option>
+    </select>
+  </label><br/>
+  <button type="submit">예측하기</button>
+</form>
+
+<div th:if="${result}">
+  <h3>예측 결과</h3>
+  <p><strong>상품명:</strong> <span th:text="${result['productName']}"></span></p>
+  <p><strong>예측 수량:</strong> <span th:text="${result['predictedQuantity']}"></span></p>
+  <p><strong>알고리즘:</strong> <span th:text="${result['algorithm']}"></span></p>
+</div>
+
+</body>
+</html>
