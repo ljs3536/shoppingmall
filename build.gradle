@@ -45,6 +45,9 @@ dependencies {
 	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
 	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
+	//WebClient
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
 	//elasticsearch
 	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
 

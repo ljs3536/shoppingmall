@@ -47,6 +47,8 @@
         <p>
             <a sec:authorize="hasRole('BUYER')" class="btn btn-lg btn-info" href="/buyer/order/list">주문 목록</a>
             <a sec:authorize="hasRole('SELLER')" class="btn btn-lg btn-info" href="/seller/order/list">주문 목록</a>
+            <a sec:authorize="hasRole('ADMIN')" class="btn btn-lg btn-info" href="/admin/statistics/info">주문 통계</a>
+            <a sec:authorize="hasRole('ADMIN')" class="btn btn-lg btn-info" href="/admin/statistics/prediction">주문 통계</a>
         </p>
     </div>
 

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<head>
+  <title>통계 대시보드</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<h2>연령별 선호 제품</h2>
+<button onclick="loadAgeStats()">불러오기</button>
+<ul id="ageStats"></ul>
+
+<h2>지역별 인기 제품</h2>
+<button onclick="loadRegionStats()">불러오기</button>
+<ul id="regionStats"></ul>
+
+<h2>카테고리별 월간 트렌드</h2>
+<button onclick="loadTrendStats()">불러오기</button>
+<ul id="trendStats"></ul>
+
+<h2>연도별 상품 판매량</h2>
+<input type="text" id="yearInput" placeholder="연도를 입력하세요 (예: 2024)" />
+<button onclick="loadYearlySalesChart()">불러오기</button>
+<canvas id="yearlySalesChart" width="600" height="300"></canvas>
+
+<script>
+  function loadAgeStats() {
+      $.get("/admin/statistics/stats/age", function(data) {
+          $("#ageStats").empty();
+          data.forEach(item => {
+              $("#ageStats").append(`<li>${item.ageGroup}대 - ${item.productName} (${item.productQuantity})</li>`);
+          });
+      });
+  }
+
+  function loadRegionStats() {
+      $.get("/admin/statistics/stats/region", function(data) {
+          $("#regionStats").empty();
+          data.forEach(item => {
+              $("#regionStats").append(`<li>${item.userRegion} - ${item.productName} (${item.productQuantity})</li>`);
+          });
+      });
+  }
+
+  function loadTrendStats() {
+      $.get("/admin/statistics/stats/trend", function(data) {
+          $("#trendStats").empty();
+          data.forEach(item => {
+              $("#trendStats").append(`<li>${item.month} - ${item.productCategory} (${item.productQuantity})</li>`);
+          });
+      });
+  }
+
+  let yearlyChartInstance = null;
+
+function loadYearlySalesChart() {
+    const year = $("#yearInput").val().trim();
+    if (!year) {
+        alert("연도를 입력하세요.");
+        return;
+    }
+
+    $.get(`/admin/statistics/stats/yearly/${year}`, function(data) {
+        const labels = Object.keys(data);
+        const values = Object.values(data);
+
+        if (yearlyChartInstance) {
+            yearlyChartInstance.destroy();  // 기존 차트 제거
+        }
+
+        const ctx = document.getElementById('yearlySalesChart').getContext('2d');
+        yearlyChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: `${year}년 상품 판매량`,
+                    data: values,
+                    backgroundColor: 'rgba(75, 192, 192, 0.6)'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }).fail(function(err) {
+        alert("데이터를 불러오는 중 오류가 발생했습니다.");
+        console.error(err);
+    });
+  }
+</script>
+</body>
+</html>
