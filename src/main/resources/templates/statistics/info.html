@@ -1,97 +1,178 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <head>
   <title>통계 대시보드</title>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <th:block th:replace="fragments/header :: header"/>
 </head>
 <body>
-<h2>연령별 선호 제품</h2>
-<button onclick="loadAgeStats()">불러오기</button>
-<ul id="ageStats"></ul>
+<div class="container">
+  <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+  <h2>연령별 선호 제품</h2>
+  <canvas id="ageChart" width="600" height="300"></canvas>
 
-<h2>지역별 인기 제품</h2>
-<button onclick="loadRegionStats()">불러오기</button>
-<ul id="regionStats"></ul>
+  <h2>지역별 인기 제품</h2>
+  <canvas id="regionChart" width="600" height="300"></canvas>
 
-<h2>카테고리별 월간 트렌드</h2>
-<button onclick="loadTrendStats()">불러오기</button>
-<ul id="trendStats"></ul>
+  <h2>카테고리별 월간 트렌드</h2>
+  <canvas id="trendChart" width="800" height="400"></canvas>
 
-<h2>연도별 상품 판매량</h2>
-<input type="text" id="yearInput" placeholder="연도를 입력하세요 (예: 2024)" />
-<button onclick="loadYearlySalesChart()">불러오기</button>
-<canvas id="yearlySalesChart" width="600" height="300"></canvas>
-
+  <h2>연도별 상품 판매량</h2>
+  <input type="text" id="yearInput" placeholder="연도를 입력하세요 (예: 2024)" />
+  <button onclick="loadYearlySalesChart()">불러오기</button>
+  <canvas id="yearlySalesChart" width="600" height="300"></canvas>
+  <div th:replace="fragments/footer :: footer" />
+</div>
 <script>
-  function loadAgeStats() {
-      $.get("/admin/statistics/stats/age", function(data) {
-          $("#ageStats").empty();
-          data.forEach(item => {
-              $("#ageStats").append(`<li>${item.ageGroup}대 - ${item.productName} (${item.productQuantity})</li>`);
-          });
-      });
+  document.addEventListener("DOMContentLoaded", () => {
+    const currentYear = new Date().getFullYear();
+    document.getElementById("yearInput").value = currentYear;
+
+    loadAgeStats();
+    loadRegionStats();
+    loadTrendStats();
+    loadYearlySalesChart();
+  });
+
+  async function loadAgeStats() {
+    const res = await fetch("/admin/statistics/stats/age");
+    const data = await res.json();
+
+    const labels = data.map(item => `${item.ageGroup}대`);
+    const values = data.map(item => item.productQuantity);
+    const productNames = data.map(item => item.productName);
+
+    new Chart(document.getElementById('ageChart'), {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          label: '연령별 선호 제품',
+          data: values,
+          backgroundColor: 'rgba(54, 162, 235, 0.6)'
+        }]
+      },
+      options: {
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: (ctx) => `${productNames[ctx.dataIndex]} (${ctx.parsed.y})`
+            }
+          }
+        },
+        responsive: true,
+        scales: { y: { beginAtZero: true } }
+      }
+    });
   }
 
-  function loadRegionStats() {
-      $.get("/admin/statistics/stats/region", function(data) {
-          $("#regionStats").empty();
-          data.forEach(item => {
-              $("#regionStats").append(`<li>${item.userRegion} - ${item.productName} (${item.productQuantity})</li>`);
-          });
-      });
+  async function loadRegionStats() {
+    const res = await fetch("/admin/statistics/stats/region");
+    const data = await res.json();
+
+    const labels = data.map(item => item.userRegion);
+    const values = data.map(item => item.productQuantity);
+    const productNames = data.map(item => item.productName);
+
+    new Chart(document.getElementById('regionChart'), {
+      type: 'doughnut',
+      data: {
+        labels,
+        datasets: [{
+          label: '지역별 인기 제품',
+          data: values,
+          backgroundColor: labels.map((_, i) =>
+            `hsl(${i * 30}, 70%, 60%)`
+          )
+        }]
+      },
+      options: {
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: (ctx) => `${ctx.label}: ${productNames[ctx.dataIndex]} (${ctx.parsed})`
+            }
+          }
+        },
+        responsive: true
+      }
+    });
   }
 
-  function loadTrendStats() {
-      $.get("/admin/statistics/stats/trend", function(data) {
-          $("#trendStats").empty();
-          data.forEach(item => {
-              $("#trendStats").append(`<li>${item.month} - ${item.productCategory} (${item.productQuantity})</li>`);
-          });
+  async function loadTrendStats() {
+    const res = await fetch("/admin/statistics/stats/trend");
+    const data = await res.json();
+
+    const categories = [...new Set(data.map(item => item.productCategory))];
+    const months = [...new Set(data.map(item => item.month))].sort();
+
+    const datasets = categories.map(category => {
+      const categoryData = months.map(month => {
+        const found = data.find(d => d.month === month && d.productCategory === category);
+        return found ? found.productQuantity : 0;
       });
+      return {
+        label: category,
+        data: categoryData,
+        borderWidth: 2,
+        fill: false,
+        borderColor: `hsl(${Math.random() * 360}, 70%, 50%)`
+      };
+    });
+
+    new Chart(document.getElementById('trendChart'), {
+      type: 'line',
+      data: {
+        labels: months,
+        datasets
+      },
+      options: {
+        responsive: true,
+        scales: { y: { beginAtZero: true } }
+      }
+    });
   }
 
   let yearlyChartInstance = null;
 
-function loadYearlySalesChart() {
-    const year = $("#yearInput").val().trim();
+  async function loadYearlySalesChart() {
+    const year = document.getElementById("yearInput").value.trim();
     if (!year) {
-        alert("연도를 입력하세요.");
-        return;
+      alert("연도를 입력하세요.");
+      return;
     }
 
-    $.get(`/admin/statistics/stats/yearly/${year}`, function(data) {
-        const labels = Object.keys(data);
-        const values = Object.values(data);
+    try {
+      const res = await fetch(`/admin/statistics/stats/yearly/${year}`);
+      const data = await res.json();
 
-        if (yearlyChartInstance) {
-            yearlyChartInstance.destroy();  // 기존 차트 제거
+      const labels = Object.keys(data);
+      const values = Object.values(data);
+
+      if (yearlyChartInstance) {
+        yearlyChartInstance.destroy();
+      }
+
+      const ctx = document.getElementById('yearlySalesChart').getContext('2d');
+      yearlyChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{
+            label: `${year}년 상품 판매량`,
+            data: values,
+            backgroundColor: 'rgba(255, 159, 64, 0.6)'
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: { y: { beginAtZero: true } }
         }
-
-        const ctx = document.getElementById('yearlySalesChart').getContext('2d');
-        yearlyChartInstance = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: `${year}년 상품 판매량`,
-                    data: values,
-                    backgroundColor: 'rgba(75, 192, 192, 0.6)'
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    }).fail(function(err) {
-        alert("데이터를 불러오는 중 오류가 발생했습니다.");
-        console.error(err);
-    });
+      });
+    } catch (err) {
+      alert("데이터를 불러오는 중 오류가 발생했습니다.");
+      console.error(err);
+    }
   }
 </script>
 </body>
