@@ -113,12 +113,10 @@ public class BuyerCartController {
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable("cartItemId") Long cartItemId
     ) {
-        Long memberId = userDetails.getMemberId();
-        Member member = new Member();
-        member.setId(memberId);
+        Member member = Member.createMember(userDetails);
         try {
             // 장바구니 아이템 삭제
-            cartItemService.removeCartItem(memberId, cartItemId);
+            cartItemService.removeCartItem(member, cartItemId);
             return ResponseEntity.ok().body(Map.of("message","장바구니 상품 삭제 성공"));
         } catch (Exception e) {
             log.error("장바구니 아이템 삭제 중 오류 발생", e);

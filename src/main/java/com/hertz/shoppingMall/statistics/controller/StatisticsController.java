@@ -56,13 +56,10 @@ public class StatisticsController {
     }
 
     @PostMapping("/prediction")
-    public String predictResult(@RequestParam String productName,
-                                @RequestParam String algorithm,
-                                Model model) {
-        var result = statisticsPredictionService.predictQuantity(productName, algorithm).block();
-        model.addAttribute("result", result);
-        model.addAttribute("algorithms", List.of("prophet", "xgb_timeseries", "arima","sarimax"));
-        return "admin/predictions";
+    @ResponseBody
+    public Map predictResult(@RequestParam(name = "productName") String productName,
+                             @RequestParam(name = "algorithm") String algorithm) {
+        return statisticsPredictionService.predictQuantity(productName, algorithm).block();
     }
 
 }

@@ -1,25 +1,103 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><title>상품 예측</title></head>
+<head>
+  <th:block th:replace="fragments/header :: header"/>
+  <title>상품 예측</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
 <body>
 <h2>상품 수요 예측</h2>
+<div class="container">
+  <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+  <form id="predictForm">
+    <label>상품명: <input type="text" name="productName" id="productName" required></label><br/>
+    <label>알고리즘 선택:
+      <select name="algorithm" id="algorithm">
+        <option th:each="algo : ${algorithms}" th:value="${algo}" th:text="${algo}"></option>
+      </select>
+    </label><br/>
+    <button type="submit">예측하기</button>
+  </form>
 
-<form th:action="@{/admin/statistics/predictions}" method="post">
-  <label>상품명: <input type="text" name="productName" required></label><br/>
-  <label>알고리즘 선택:
-    <select name="algorithm">
-      <option th:each="algo : ${algorithms}" th:value="${algo}" th:text="${algo}"></option>
-    </select>
-  </label><br/>
-  <button type="submit">예측하기</button>
-</form>
-
-<div th:if="${result}">
-  <h3>예측 결과</h3>
-  <p><strong>상품명:</strong> <span th:text="${result['productName']}"></span></p>
-  <p><strong>예측 수량:</strong> <span th:text="${result['predictedQuantity']}"></span></p>
-  <p><strong>알고리즘:</strong> <span th:text="${result['algorithm']}"></span></p>
+  <div id="result" style="display: none;">
+    <h3>예측 결과</h3>
+    <p><strong>상품명:</strong> <span id="resultProduct"></span></p>
+    <p><strong>알고리즘:</strong> <span id="resultAlgorithm"></span></p>
+    <canvas id="predictionChart" width="400" height="200"></canvas>
+  </div>
+  <div th:replace="fragments/footer :: footer" />
 </div>
+<script>
+  let chartInstance = null;
+
+  document.getElementById("predictForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const productName = document.getElementById("productName").value;
+    const algorithm = document.getElementById("algorithm").value;
+
+    try {
+      const response = await fetch("/admin/statistics/prediction", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: new URLSearchParams({
+          productName,
+          algorithm
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error("서버 요청 실패");
+      }
+
+      const data = await response.json();
+
+      if (data.error) {
+        alert("오류: " + data.error);
+        return;
+      }
+
+      document.getElementById("result").style.display = "block";
+      document.getElementById("resultProduct").textContent = data.product;
+      document.getElementById("resultAlgorithm").textContent = data.algorithm;
+
+      const labels = data.future_months;
+      const values = data.predictions;
+
+      if (chartInstance) {
+        chartInstance.destroy();
+      }
+
+      const ctx = document.getElementById('predictionChart').getContext('2d');
+      chartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: '예측 수량',
+            data: values,
+            borderColor: 'rgba(75, 192, 192, 1)',
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            fill: true,
+            tension: 0.4
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: true },
+            title: { display: true, text: '월별 예측 수요량' }
+          }
+        }
+      });
+
+    } catch (err) {
+      alert("예측 중 오류 발생: " + err.message);
+    }
+  });
+</script>
 
 </body>
 </html>
