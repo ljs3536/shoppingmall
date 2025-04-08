@@ -50,6 +50,8 @@ public class Order extends BaseDateEntity implements Serializable {
     // 배송비
     private int shoppingFee;
 
+    private String orderType;
+
     // 연관관계 편의 메서드
     public void addOrderItem(OrderItem orderItem) {
         orderItems.add(orderItem);

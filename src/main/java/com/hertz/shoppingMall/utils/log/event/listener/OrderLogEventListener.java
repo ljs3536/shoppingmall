@@ -34,7 +34,7 @@ public class OrderLogEventListener {
 
 
         List<OrderLog> logs = order.getOrderItems().stream().map(item -> {
-            return OrderLog.createOrderLog(member,item);
+            return OrderLog.createOrderLog(member,item,order.getOrderType());
         }).collect(Collectors.toList());
 
         try {

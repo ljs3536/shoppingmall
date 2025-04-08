@@ -53,8 +53,10 @@ public class OrderFacadeService {
             List<Long> productIds = form.getOrderItems().stream()
                     .map(OrderItemDto::getProductId)
                     .collect(Collectors.toList());
-
+            order.setOrderType("CART");
             cartItemService.removeCartItemsByProductIds(member.getId(), productIds);
+        }else{
+            order.setOrderType("DIRECT");
         }
         orderService.saveOrder(order);
 

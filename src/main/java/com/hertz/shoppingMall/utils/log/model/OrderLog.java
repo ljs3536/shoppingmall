@@ -21,6 +21,9 @@ public class OrderLog {
     @Field(type = FieldType.Date)
     private LocalDateTime timestamp;
 
+    @Field(type = FieldType.Keyword)
+    private String orderType;
+
     // 유저 정보
     @Field(type = FieldType.Keyword)
     private String username;
@@ -44,9 +47,10 @@ public class OrderLog {
     private String productCategory;
 
 
-    public static OrderLog createOrderLog(Member member, OrderItem item){
+    public static OrderLog createOrderLog(Member member, OrderItem item, String orderType){
         OrderLog log = new OrderLog();
         log.setTimestamp(LocalDateTime.now());
+        log.setOrderType(orderType);
         log.setUsername(member.getUsername());
         log.setUserRegion(member.getRegion());
         log.setUserAge(member.getAge());
