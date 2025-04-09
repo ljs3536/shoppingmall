@@ -3,10 +3,8 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="fragments/header :: header" />
 <body>
-
+<div th:replace="fragments/bodyHeader :: bodyHeader"/>
 <div class="container">
-  <div th:replace="fragments/bodyHeader :: bodyHeader"/>
-
   <div>
     <table class="table table-striped">
       <thead>
@@ -100,10 +98,8 @@
       </div>
     </div>
   </div>
-
-  <div th:replace="fragments/footer :: footer"/>
-
 </div> <!-- /container -->
+<div th:replace="fragments/footer :: footer"/>
 <script>
   function updateOrderItemStatus(orderItemId){
     let status = document.getElementById('status-' + orderItemId).value;

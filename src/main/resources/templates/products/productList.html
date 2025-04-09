@@ -3,10 +3,8 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="fragments/header :: header" />
 <body>
-
+<div th:replace="fragments/bodyHeader :: bodyHeader"/>
 <div class="container">
-  <div th:replace="fragments/bodyHeader :: bodyHeader"/>
-
   <div>
     <a class="btn btn-lg btn-info" href="/">메인페이지</a>
     <div th:remove="tag"
@@ -96,10 +94,7 @@
       </li>
     </div>
   </div>
-</div>
-  <div th:replace="fragments/footer :: footer"/>
-
 </div> <!-- /container -->
-
+<div th:replace="fragments/footer :: footer"/>
 </body>
 </html>

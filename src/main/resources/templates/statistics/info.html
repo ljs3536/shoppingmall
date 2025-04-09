@@ -6,6 +6,7 @@
   <th:block th:replace="fragments/header :: header"/>
 </head>
 <body>
+<div th:replace="fragments/bodyHeader :: bodyHeader"/>
 <div class="container">
   <div th:replace="fragments/bodyHeader :: bodyHeader"/>
   <h2>연령별 선호 제품</h2>
@@ -23,6 +24,7 @@
   <canvas id="yearlySalesChart" width="600" height="300"></canvas>
   <div th:replace="fragments/footer :: footer" />
 </div>
+<div th:replace="fragments/footer :: footer"/>
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const currentYear = new Date().getFullYear();

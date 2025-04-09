@@ -7,9 +7,9 @@
     }
 </style>
 <body>
+<div th:replace="fragments/bodyHeader :: bodyHeader"></div>
 
 <div class="container">
-    <div th:replace="fragments/bodyHeader :: bodyHeader"></div>
 
     <div th:replace="fragments/error :: error"></div>
     <form role="form" th:action="@{/members/form}" th:object="${memberForm}" method="post">
@@ -92,8 +92,9 @@
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
     <br/>
-    <div th:replace="fragments/footer :: footer" />
+
 </div> <!-- /container -->
+<div th:replace="fragments/footer :: footer" />
 
 </body>
 </html>
