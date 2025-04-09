@@ -139,4 +139,8 @@ public class ProductService {
     public List<Product> getProductsByIds(List<Long> productIds) {
         return productRepository.findByIdIn(productIds);
     }
+
+    public List<Product> getProductsByNames(List<String> recommendedProductNames) {
+        return productRepository.findByNameIn(recommendedProductNames);
+    }
 }

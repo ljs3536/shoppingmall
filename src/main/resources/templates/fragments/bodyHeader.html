@@ -1,8 +1,99 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <div class="header" th:fragment="bodyHeader">
-    <ul class="nav nav-pills pull-right">
-        <li><a href="/">Home</a></li>
-    </ul>
-    <a href="/"><h3 class="text-muted">HELLO SHOP</h3></a>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/"><h3 class="text-muted">HELLO SHOP</h3></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+
+                    <!-- 회원 기능 드롭다운 -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="memberDropdown" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            회원 기능
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="memberDropdown">
+                            <li sec:authorize="!isAuthenticated()">
+                                <a class="dropdown-item" href="/members/form">회원 가입</a>
+                            </li>
+                            <li sec:authorize="hasRole('ADMIN')">
+                                <a class="dropdown-item" href="/admin/members">회원 목록</a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!-- 상품 기능 드롭다운 -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="productDropdown" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            상품 기능
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="productDropdown">
+                            <li sec:authorize="hasRole('ADMIN')">
+                                <a class="dropdown-item" href="/admin/products/categoryList">카테고리 등록</a>
+                            </li>
+                            <li sec:authorize="hasRole('SELLER')">
+                                <a class="dropdown-item" href="/seller/products/new">상품 등록</a>
+                            </li>
+                            <li sec:authorize="hasRole('SELLER')">
+                                <a class="dropdown-item" href="/seller/products/mylist">상품 목록</a>
+                            </li>
+                            <li sec:authorize="hasRole('BUYER')">
+                                <a class="dropdown-item" href="/buyer/products/list">상품 목록</a>
+                            </li>
+                            <li sec:authorize="hasRole('BUYER')">
+                                <a class="dropdown-item" href="/buyer/cart/list">장바구니 목록</a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!-- 주문 기능 드롭다운 -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="orderDropdown" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            주문 기능
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="orderDropdown">
+                            <li sec:authorize="hasRole('BUYER')">
+                                <a class="dropdown-item" href="/buyer/order/list">주문 목록</a>
+                            </li>
+                            <li sec:authorize="hasRole('SELLER')">
+                                <a class="dropdown-item" href="/seller/order/list">주문 목록</a>
+                            </li>
+                            <li sec:authorize="hasRole('ADMIN')">
+                                <a class="dropdown-item" href="/admin/statistics/info">주문 통계</a>
+                            </li>
+                            <li sec:authorize="hasRole('ADMIN')">
+                                <a class="dropdown-item" href="/admin/statistics/prediction">주문 예측</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <!-- 로그인 영역 -->
+                <div class="d-flex">
+                    <div sec:authorize="!isAuthenticated()">
+                        <a class="btn btn-dark" href="/login">로그인</a>
+                    </div>
+                    <div sec:authorize="isAuthenticated()" class="d-flex align-items-center">
+                        <span class="me-2" sec:authentication="name">사용자</span>
+                        <span class="me-3" th:text="${#authentication.principal.nickname}">닉네임</span>
+                        <form th:action="@{/logout}" method="post">
+                            <button class="btn btn-sm btn-dark" type="submit">로그아웃</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
 </div>
+</html>
