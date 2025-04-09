@@ -11,4 +11,6 @@ import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product, Long>, ProductRepositoryCustom {
     List<Product> findByIdIn(List<Long> productIds);
+
+    List<Product> findByNameIn(List<String> recommendedProductNames);
 }
