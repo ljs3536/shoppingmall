@@ -6,7 +6,9 @@ import com.hertz.shoppingMall.order.repository.OrderItemRepository;
 import com.hertz.shoppingMall.review.dto.ReviewForm;
 import com.hertz.shoppingMall.review.model.Review;
 import com.hertz.shoppingMall.review.repository.ReviewRepository;
+import com.hertz.shoppingMall.utils.log.event.model.ReviewCompletedEvent;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final OrderItemRepository orderItemRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional
     public void createReview(ReviewForm form) {
@@ -34,6 +37,8 @@ public class ReviewService {
         reviewRepository.save(review);
 
         orderItem.setStatus(OrderStatus.REVIEWED);
+
+        applicationEventPublisher.publishEvent(new ReviewCompletedEvent(review));
     }
 
     public Page<Review> getReviewsByProduct(Long productId, Pageable pageable){
