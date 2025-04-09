@@ -39,9 +39,8 @@
   </style>
 </head>
 <body>
-
+<div th:replace="fragments/bodyHeader :: bodyHeader"/>
 <div class="container">
-  <div th:replace="fragments/bodyHeader :: bodyHeader"/>
   <form th:object="${form}" method="post" enctype="multipart/form-data">
     <input type="hidden" th:field="*{id}" />
     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
@@ -96,10 +95,8 @@
 
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>
-
-  <div th:replace="fragments/footer :: footer" />
 </div>
-
+<div th:replace="fragments/footer :: footer" />
 <script th:inline="javascript">
 
   let subImageCount = [[${form.subImageUrl != null ? form.subImageUrl.size() : 0}]];

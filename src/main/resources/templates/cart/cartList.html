@@ -2,11 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: header"/>
 <body>
+<div th:replace="fragments/bodyHeader :: bodyHeader"/>
 <div class="container">
-    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
-
     <h2>장바구니</h2>
-
     <form th:action="@{/buyer/order/new/cartOrders}" method="post">
         <table class="table table-striped">
             <thead>
@@ -62,10 +60,8 @@
             <button type="submit" class="btn btn-primary">선택한 상품 주문</button>
         </div>
     </form>
-
-    <div th:replace="fragments/footer :: footer"/>
 </div>
-
+<div th:replace="fragments/footer :: footer"/>
 <script>
 
     document.addEventListener('DOMContentLoaded', function() {

@@ -2,10 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: header" />
 <body>
-
+<div th:replace="fragments/bodyHeader :: bodyHeader"/>
 <div class="container">
-    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
-
     <div>
         <table class="table table-striped">
             <thead>
@@ -33,10 +31,8 @@
         <button id="addCategoryBtn" class="btn btn-secondary">추가</button>
         <div id="newCategoryContainer"></div>
     </div>
-
-    <div th:replace="fragments/footer :: footer"/>
 </div>
-
+<div th:replace="fragments/footer :: footer"/>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         // 수정 버튼 클릭 시 input 필드로 변경

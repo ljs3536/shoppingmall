@@ -2,8 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: header" />
 <body>
+<div th:replace="fragments/bodyHeader :: bodyHeader" />
 <div class="container">
-    <div th:replace="fragments/bodyHeader :: bodyHeader" />
+
     <div class="card mb-4">
         <div class="card-header">
             <h2 class="h5">주문 정보</h2>
@@ -101,8 +102,9 @@
         <a th:href="@{/}" class="btn btn-primary">메인 페이지</a>
     </div>
 
-    <div th:replace="fragments/footer :: footer" />
+
 </div>
+<div th:replace="fragments/footer :: footer" />
 <script>
     function openReviewModal(button) {
         const orderItemId = button.getAttribute("data-orderItem-id");
