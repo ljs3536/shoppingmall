@@ -8,17 +8,48 @@
 
 <body>
 <div th:replace="fragments/bodyHeader :: bodyHeader" />
-<div class="container">
-
-
-
-    <div class="jumbotron">
-
+<div sec:authorize="hasRole('BUYER')" class="container">
+    <h2>추천 상품</h2>
+    <div class="row" id="recommendedProductArea">
+        <!-- JS가 추천 상품 카드들을 여기 추가 -->
     </div>
+</div>
+<div sec:authorize="hasRole('SELLER')" class="container">
 
 
-
-</div> <!-- /container -->
+</div>
 <div th:replace="fragments/footer :: footer" />
+<script>
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const isBuyer = [[${#authorization.expression('hasRole("BUYER")')}]];
+      if (isBuyer) {
+        fetch("/buyer/statistics/recommendations")
+          .then(res => res.json())
+          .then(data => {
+            const container = document.getElementById("recommendedProductArea");
+            console.log(data);
+            data.forEach(product => {
+                console.log(product);
+              const html = `
+                <div class="col-sm-6">
+                  <div class="card" style="width: 18rem;">
+                    <img src="${product.mainImageUrl}" class="card-img-top" alt="상품이미지">
+                    <div class="card-body">
+                      <h5 class="card-title">${product.name}</h5>
+                      <p class="card-text">${product.description}</p>
+                      <a href="/buyer/products/view/${product.id}">상품보기</a>
+                    </div>
+                  </div>
+                </div>`;
+              container.insertAdjacentHTML("beforeend", html);
+            });
+          })
+          .catch(err => {
+            console.error("추천 상품 로딩 실패", err);
+          });
+      }
+    });
+</script>
 </body>
 </html>

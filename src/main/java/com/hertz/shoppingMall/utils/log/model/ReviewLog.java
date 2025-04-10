@@ -22,7 +22,7 @@ public class ReviewLog {
 
     // 유저 정보
     @Field(type = FieldType.Keyword)
-    private String username;
+    private String userId;
     @Field(type = FieldType.Keyword)
     private Integer userAge;
     @Field(type = FieldType.Keyword)
@@ -41,6 +41,8 @@ public class ReviewLog {
     private String productDescription;
     @Field(type = FieldType.Keyword)
     private String productCategory;
+    @Field(type = FieldType.Keyword)
+    private String sellerId;
 
     // 리뷰 정보
     @Field(type = FieldType.Keyword)
@@ -53,7 +55,7 @@ public class ReviewLog {
         ReviewLog log = new ReviewLog();
         log.setTimestamp(LocalDateTime.now());
         log.setTimestamp(LocalDateTime.now());
-        log.setUsername(review.getMember().getUsername());
+        log.setUserId(review.getMember().getLoginId());
         log.setUserRegion(review.getMember().getRegion());
         log.setUserAge(review.getMember().getAge());
         log.setUserGender(review.getMember().getGender());
@@ -61,6 +63,7 @@ public class ReviewLog {
         log.setProductPrice(review.getProduct().getPrice());
         log.setProductQuantity(review.getOrderItem().getQuantity());
         log.setProductCategory(review.getProduct().getCategory().getName());
+        log.setSellerId(review.getProduct().getCreatedBy().getLoginId());
         log.setRating(review.getRating());
         log.setDescription(review.getContent());
         return log;
