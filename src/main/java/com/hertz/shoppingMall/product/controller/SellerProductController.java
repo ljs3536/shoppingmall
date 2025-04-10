@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 @Controller
@@ -87,7 +88,7 @@ public class SellerProductController {
     }
 
     @GetMapping("/{productId}/edit")
-    public String updateProductForm(@PathVariable("productId")Long productId, Model model){
+    public String updateProductForm(@PathVariable("productId")Long productId, Model model) throws UnsupportedEncodingException {
         Product product = productService.getProduct(productId);
 
         ProductForm productForm = productConverter.convertToForm(product);

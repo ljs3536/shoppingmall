@@ -26,7 +26,7 @@ public class CustomUserDetails implements UserDetails {
     public CustomUserDetails(Member member) {
         this.memberId = member.getId();
         this.loginId = member.getLoginId();
-        this.username = member.getLoginId();
+        this.username = member.getUsername();
         this.password = member.getPassword();
         this.nickname = member.getNickname();
         // Convert Enum role to GrantedAuthorities

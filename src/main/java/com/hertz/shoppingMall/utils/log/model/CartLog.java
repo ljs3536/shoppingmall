@@ -26,7 +26,7 @@ public class CartLog {
 
     // 유저 정보
     @Field(type = FieldType.Keyword)
-    private String username;
+    private String userId;
     @Field(type = FieldType.Keyword)
     private Integer userAge;
     @Field(type = FieldType.Keyword)
@@ -45,12 +45,14 @@ public class CartLog {
     private String productDescription;
     @Field(type = FieldType.Keyword)
     private String productCategory;
+    @Field(type = FieldType.Keyword)
+    private String sellerId;
 
 
     public static CartLog createCartLog(CartItem item, Member member, String actionType){
         CartLog log = new CartLog();
         log.setTimestamp(LocalDateTime.now());
-        log.setUsername(member.getUsername());
+        log.setUserId(member.getLoginId());
         log.setUserRegion(member.getRegion());
         log.setUserAge(member.getAge());
         log.setUserGender(member.getGender());
@@ -59,6 +61,7 @@ public class CartLog {
         log.setProductQuantity(item.getQuantity());
         log.setActionType(actionType);  // 로그에도 액션 타입 추가
         log.setProductCategory(item.getProduct().getCategory().getName());
+        log.setSellerId(item.getProduct().getCreatedBy().getLoginId());
         return log;
     }
 

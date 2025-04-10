@@ -1,5 +1,6 @@
 package com.hertz.shoppingMall.product.component;
 
+import com.hertz.shoppingMall.product.dto.ProductDto;
 import com.hertz.shoppingMall.product.dto.ProductForm;
 import com.hertz.shoppingMall.product.model.Product;
 import com.hertz.shoppingMall.utils.exception.image.model.Image;
@@ -47,6 +48,35 @@ public class ProductConverter {
         return form;
     }
 
+    public ProductDto convertToDto(Product product){
+        ProductDto dto = new ProductDto();
+        dto.setId(product.getId());
+        dto.setName(product.getName());
+        dto.setDescription(product.getDescription());
+        dto.setPrice(product.getPrice());
+        dto.setStockQuantity(product.getStockQuantity());
+        dto.setCategory(product.getCategory().getName());
+
+        // 이미지 URL 설정
+        Image mainImage = product.getMainImage();
+        if(mainImage == null){
+            dto.setSubImageUrl(imageService.getImageUrls(product.getSubImages()).stream()
+                    .filter(url -> !url.equals(dto.getMainImageUrl()))  // 메인 이미지 제외
+                    .collect(Collectors.toList()));
+            dto.setSubImageIds(product.getSubImages().stream().map(Image::getId)
+                    .collect(Collectors.toList()));
+        }else {
+            dto.setMainImageUrl(imageService.getImageUrl(product.getMainImage()));
+            dto.setSubImageUrl(imageService.getImageUrls(product.getSubImages()).stream()
+                    .filter(url -> !url.equals(dto.getMainImageUrl()))  // 메인 이미지 제외
+                    .collect(Collectors.toList()));
+            dto.setSubImageIds(product.getSubImages().stream().map(Image::getId)
+                    .filter(id -> !id.equals(product.getMainImage().getId())) //메인 이미지 제외
+                    .collect(Collectors.toList()));
+        }
+        return dto;
+    }
+
     public List<ProductForm> convertToFormList(List<Product> products) {
         return products.stream()
                 .map(this::convertToForm)
@@ -55,5 +85,11 @@ public class ProductConverter {
 
     public Page<ProductForm> convertToFormPage(Page<Product> productPage){
         return productPage.map(this::convertToForm);
+    }
+
+    public List<ProductDto> convertToDtoList(List<Product> products){
+        return products.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 }

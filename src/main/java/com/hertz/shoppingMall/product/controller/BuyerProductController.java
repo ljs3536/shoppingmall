@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +46,7 @@ public class BuyerProductController {
     @GetMapping("/view/{productId}")
     public String view(@PathVariable("productId")Long productId
             , @RequestParam(name = "page",defaultValue = "0") int page
-            , Model model){
+            , Model model) throws UnsupportedEncodingException {
         Product product = productService.getProduct(productId);
         ProductForm productForm = productConverter.convertToForm(product);
         Page<Review> reviews = reviewService.getReviewsByProduct(productId, PageRequest.of(page, 5));

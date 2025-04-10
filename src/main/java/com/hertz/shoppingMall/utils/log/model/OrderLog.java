@@ -26,7 +26,7 @@ public class OrderLog {
 
     // 유저 정보
     @Field(type = FieldType.Keyword)
-    private String username;
+    private String userId;
     @Field(type = FieldType.Keyword)
     private Integer userAge;
     @Field(type = FieldType.Keyword)
@@ -45,13 +45,14 @@ public class OrderLog {
     private String productDescription;
     @Field(type = FieldType.Keyword)
     private String productCategory;
-
+    @Field(type = FieldType.Keyword)
+    private String sellerId;
 
     public static OrderLog createOrderLog(Member member, OrderItem item, String orderType){
         OrderLog log = new OrderLog();
         log.setTimestamp(LocalDateTime.now());
         log.setOrderType(orderType);
-        log.setUsername(member.getUsername());
+        log.setUserId(member.getLoginId());
         log.setUserRegion(member.getRegion());
         log.setUserAge(member.getAge());
         log.setUserGender(member.getGender());
@@ -60,6 +61,7 @@ public class OrderLog {
         log.setProductDescription(item.getProduct().getDescription());
         log.setProductQuantity(item.getQuantity());
         log.setProductCategory(item.getProduct().getCategory().getName());
+        log.setSellerId(item.getProduct().getCreatedBy().getLoginId());
         return log;
     }
 }

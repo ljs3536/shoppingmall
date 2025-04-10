@@ -35,12 +35,14 @@
 
     const productName = document.getElementById("productName").value;
     const algorithm = document.getElementById("algorithm").value;
-
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
     try {
       const response = await fetch("/admin/statistics/prediction", {
         method: "POST",
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
+          "Content-Type": "application/x-www-form-urlencoded",
+          [csrfHeader]: csrfToken // 동적으로 CSRF 헤더 키 설정
         },
         body: new URLSearchParams({
           productName,
