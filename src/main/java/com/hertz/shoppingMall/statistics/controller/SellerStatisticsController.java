@@ -1,7 +1,9 @@
 package com.hertz.shoppingMall.statistics.controller;
 
+import com.hertz.shoppingMall.config.security.CustomUserDetails;
 import com.hertz.shoppingMall.statistics.service.RecommendInfoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,33 +26,34 @@ public class SellerStatisticsController {
         return "statistics/sellingInfo";
     }
 
-    @GetMapping("/stats/best/{sellerId}")
+    @GetMapping("/moreSelling")
     @ResponseBody
-    public Mono<Object> getMoreSelling(@PathVariable("sellerId") String sellerId) {
-        return recommendInfoService.getMoreSellingProducts(sellerId);
+    public Mono<Object> moreSelling(@AuthenticationPrincipal CustomUserDetails user) {
+        return recommendInfoService.getMoreSellingProducts(user.getLoginId());
     }
 
-    @GetMapping("/stats/popular/{sellerId}")
+    @GetMapping("/popularByCategory")
     @ResponseBody
-    public List<Map<String, Object>> getPopular(@PathVariable("sellerId") String sellerId) {
-        return (List<Map<String, Object>>) recommendInfoService.getPopularProductsByCategory(sellerId).block();
+    public Mono<Object> popularByCategory(@AuthenticationPrincipal CustomUserDetails user) {
+        return recommendInfoService.getPopularProductsByCategory(user.getLoginId());
     }
 
-    @GetMapping("/stats/addedCart/{sellerId}")
+    @GetMapping("/addedCart")
     @ResponseBody
-    public List<Map<String, Object>> getAddedCart(@PathVariable("sellerId") String sellerId) {
-        return (List<Map<String, Object>>) recommendInfoService.getAddedCartProducts(sellerId).block();
+    public Mono<Object> addedCart(@AuthenticationPrincipal CustomUserDetails user) {
+        return recommendInfoService.getAddedCartProducts(user.getLoginId());
     }
 
-    @GetMapping("/stats/highrated/{sellerId}")
+    @GetMapping("/highRated")
     @ResponseBody
-    public List<Map<String, Object>> getHighRated(@PathVariable("sellerId") String sellerId) {
-        return (List<Map<String, Object>>) recommendInfoService.getHighRatedProducts(sellerId).block();
+    public Mono<Object> highRated(@AuthenticationPrincipal CustomUserDetails user) {
+        return recommendInfoService.getHighRatedProducts(user.getLoginId());
     }
 
-    @GetMapping("/stats/trending/{sellerId}")
+    @GetMapping("/trending")
     @ResponseBody
-    public List<Map<String, Object>> getTrending(@PathVariable("sellerId") String sellerId) {
-        return (List<Map<String, Object>>) recommendInfoService.getTrendingProducts(sellerId).block();
+    public Mono<Object> trending(@AuthenticationPrincipal CustomUserDetails user) {
+        return recommendInfoService.getTrendingProducts(user.getLoginId());
     }
+
 }

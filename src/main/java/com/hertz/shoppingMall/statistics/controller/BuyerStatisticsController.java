@@ -4,6 +4,7 @@ import com.hertz.shoppingMall.config.security.CustomUserDetails;
 import com.hertz.shoppingMall.product.dto.ProductDto;
 import com.hertz.shoppingMall.product.dto.ProductForm;
 import com.hertz.shoppingMall.statistics.service.RecommendFacadeService;
+import com.hertz.shoppingMall.statistics.service.RecommendInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import reactor.core.publisher.Mono;
 
 import java.net.URLEncoder;
 import java.util.List;
@@ -22,6 +24,8 @@ import java.util.List;
 public class BuyerStatisticsController {
 
     private final RecommendFacadeService recommendFacadeService;
+
+    private final RecommendInfoService recommendInfoService;
 
     @GetMapping("/recommendations")
     @ResponseBody
@@ -34,6 +38,18 @@ public class BuyerStatisticsController {
         List<ProductDto> recommended = recommendFacadeService.getRecommendProducts(user);
 
         return ResponseEntity.ok(recommended);
+    }
+
+    @GetMapping("/highRated")
+    @ResponseBody
+    public Mono<Object> highRated() {
+        return recommendInfoService.getHighRatedProducts(null);
+    }
+
+    @GetMapping("/trending")
+    @ResponseBody
+    public Mono<Object> trending() {
+        return recommendInfoService.getTrendingProducts(null);
     }
 
 }
