@@ -72,6 +72,9 @@
                             <li sec:authorize="hasRole('ADMIN')">
                                 <a class="dropdown-item" href="/admin/statistics/prediction">주문 예측</a>
                             </li>
+                            <li sec:authorize="hasRole('ADMIN')">
+                                <a class="dropdown-item" href="/admin/models/list">모델 관리</a>
+                            </li>
                         </ul>
                     </li>
                 </ul>

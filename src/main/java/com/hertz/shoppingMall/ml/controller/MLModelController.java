@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -53,5 +54,19 @@ public class MLModelController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/recommend/train")
+    @ResponseBody
+    public ResponseEntity<String> trainRecommendModel(@RequestBody Map<String, String> body) {
+        String algo = body.get("algo");
+        String result = mlModelService.trainRecommendModel(algo);
+        return ResponseEntity.ok(result);
+    }
 
+    @PostMapping("/predict/train")
+    @ResponseBody
+    public ResponseEntity<String> trainPredictModel(@RequestBody Map<String, String> body) {
+        String algo = body.get("algo");
+        String result = mlModelService.trainPredictModel(algo);
+        return ResponseEntity.ok(result);
+    }
 }

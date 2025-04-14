@@ -35,7 +35,10 @@
              onchange="activateModel(this.getAttribute('modelId'))"/>
       <span th:if="${model.active}" class="active-label">활성</span>
     </td>
-    <td><button th:modelId="${model.id}" onclick="saveModel(this, this.getAttribute('modelId'))">저장</button></td>
+    <td>
+      <button th:modelId="${model.id}" onclick="saveModel(this, this.getAttribute('modelId'))">저장</button>
+      <button th:modelName="${model.name}" onclick="trainModel('recommend',this.getAttribute('modelName'))">학습</button>
+    </td>
   </tr>
   </tbody>
 </table>
@@ -61,7 +64,10 @@
              onchange="activateModel(this.getAttribute('modelId'))"/>
       <span th:if="${model.active}" class="active-label">활성</span>
     </td>
-    <td><button th:modelId="${model.id}" onclick="saveModel(this, this.getAttribute('modelId'))">저장</button></td>
+    <td>
+      <button th:modelId="${model.id}" onclick="saveModel(this, this.getAttribute('modelId'))">저장</button>
+      <button th:modelName="${model.name}" onclick="trainModel('predict',this.getAttribute('modelName'))">학습</button>
+    </td>
   </tr>
   </tbody>
 </table>
@@ -129,6 +135,27 @@
           else throw new Error("모델 추가 실패");
       })
       .catch(() => alert("모델 추가 실패"));
+  }
+
+  function trainModel(type,modelName){
+      const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+      const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+      fetch(`/admin/models/${type}/train`,{
+          method: "POST",
+          headers: {
+              'Content-Type': 'application/json',
+              [csrfHeader]: csrfToken // 동적으로 CSRF 헤더 키 설정
+          },
+          body: JSON.stringify({
+              algo : modelName
+          })
+      })
+      .then(res => {
+          if (res.ok) alert("모델 학습 성공");
+          else throw new Error("모델 학습 실패");
+      })
+      .catch(()=> alert("모델 학습 실패"));
   }
 </script>
 </body>

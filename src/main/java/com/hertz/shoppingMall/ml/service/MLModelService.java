@@ -4,16 +4,41 @@ import com.hertz.shoppingMall.ml.dto.MLModelForm;
 import com.hertz.shoppingMall.ml.model.MLModel;
 import com.hertz.shoppingMall.ml.repository.MLModelRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class MLModelService {
 
     private final MLModelRepository mlModelRepository;
+
+    private final WebClient webClient;
+
+    public String trainRecommendModel(String algo){
+        return webClient.post()
+                .uri("/recommend/train")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(Map.of("algo_name", algo))
+                .retrieve()
+                .bodyToMono(String.class)
+                .block(); // 블로킹 방식 사용
+    }
+
+    public String trainPredictModel(String algo) {
+        return webClient.post()
+                .uri("/predict/train")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(Map.of("algo_name", algo))
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+    }
 
     public List<MLModelForm> getMLModelAllList(){
         MLModelForm modelForm = new MLModelForm();
