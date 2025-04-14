@@ -1,5 +1,8 @@
 package com.hertz.shoppingMall.statistics.controller;
 
+import com.hertz.shoppingMall.ml.model.MLModel;
+import com.hertz.shoppingMall.ml.model.ModelType;
+import com.hertz.shoppingMall.ml.service.MLModelService;
 import com.hertz.shoppingMall.statistics.service.StatisticsInfoService;
 import com.hertz.shoppingMall.statistics.service.StatisticsPredictionService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +22,8 @@ public class AdminStatisticsController {
     private final StatisticsInfoService statisticsInfoService;
 
     private final StatisticsPredictionService statisticsPredictionService;
+
+    private final MLModelService mlModelService;
 
     @GetMapping("/info")
     public String getStatisticsPage() {
@@ -51,7 +56,9 @@ public class AdminStatisticsController {
 
     @GetMapping("/prediction")
     public String predictionForm(Model model) {
-        model.addAttribute("algorithms", List.of("prophet", "xgb_timeseries", "arima","sarimax"));
+        List<MLModel> models = mlModelService.getMLModelAllList();
+        List<String> algorithms = models.stream().filter(m -> m.getType() == ModelType.PREDICT).map(MLModel::getName).toList();
+        model.addAttribute("algorithms", algorithms);
         return "statistics/predict";
     }
 

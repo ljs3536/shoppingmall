@@ -1,6 +1,8 @@
 package com.hertz.shoppingMall.statistics.service;
 
 import com.hertz.shoppingMall.config.security.CustomUserDetails;
+import com.hertz.shoppingMall.ml.model.ModelType;
+import com.hertz.shoppingMall.ml.service.MLModelService;
 import com.hertz.shoppingMall.product.component.ProductConverter;
 import com.hertz.shoppingMall.product.dto.ProductDto;
 import com.hertz.shoppingMall.product.model.Product;
@@ -23,16 +25,19 @@ public class RecommendFacadeService {
     private final ProductService productService;
     private final ProductConverter productConverter;
     private final RecommendInfoService recommendInfoService;
+    private final MLModelService mlModelService;
 
+    @Transactional
     public List<ProductDto> getRecommendProducts(CustomUserDetails userDetails){
 
+        String activeModel = mlModelService.getActiveModel(ModelType.RECOMMEND);
         Map<String, Object> userInfo = new HashMap<>();
         userInfo.put("userId", userDetails.getLoginId()); // 또는 memberId
         userInfo.put("age", userDetails.getAge());
         userInfo.put("gender", userDetails.getGender());
         userInfo.put("region", userDetails.getRegion());
 
-        List<String> recommendedProductNames = recommendationService.getRecommendedProducts(userInfo, "content").block();
+        List<String> recommendedProductNames = recommendationService.getRecommendedProducts(userInfo, activeModel).block();
 
         List<Product> recommendedProducts = productService.getProductsByNames(recommendedProductNames);
 
