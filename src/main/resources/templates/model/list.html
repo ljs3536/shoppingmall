@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <th:block th:replace="fragments/header :: header"/>
+  <meta charset="UTF-8">
+  <title>ML 모델 관리</title>
+  <style>
+    table { width: 100%; margin-bottom: 30px; border-collapse: collapse; }
+    th, td { padding: 8px 12px; border: 1px solid #ccc; text-align: center; }
+    .active-label { color: green; font-weight: bold; }
+    input[type="text"] { width: 90%; }
+    .add-btn { margin: 10px 0; }
+  </style>
+</head>
+<body>
+<div th:replace="fragments/bodyHeader :: bodyHeader"/>
+<h2>Recommend 모델 목록</h2>
+<button class="add-btn" onclick="addModel('RECOMMEND')">+ 모델 추가</button>
+<table>
+  <thead>
+  <tr>
+    <th>이름</th>
+    <th>설명</th>
+    <th>활성화</th>
+    <th>저장</th>
+  </tr>
+  </thead>
+  <tbody id="recommendTable">
+  <tr th:each="model : ${recommendModels}">
+    <td><input type="text" th:value="${model.name}" data-id="${model.id}" class="name-input"/></td>
+    <td><input type="text" th:value="${model.description}" class="desc-input"/></td>
+    <td>
+      <input type="radio" name="recommendActive" th:value="${model.id}" th:checked="${model.active}"
+             th:modelId="${model.id}"
+             onchange="activateModel(this.getAttribute('modelId'))"/>
+      <span th:if="${model.active}" class="active-label">활성</span>
+    </td>
+    <td><button th:modelId="${model.id}" onclick="saveModel(this, this.getAttribute('modelId'))">저장</button></td>
+  </tr>
+  </tbody>
+</table>
+
+<h2>Predict 모델 목록</h2>
+<button class="add-btn" onclick="addModel('PREDICT')">+ 모델 추가</button>
+<table>
+  <thead>
+  <tr>
+    <th>이름</th>
+    <th>설명</th>
+    <th>활성화</th>
+    <th>저장</th>
+  </tr>
+  </thead>
+  <tbody id="predictTable">
+  <tr th:each="model : ${predictModels}">
+    <td><input type="text" th:value="${model.name}" data-id="${model.id}" class="name-input"/></td>
+    <td><input type="text" th:value="${model.description}" class="desc-input"/></td>
+    <td>
+      <input type="radio" name="predictActive" th:value="${model.id}" th:checked="${model.active}"
+             th:modelId="${model.id}"
+             onchange="activateModel(this.getAttribute('modelId'))"/>
+      <span th:if="${model.active}" class="active-label">활성</span>
+    </td>
+    <td><button th:modelId="${model.id}" onclick="saveModel(this, this.getAttribute('modelId'))">저장</button></td>
+  </tr>
+  </tbody>
+</table>
+<div th:replace="fragments/footer :: footer"/>
+<script>
+  function saveModel(button, id) {
+      const row = button.closest('tr');
+      const name = row.querySelector('.name-input').value;
+      const description = row.querySelector('.desc-input').value;
+
+      const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+      const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+      fetch(`/admin/models/${id}/update`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              [csrfHeader]: csrfToken // 동적으로 CSRF 헤더 키 설정
+          },
+          body: JSON.stringify({ id, name, description })
+      })
+      .then(res => {
+          if (res.ok) alert("저장 완료");
+          else throw new Error("저장 실패");
+      })
+      .catch(() => alert("저장 실패"));
+  }
+
+  function activateModel(id) {
+      const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+      const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+      fetch(`/admin/models/${id}/activate`, {
+          method: 'POST',
+          headers: {
+                [csrfHeader]: csrfToken // 동적으로 CSRF 헤더 키 설정
+            },
+      })
+      .then(res => {
+          if (res.ok) location.reload();
+          else throw new Error("활성화 실패");
+      })
+      .catch(() => alert("활성화 실패"));
+  }
+
+  function addModel(type) {
+      const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+      const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+      const name = prompt(`${type} 모델의 이름을 입력하세요:`);
+      if (!name) return;
+
+      const description = prompt(`${type} 모델에 대한 설명을 입력하세요:`) || "";
+
+      fetch("/admin/models/add", {
+          method: "POST",
+          headers: {
+              'Content-Type': 'application/json',
+              [csrfHeader]: csrfToken // 동적으로 CSRF 헤더 키 설정
+          },
+          body: JSON.stringify({ name, description, type })
+      })
+      .then(res => {
+          if (res.ok) location.reload();
+          else throw new Error("모델 추가 실패");
+      })
+      .catch(() => alert("모델 추가 실패"));
+  }
+</script>
+</body>
+</html>
