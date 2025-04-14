@@ -2,8 +2,7 @@ package com.hertz.shoppingMall.ml.model;
 
 import com.hertz.shoppingMall.config.jpa.BaseDateEntity;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -11,6 +10,9 @@ import java.io.Serializable;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 @Table(name = "model_config")
 public class MLModel extends BaseDateEntity implements Serializable {
 

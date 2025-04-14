@@ -12,4 +12,7 @@ public interface MLModelRepository extends JpaRepository<MLModel, Long> {
     @Modifying
     @Query("UPDATE MLModel m SET m.active = false WHERE m.type = :type")
     void deactivateAllByType(@Param("type") ModelType type);
+
+    @Query("SELECT m.name FROM MLModel m WHERE m.active = true AND m.type = :type")
+    String findByModelTypeAndIsActiveTrue(@Param("type") ModelType type);
 }

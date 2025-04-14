@@ -1,6 +1,7 @@
 package com.hertz.shoppingMall.ml.controller;
 
 import com.hertz.shoppingMall.ml.dto.MLModelForm;
+import com.hertz.shoppingMall.ml.model.MLModel;
 import com.hertz.shoppingMall.ml.model.ModelType;
 import com.hertz.shoppingMall.ml.service.MLModelService;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,9 @@ public class MLModelController {
 
     @GetMapping("/list")
     public String getModelManagementPage(Model model) {
-        List<MLModelForm> allModels = mlModelService.getMLModelAllList();
+        List<MLModel> modelList = mlModelService.getMLModelAllList();
+        MLModelForm modelForm = new MLModelForm();
+        List<MLModelForm> allModels = modelForm.convertToFormList(modelList);
         model.addAttribute("recommendModels", allModels.stream()
                 .filter(m -> m.getType() == ModelType.RECOMMEND)
                 .toList());
