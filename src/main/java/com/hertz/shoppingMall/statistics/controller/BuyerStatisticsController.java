@@ -42,14 +42,16 @@ public class BuyerStatisticsController {
 
     @GetMapping("/highRated")
     @ResponseBody
-    public Mono<Object> highRated() {
-        return recommendInfoService.getHighRatedProducts(null);
+    public ResponseEntity<List<ProductDto>> highRated() {
+        List<ProductDto> highRated = recommendFacadeService.getHighRatedProducts();
+        return ResponseEntity.ok(highRated);
     }
 
     @GetMapping("/trending")
     @ResponseBody
-    public Mono<Object> trending() {
-        return recommendInfoService.getTrendingProducts(null);
+    public ResponseEntity<List<ProductDto>> trending() {
+        List<ProductDto> trending = recommendFacadeService.getTrendingProducts();
+        return ResponseEntity.ok(trending);
     }
 
 }

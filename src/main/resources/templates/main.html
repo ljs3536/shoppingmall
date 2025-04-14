@@ -13,9 +13,10 @@
     <h2>추천 상품</h2>
     <div class="row" id="recommendedProductArea"></div>
     <h2>좋은평점상품</h2>
-    <canvas id="highRatedProductChart" width="400" height="200"></canvas>
+    <div class="row" id="highRatedProductArea"></div>
     <h2>트렌딩상품</h2>
-    <canvas id="trendingProductsChart" width="400" height="200"></canvas>
+    <div class="row" id="trendingProductsArea"></div>
+
 </div>
 
 <!-- 판매자용 통계 시각화 영역 -->
@@ -38,60 +39,32 @@
       const isSeller = [[${#authorization.expression('hasRole("SELLER")')}]];
 
       if (isBuyer) {
-        fetch("/buyer/statistics/recommendations")
-          .then(res => res.json())
-          .then(data => {
-            const container = document.getElementById("recommendedProductArea");
-            data.forEach(product => {
-                const html = `
-                    <div class="col-sm-2">
-                      <div class="card" style="width: 18rem;">
-                        <img src="${product.mainImageUrl}" class="card-img-top" alt="상품이미지">
-                        <div class="card-body">
-                          <h5 class="card-title">${product.name}</h5>
-                          <p class="card-text">${product.description}</p>
-                          <a href="/buyer/products/view/${product.id}">상품보기</a>
-                        </div>
-                      </div>
-                    </div>`;
-              container.insertAdjacentHTML("beforeend", html);
-            });
-        });
 
-          const buyerEndpoints = [
-              { url: "/buyer/statistics/highRated", id: "highRatedProductChart", label: "평점 높은 상품" },
-              { url: "/buyer/statistics/trending", id: "trendingProductsChart", label: "트렌딩 상품" }
-          ];
+        const buyerEndpoints = [
+              { url: "/buyer/statistics/recommendations", id: "recommendedProductArea", label: "평점 높은 상품" },
+              { url: "/buyer/statistics/highRated", id: "highRatedProductArea", label: "평점 높은 상품" },
+              { url: "/buyer/statistics/trending", id: "trendingProductsArea", label: "트렌딩 상품" }
+        ];
 
         buyerEndpoints.forEach(({ url, id, label }) => {
-          fetch(url)
-            .then(res => res.json())
-            .then(data => {
-              console.log(data);
-              const labels = data.map(item => item.name);
-              const values = data.map(item => item.value || item.count || item.rating || item.avgRating || item.score || 1);
-              const ctx = document.getElementById(id).getContext("2d");
-
-              new Chart(ctx, {
-                type: "bar",
-                data: {
-                  labels: labels,
-                  datasets: [{
-                    label: label,
-                    data: values,
-                    backgroundColor: "rgba(75, 192, 192, 0.5)",
-                    borderColor: "rgba(75, 192, 192, 1)",
-                    borderWidth: 1
-                  }]
-                },
-                options: {
-                  responsive: true,
-                  plugins: {
-                    legend: { display: false },
-                    title: { display: true, text: label }
-                  }
-                }
-              });
+            fetch(url)
+              .then(res => res.json())
+              .then(data => {
+                const container = document.getElementById(id);
+                data.forEach(product => {
+                    const html = `
+                        <div class="col-sm-2">
+                          <div class="card" style="width: 18rem;">
+                            <img src="${product.mainImageUrl}" class="card-img-top" alt="상품이미지">
+                            <div class="card-body">
+                              <h5 class="card-title">${product.name}</h5>
+                              <p class="card-text">${product.description}</p>
+                              <a href="/buyer/products/view/${product.id}">상품보기</a>
+                            </div>
+                          </div>
+                        </div>`;
+                  container.insertAdjacentHTML("beforeend", html);
+                });
             });
         });
       }
