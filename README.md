@@ -61,3 +61,7 @@ SpringFramework : 3.4.3
 ## 2025-04-08
 - 통계 페이지 구현 중
 - log 데이터를 활용한 페이지 및 로직 구현 중
+
+## 2025-04-15 
+Docker에 mariadb, Elasticsearch, Flask, Springboot를 Container화 하기 위한 시도 
+Springboot와 Elasticsearch 연결에서 에러 발생
