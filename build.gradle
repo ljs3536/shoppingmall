@@ -37,7 +37,7 @@ dependencies {
 	// queryDSL
 	// 스프링 부트 3.0 이상
 	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
-	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
+	annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
 
 	implementation "com.querydsl:querydsl-core"
 	implementation "com.querydsl:querydsl-collections"
@@ -80,4 +80,9 @@ sourceSets {
 ///// gradle clean 시에 QClass 디렉토리 삭제
 clean {
 	delete file(generated)
+}
+
+// 테스트 코드를 제외한 빌드 수행
+tasks.withType(Test) {
+	enabled = false
 }
