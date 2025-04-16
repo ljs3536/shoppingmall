@@ -2,7 +2,7 @@ spring:
   datasource:
     platform: mariadb
     driverClassName: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://mariadb-container:3306/shoppingmall?serverTimezone=UTC&characterEncoding=UTF-8
+    url: jdbc:mariadb://mariadb:3306/shoppingmall?serverTimezone=UTC&characterEncoding=UTF-8
     username: mallAdmin
     password: qwe123
   jpa:
@@ -20,14 +20,14 @@ spring:
       max-file-size: 5MB
       max-request-size: 10MB
   elasticsearch:
-    rest:
-      uris: http://elasticsearch-container:9200
+    uris: http://elasticsearch-container:9200
 
 logging:
   level:
     org.hibernate.SQL: INFO
     org.springframework.security: DEBUG
     org.springframework.security.authentication: TRACE
+    org.springframework.data.elasticsearch: DEBUG
 
 file:
   upload-path: C:/upload/images/
