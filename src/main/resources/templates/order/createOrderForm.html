@@ -12,12 +12,13 @@
 </style>
 </head>
 <body>
+<div th:replace="fragments/bodyHeader :: bodyHeader"></div>
 <div class="container">
-    <div th:replace="fragments/bodyHeader :: bodyHeader"></div>
+
     <h2>주문서 작성</h2>
 
     <form th:action="@{/buyer/order/new/orders}" method="post" th:object="${orderForm}">
-
+        <input type="hidden" th:field="${orderForm.formCart}" />
         <input type="hidden" th:value="${productId}" name="productId">
         <h3>상품 정보</h3>
         <table class="table table-striped">
@@ -75,7 +76,8 @@
         </div>
         <button class="btn btn-primary" type="submit">주문하기</button>
     </form>
-    <div th:replace="fragments/footer :: footer"></div>
+
 </div>
+<div th:replace="fragments/footer :: footer"></div>
 </body>
 </html>

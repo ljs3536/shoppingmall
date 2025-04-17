@@ -12,20 +12,28 @@ import java.util.Collections;
 
 @Getter
 public class CustomUserDetails implements UserDetails {
-    private static final long serialVersionUID = 2L;
+    private static final long serialVersionUID = 3L;
     private final Long memberId;
+    private final String loginId;
     private final String username;
     private final String password;
     private final String nickname;
+    private final String region;
+    private final Integer age;
+    private final String gender;
     private final Collection<? extends GrantedAuthority> authorities;
 
     public CustomUserDetails(Member member) {
         this.memberId = member.getId();
-        this.username = member.getLoginId();
+        this.loginId = member.getLoginId();
+        this.username = member.getUsername();
         this.password = member.getPassword();
         this.nickname = member.getNickname();
         // Convert Enum role to GrantedAuthorities
         this.authorities = convertRoleToAuthorities(member.getRole());
+        this.region = member.getRegion();
+        this.age = member.getAge();
+        this.gender = member.getGender();
     }
 
     // Method to convert Enum role to GrantedAuthorities

@@ -33,4 +33,7 @@ public class OrderForm implements Serializable {
 
     // Validation시 처리하기 위한 파라미터
     private Long productId;
+
+    // 장바구니 or 상품상세 구분
+    private boolean formCart;
 }

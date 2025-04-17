@@ -2,11 +2,14 @@ package com.hertz.shoppingMall.cart.controller;
 
 import com.hertz.shoppingMall.cart.dto.CartForm;
 import com.hertz.shoppingMall.cart.dto.CartItemDto;
+import com.hertz.shoppingMall.cart.dto.CartUpdateDto;
 import com.hertz.shoppingMall.cart.model.Cart;
 import com.hertz.shoppingMall.cart.model.CartItem;
+import com.hertz.shoppingMall.cart.service.CartItemService;
 import com.hertz.shoppingMall.cart.service.CartService;
 import com.hertz.shoppingMall.config.security.CustomUserDetails;
 import com.hertz.shoppingMall.member.model.Member;
+import com.hertz.shoppingMall.utils.exception.image.service.ImageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,17 +21,21 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
+@RequestMapping("/buyer/cart")
 @Slf4j
 @RequiredArgsConstructor
-public class CartController {
+public class BuyerCartController {
 
     private final CartService cartService;
-
-    @GetMapping("/cart/list")
+    private final CartItemService cartItemService;
+    private final ImageService imageService;
+    @GetMapping("/list")
     public String list(@AuthenticationPrincipal CustomUserDetails userDetails, Model model){
 
         Long memberId = userDetails.getMemberId();
@@ -36,14 +43,17 @@ public class CartController {
         member.setId(memberId);
         Cart cart = cartService.getCart(member);
         List<CartItemDto> cartItems = cart.getCartItems().stream()
-                        .map(cartItem -> new CartItemDto(
-                                cartItem.getId(),
-                                cartItem.getProduct().getId(),
-                                cartItem.getProduct().getName(),
-                                cartItem.getQuantity(),
-                                cartItem.getProduct().getPrice(),
-                                cartItem.getTotalPrice()
-                        )).toList();
+                        .map(cartItem -> {
+                                return new CartItemDto(
+                                        cartItem.getId(),
+                                        cartItem.getProduct().getId(),
+                                        cartItem.getProduct().getName(),
+                                        cartItem.getQuantity(),
+                                        cartItem.getProduct().getPrice(),
+                                        cartItem.getTotalPrice(),
+                                        imageService.getImageUrl(cartItem.getProduct().getMainImage())
+                                );
+                        }).toList();
 
         int totalCartPrice = cartItems.stream().mapToInt(CartItemDto::getTotalPrice).sum();
 
@@ -52,15 +62,13 @@ public class CartController {
         return "cart/cartList";
     }
 
-    @PostMapping("/cart/add")
+    @PostMapping("/add")
     @ResponseBody
     public ResponseEntity<CartItemDto> addToCart(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody @Valid CartForm cartForm
     ) {
-        Long memberId = userDetails.getMemberId();
-        Member member = new Member();
-        member.setId(memberId);
+        Member member = Member.createMember(userDetails);
 
         try {
             // 장바구니에 상품 추가
@@ -77,7 +85,8 @@ public class CartController {
                     cartItem.getProduct().getName(),
                     cartItem.getQuantity(),
                     cartItem.getProduct().getPrice(),
-                    cartItem.getTotalPrice()
+                    cartItem.getTotalPrice(),
+                    imageService.getImageUrl(cartItem.getProduct().getMainImage())
             );
 
             return ResponseEntity.ok(responseDto);
@@ -87,20 +96,31 @@ public class CartController {
         }
     }
 
-    // 장바구니 아이템 삭제
-    @DeleteMapping("/cart/remove/{cartItemId}")
+    @PutMapping("/update")
     @ResponseBody
-    public ResponseEntity<Void> removeCartItem(
+    public ResponseEntity<?> updateCartItemQuantity(@RequestBody CartUpdateDto dto) {
+        try {
+            int totalPrice = cartItemService.updateCartItemQuantity(dto.getCartItemId(), dto.getQuantity());
+            return ResponseEntity.ok().body(Map.of(
+                    "message", "수량 업데이트 성공",
+                    "totalPrice", totalPrice));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "수량 업데이트 실패"));
+        }
+    }
+
+    // 장바구니 아이템 삭제
+    @DeleteMapping("/remove/{cartItemId}")
+    @ResponseBody
+    public ResponseEntity<?> removeCartItem(
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @PathVariable Long cartItemId
+            @PathVariable("cartItemId") Long cartItemId
     ) {
-        Long memberId = userDetails.getMemberId();
-        Member member = new Member();
-        member.setId(memberId);
+        Member member = Member.createMember(userDetails);
         try {
             // 장바구니 아이템 삭제
-            cartService.removeCartItem(cartItemId);
-            return ResponseEntity.ok().build();
+            cartItemService.removeCartItem(member, cartItemId);
+            return ResponseEntity.ok().body(Map.of("message","장바구니 상품 삭제 성공"));
         } catch (Exception e) {
             log.error("장바구니 아이템 삭제 중 오류 발생", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
