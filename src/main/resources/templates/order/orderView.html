@@ -1,53 +1,148 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>주문 완료</title>
-</head>
+<head th:replace="fragments/header :: header" />
 <body>
+<div th:replace="fragments/bodyHeader :: bodyHeader" />
 <div class="container">
-    <h1>주문 완료</h1>
 
-    <div class="order-info">
-        <h2>주문 정보</h2>
-        <p>주문 번호: <span th:text="${order.id}"></span></p>
-        <p>주문 날짜: <span th:text="${#temporals.format(order.createdDateTime, 'yyyy-MM-dd HH:mm:ss')}"></span></p>
-        <p>총 주문 금액: <span th:text="${#numbers.formatInteger(order.totalPrice, 3, 'COMMA')}"></span>원</p>
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2 class="h5">주문 정보</h2>
+        </div>
+        <div class="card-body">
+            <p>주문 번호: <span th:text="${order.id}"></span></p>
+            <p>주문 날짜: <span th:text="${#temporals.format(order.createdDateTime, 'yyyy-MM-dd HH:mm:ss')}"></span></p>
+            <p>총 주문 금액: <span th:text="${#numbers.formatInteger(order.totalPrice, 3, 'COMMA')}"></span>원</p>
+        </div>
     </div>
 
-    <div class="shipping-info">
-        <h2>배송 정보</h2>
-        <p>수령인: <span th:text="${order.recipient}"></span></p>
-        <p>연락처: <span th:text="${order.phoneNumber}"></span></p>
-        <p>배송 주소: <span th:text="${order.address}"></span></p>
-        <p>요청사항: <span th:text="${order.orderRequest ?: '없음'}"></span></p>
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2 class="h5">배송 정보</h2>
+        </div>
+        <div class="card-body">
+            <p>수령인: <span th:text="${order.recipient}"></span></p>
+            <p>연락처: <span th:text="${order.phoneNumber}"></span></p>
+            <p>배송 주소: <span th:text="${order.address}"></span></p>
+            <p>요청사항: <span th:text="${order.orderRequest ?: '없음'}"></span></p>
+        </div>
     </div>
 
-    <div class="order-items">
-        <h2>주문 상품</h2>
-        <table>
-            <thead>
-            <tr>
-                <th>상품명</th>
-                <th>수량</th>
-                <th>가격</th>
-                <th>소계</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="item : ${order.orderItems}">
-                <td th:text="${item.product.name}"></td>
-                <td th:text="${item.quantity}"></td>
-                <td th:text="${#numbers.formatInteger(item.product.price, 3, 'COMMA')}">원</td>
-                <td th:text="${#numbers.formatInteger(item.product.price * item.quantity, 3, 'COMMA')}">원</td>
-            </tr>
-            </tbody>
-        </table>
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2 class="h5">주문 상품</h2>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>상품명</th>
+                        <th>수량</th>
+                        <th>가격</th>
+                        <th>소계</th>
+                        <th>상품 주문 상태</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="item : ${order.orderItems}">
+                        <td th:text="${item.product.name}"></td>
+                        <td th:text="${item.quantity}"></td>
+                        <td th:text="${#numbers.formatInteger(item.product.price, 3, 'COMMA')} + '원'"></td>
+                        <td th:text="${#numbers.formatInteger(item.product.price * item.quantity, 3, 'COMMA')} + '원'"></td>
+                        <td th:text="${item.status.description}">
+
+                        </td>
+                        <td><button th:if="${item.status.description == '배송완료'}"
+                                    class="btn btn-sm btn-primary"
+                                    th:attr="data-orderItem-id=${item.id}"
+                                    onclick="openReviewModal(this)">
+                            리뷰 작성
+                        </button></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- 리뷰 작성 모달 -->
+    <div id="reviewModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">리뷰 작성</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="reviewForm">
+                        <input type="hidden" id="orderItemId" name="orderItemId">
+                        <div class="form-group">
+                            <label for="rating">평점:</label>
+                            <select id="rating" name="rating" class="form-control">
+                                <option value="5">5점</option>
+                                <option value="4">4점</option>
+                                <option value="3">3점</option>
+                                <option value="2">2점</option>
+                                <option value="1">1점</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="content">리뷰 내용:</label>
+                            <textarea id="content" name="content" class="form-control"></textarea>
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="submitReview()">등록</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="navigation-buttons">
-        <a th:href="@{/buyer/order/list}" class="btn">주문 목록</a>
-        <a th:href="@{/}" class="btn">메인 페이지</a>
+    <div class="mt-3">
+        <a th:href="@{/buyer/order/list}" class="btn btn-secondary me-2">주문 목록</a>
+        <a th:href="@{/}" class="btn btn-primary">메인 페이지</a>
     </div>
+
+
 </div>
+<div th:replace="fragments/footer :: footer" />
+<script>
+    function openReviewModal(button) {
+        const orderItemId = button.getAttribute("data-orderItem-id");
+        document.getElementById("orderItemId").value = orderItemId;
+
+        let reviewModal = new bootstrap.Modal(document.getElementById("reviewModal"));
+        reviewModal.show();
+    }
+
+    function submitReview() {
+        const orderItemId = document.getElementById("orderItemId").value;
+        const rating = document.getElementById("rating").value;
+        const content = document.getElementById("content").value;
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+        fetch('/buyer/review/add', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                [csrfHeader]: csrfToken // 동적으로 CSRF 헤더 키 설정
+            },
+            body: JSON.stringify({ orderItemId, rating, content })
+        })
+        .then(response => {
+            if (response.ok) {
+                alert("리뷰가 등록되었습니다.");
+                window.location.reload();
+            } else {
+                alert("리뷰 등록 실패: " + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('리뷰 작성 중 오류가 발생했습니다.');
+        });
+    }
+
+</script>
 </body>
 </html>

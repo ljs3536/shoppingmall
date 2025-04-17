@@ -2,6 +2,7 @@ package com.hertz.shoppingMall.product.controller;
 
 import com.hertz.shoppingMall.config.security.CustomUserDetails;
 import com.hertz.shoppingMall.member.model.Member;
+import com.hertz.shoppingMall.product.component.ProductConverter;
 import com.hertz.shoppingMall.product.dto.ProductForm;
 import com.hertz.shoppingMall.product.model.Category;
 import com.hertz.shoppingMall.product.model.Product;
@@ -10,10 +11,13 @@ import com.hertz.shoppingMall.product.service.ProductService;
 import com.hertz.shoppingMall.utils.exception.image.component.SaveImageUtil;
 import com.hertz.shoppingMall.utils.exception.image.model.Image;
 import com.hertz.shoppingMall.utils.exception.image.model.ImageType;
+import com.hertz.shoppingMall.utils.page.PageRequestDto;
+import com.hertz.shoppingMall.utils.search.SearchRequestDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -22,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 @Controller
@@ -35,6 +40,7 @@ public class SellerProductController {
 
     private final CategoryService categoryService;
 
+    private final ProductConverter productConverter;
 
     @GetMapping("/new")
     public String createForm(Model model){
@@ -69,26 +75,23 @@ public class SellerProductController {
     }
 
     @GetMapping("/mylist")
-    public String list(@AuthenticationPrincipal CustomUserDetails userDetails, HttpServletRequest request,Model model){
+    public String list(@AuthenticationPrincipal CustomUserDetails userDetails,
+                       @ModelAttribute SearchRequestDto searchRequestDto,
+                       PageRequestDto pageRequestDto, Model model){
         Long memberId = userDetails.getMemberId();
 
-        List<Product> products = productService.getProductListBySeller(memberId);
-        model.addAttribute("products",products);
+        Page<Product> products = productService.getProductListBySeller(searchRequestDto, pageRequestDto,memberId);
+        Page<ProductForm> productForms = productConverter.convertToFormPage(products);
+        model.addAttribute("products", productForms.getContent());
+        model.addAttribute("productPage", productForms);
         return "products/productList";
     }
 
     @GetMapping("/{productId}/edit")
-    public String updateProductForm(@PathVariable("productId")Long productId, Model model){
+    public String updateProductForm(@PathVariable("productId")Long productId, Model model) throws UnsupportedEncodingException {
         Product product = productService.getProduct(productId);
 
-        ProductForm productForm = new ProductForm();
-        productForm.setId(product.getId());
-        productForm.setName(product.getName());
-        productForm.setPrice(product.getPrice());
-        productForm.setCategory(product.getCategory());
-        productForm.setStockQuantity(product.getStockQuantity());
-        productForm.setDescription(product.getDescription());
-        productForm.setCategory(product.getCategory());
+        ProductForm productForm = productConverter.convertToForm(product);
 
         List<Category> categoryList = categoryService.getCategoryListAll();
         model.addAttribute("categoryList", categoryList);
@@ -97,9 +100,9 @@ public class SellerProductController {
     }
 
     @PostMapping("/{productId}/edit")
-    public String updateProduct(@AuthenticationPrincipal CustomUserDetails userDetails, @ModelAttribute("form")ProductForm form){
+    public String updateProduct(@AuthenticationPrincipal CustomUserDetails userDetails, @ModelAttribute("form")ProductForm form) throws IOException {
         Long memberId = userDetails.getMemberId();
-        productService.updateProduct(form.getId(), form.getName(), form.getPrice(), form.getStockQuantity(), form.getDescription(), memberId);
+        productService.updateProduct(form, memberId);
         return "redirect:/seller/products/mylist";
     }
 }

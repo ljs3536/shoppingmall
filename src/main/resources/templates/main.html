@@ -2,58 +2,115 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="fragments/header :: header">
-    <title>Hello</title>
+    <title>Statistics Dashboard</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
-
 <body>
+<div th:replace="fragments/bodyHeader :: bodyHeader" />
 
-<div class="container">
+<!-- 구매자용 추천 상품 영역 -->
+<div sec:authorize="hasRole('BUYER')">
+    <h2>추천 상품</h2>
+    <div class="row" id="recommendedProductArea"></div>
+    <h2>좋은평점상품</h2>
+    <div class="row" id="highRatedProductArea"></div>
+    <h2>트렌딩상품</h2>
+    <div class="row" id="trendingProductsArea"></div>
 
-    <div th:replace="fragments/bodyHeader :: bodyHeader" />
+</div>
 
-    <div class="jumbotron">
-        <h1>HELLO SHOP</h1>
-        <p>
-
-            <a sec:authorize="!isAuthenticated()" class="btn btn-lg btn-dark" href="/login">로그인</a>
-            <div sec:authorize="isAuthenticated()">
-            <h4 class="mb-3" sec:authentication="name">로그인 사용자 이름</h4>
-            <!--<h4 class="mb-3" sec:authentication="principal.authorities">ROLE</h4>-->
-            <h4 class="mb-3" th:text="${#authentication.principal.nickname}">닉네임</h4>
-            <form th:action="@{/logout}" method="post">
-                <button class="w-100 btn btn-dark btn-lg" type="submit">
-                    로그아웃
-                </button>
-            </form>
-            </div>
-        </p>
-        <p class="lead">회원 기능</p>
-        <p>
-            <a sec:authorize="!isAuthenticated()"
-                class="btn btn-lg btn-secondary" href="/members/form">회원 가입</a>
-            <a sec:authorize="hasRole('ADMIN')"
-               class="btn btn-lg btn-secondary" href="/admin/members">회원 목록</a>
-        </p>
-        <p class="lead">상품 기능</p>
-        <p>
-            <a sec:authorize="hasRole('ADMIN')" class="btn btn-lg btn-dark" href="/admin/products/categoryList">카테고리 등록</a>
-            <a sec:authorize="hasRole('SELLER')" class="btn btn-lg btn-dark" href="/seller/products/new">상품 등록</a>
-            <a sec:authorize="hasRole('SELLER')" class="btn btn-lg btn-dark" href="/seller/products/mylist">상품 목록</a>
-            <a sec:authorize="hasRole('BUYER')" class="btn btn-lg btn-dark" href="/buyer/products/list">상품 목록</a>
-            <a sec:authorize="hasRole('BUYER')" class="btn btn-lg btn-dark" href="/cart/list">장바구니 목록</a>
-        </p>
-        <p class="lead">주문 기능</p>
-        <p>
-            <a class="btn btn-lg btn-info" href="/order">상품 주문</a>
-            <!--<a class="btn btn-lg btn-info" href="/orders">주문 내역</a>-->
-            <a sec:authorize="hasRole('BUYER')" class="btn btn-lg btn-info" href="/buyer/order/list">상품 목록</a>
-        </p>
+<!-- 판매자용 통계 시각화 영역 -->
+<div sec:authorize="hasRole('SELLER')" class="container">
+    <h2>판매자 통계</h2>
+    <div class="row">
+        <canvas id="sellingChart" width="400" height="200"></canvas>
+        <canvas id="popularCategoryChart" width="400" height="200"></canvas>
+        <canvas id="cartChart" width="400" height="200"></canvas>
+        <canvas id="highRatedChart" width="400" height="200"></canvas>
+        <canvas id="trendingChart" width="400" height="200"></canvas>
     </div>
+</div>
 
-    <div th:replace="fragments/footer :: footer" />
+<div th:replace="fragments/footer :: footer" />
 
-</div> <!-- /container -->
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const isBuyer = [[${#authorization.expression('hasRole("BUYER")')}]];
+      const isSeller = [[${#authorization.expression('hasRole("SELLER")')}]];
+
+      if (isBuyer) {
+
+        const buyerEndpoints = [
+              { url: "/buyer/statistics/recommendations", id: "recommendedProductArea", label: "평점 높은 상품" },
+              { url: "/buyer/statistics/highRated", id: "highRatedProductArea", label: "평점 높은 상품" },
+              { url: "/buyer/statistics/trending", id: "trendingProductsArea", label: "트렌딩 상품" }
+        ];
+
+        buyerEndpoints.forEach(({ url, id, label }) => {
+            fetch(url)
+              .then(res => res.json())
+              .then(data => {
+                const container = document.getElementById(id);
+                data.forEach(product => {
+                    const html = `
+                        <div class="col-sm-2">
+                          <div class="card" style="width: 18rem;">
+                            <img src="${product.mainImageUrl}" class="card-img-top" alt="상품이미지">
+                            <div class="card-body">
+                              <h5 class="card-title">${product.name}</h5>
+                              <p class="card-text">${product.description}</p>
+                              <a href="/buyer/products/view/${product.id}">상품보기</a>
+                            </div>
+                          </div>
+                        </div>`;
+                  container.insertAdjacentHTML("beforeend", html);
+                });
+            });
+        });
+      }
+
+      if (isSeller) {
+        const sellerEndpoints = [
+          { url: "/seller/statistics/moreSelling", id: "sellingChart", label: "많이 팔린 상품" },
+          { url: "/seller/statistics/popularByCategory", id: "popularCategoryChart", label: "인기 카테고리" },
+          { url: "/seller/statistics/addedCart", id: "cartChart", label: "장바구니 추가 상품" },
+          { url: "/seller/statistics/highRated", id: "highRatedChart", label: "평점 높은 상품" },
+          { url: "/seller/statistics/trending", id: "trendingChart", label: "트렌딩 상품" }
+        ];
+
+        sellerEndpoints.forEach(({ url, id, label }) => {
+          fetch(url)
+            .then(res => res.json())
+            .then(data => {
+              const labels = data.map(item => item.name);
+              const values = data.map(item => item.value || item.count || item.rating || item.avgRating || item.score || 1);
+              const ctx = document.getElementById(id).getContext("2d");
+
+              new Chart(ctx, {
+                type: "bar",
+                data: {
+                  labels: labels,
+                  datasets: [{
+                    label: label,
+                    data: values,
+                    backgroundColor: "rgba(75, 192, 192, 0.5)",
+                    borderColor: "rgba(75, 192, 192, 1)",
+                    borderWidth: 1
+                  }]
+                },
+                options: {
+                  responsive: true,
+                  plugins: {
+                    legend: { display: false },
+                    title: { display: true, text: label }
+                  }
+                }
+              });
+            });
+        });
+      }
+    });
+</script>
 
 </body>
 </html>

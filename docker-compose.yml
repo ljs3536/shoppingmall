@@ -1,0 +1,82 @@
+version: '3'
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.5
+    container_name: elasticsearch-container
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=false
+      - xpack.security.enrollment.enabled=false
+      - xpack.security.http.ssl.enabled=false
+      - xpack.security.transport.ssl.enabled=false
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    networks:
+      - study_spring-net
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.15.5
+    container_name: kibana-container
+    depends_on:
+      - elasticsearch
+    ports:
+      - "5601:5601"
+    networks:
+      - study_spring-net
+
+  mariadb:
+    image: mariadb:10.5
+    container_name: mariadb-container
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: shoppingmall
+      MYSQL_USER: mallAdmin
+      MYSQL_PASSWORD: qwe123
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    networks:
+      - study_spring-net
+
+  springboot:
+    build:
+      context: ./shoppingMall
+      dockerfile: Dockerfile
+    container_name: springboot-container
+    depends_on:
+      - mariadb
+      - elasticsearch
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+    networks:
+      - study_spring-net
+
+  flask:
+    build:
+      context: ./shoppingmall-flask-analysis
+      dockerfile: Dockerfile
+    container_name: flask-container
+    depends_on:
+      - elasticsearch
+    ports:
+      - "5000:5000"
+    working_dir: /app
+    command: ["python", "app.py", "--host=0.0.0.0"]
+    networks:
+      - study_spring-net
+
+volumes:
+  elasticsearch-data:
+  mariadb-data:
+
+networks:
+  study_spring-net:
+    driver: bridge

@@ -1,14 +1,20 @@
 package com.hertz.shoppingMall.order.service;
 
+import com.hertz.shoppingMall.order.dto.OrderDetailDto;
 import com.hertz.shoppingMall.order.model.Order;
 import com.hertz.shoppingMall.order.model.OrderItem;
 import com.hertz.shoppingMall.order.repository.OrderRepository;
 import com.hertz.shoppingMall.product.model.Product;
 import com.hertz.shoppingMall.product.repository.ProductRepository;
 import com.hertz.shoppingMall.utils.exception.custom.NotEnoughStockException;
+import com.hertz.shoppingMall.utils.page.PageRequestDto;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,14 +30,11 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
-    //주문 목록
-    public List<Order> getOrderList(){
-        return orderRepository.findAll();
-    }
 
     // 구매자의 주문 목록
-    public List<Order> getOrderListByMemberId(Long memberId) {
-        return orderRepository.findByMemberIdOrderByCreatedDateTimeDesc(memberId);
+    public Page<Order> getOrderListByMemberId(PageRequestDto pageRequestDto, Long memberId){
+        Pageable pageable = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), Sort.by(pageRequestDto.getSort()).descending());
+        return orderRepository.findByMemberIdOrderByCreatedDateTimeDesc(pageable, memberId);
     }
 
     //주문 등록
@@ -53,7 +56,6 @@ public class OrderService {
         }
         // 총 주문 가격 다시 한 번 계산 (보안을 위해)
         order.calculateTotalPrice();
-        order.setStatus(PROCESSING);
 
         return orderRepository.save(order);
     }
@@ -63,9 +65,14 @@ public class OrderService {
         return orderRepository.findById(orderId).orElse(null);
     }
 
-    //사용자 마지막 주문 조회
-    public Order getLatestOrderByMemberId(Long memberId) {
-        return orderRepository.findTopByMemberIdOrderByCreatedDateTimeDesc(memberId);
+    // 배송 정보
+    public OrderDetailDto getOrderDetail(Long orderId) {
+        return orderRepository.findById(orderId)
+                .map(order -> new OrderDetailDto(
+                        order.getRecipient(),
+                        order.getAddress(),
+                        order.getPhoneNumber(),
+                        order.getOrderRequest()
+                )).orElse(null);
     }
-
 }

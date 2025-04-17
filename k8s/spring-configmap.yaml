@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: spring-app-config
+data:
+  DB_HOST: mariadb
+  DB_USERNAME: mallAdmin
+  DB_PASSWORD: qwe123
+  ELASTICSEARCH_URI: http://elasticsearch:9200
+  FILE_UPLOAD_PATH: /upload/images/
+  FILE_ACCESS_URL: /images/

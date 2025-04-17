@@ -2,9 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: header" />
 <body>
-
+<div th:replace="fragments/bodyHeader :: bodyHeader" />
 <div class="container">
-    <div th:replace="fragments/bodyHeader :: bodyHeader" />
+
     <div>
         <table class="table table-striped">
             <thead>
@@ -28,9 +28,9 @@
         </table>
     </div>
 
-    <div th:replace="fragments/footer :: footer" />
+
 
 </div> <!-- /container -->
-
+<div th:replace="fragments/footer :: footer" />
 </body>
 </html>

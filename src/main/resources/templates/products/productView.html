@@ -1,14 +1,54 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/header :: header"/>
-<body>
-<div class="container">
-    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+<head>
+    <th:block th:replace="fragments/header :: header"/>
+ <style>
+.main-image {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    display: block;
+    margin: 0 auto 15px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
 
+.sub-images {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.sub-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+.sub-image:hover {
+    transform: scale(1.1);
+}
+
+ </style>
+</head>
+<body>
+<div th:replace="fragments/bodyHeader :: bodyHeader"/>
+<div class="container">
     <h2>상품 상세 정보</h2>
 
     <div class="card">
         <div class="card-body">
+            <!-- 상품 이미지 섹션 -->
+            <div class="product-images text-center">
+                <img th:src="${product.mainImageUrl}" alt="상품 이미지" class="main-image">
+                <div class="sub-images">
+                    <img th:each="imageUrl : ${product.subImageUrl}" th:src="${imageUrl}" alt="서브 이미지" class="sub-image">
+                </div>
+            </div>
             <h3 class="card-title" th:text="${product.name}"></h3>
             <p class="card-text"><strong>가격:</strong> <span th:text="${product.price}"></span> 원</p>
             <p class="card-text"><strong>수량:</strong> <span th:text="${product.stockQuantity}"></span> 개</p>
@@ -30,10 +70,10 @@
 
     <div class="row">
         <div class="col">
-            <form id="cartForm" th:action="@{/buyer/cart/add}" method="post">
+            <form id="cartForm" method="post">
                 <input type="hidden" name="productId" th:value="${product.id}"/>
                 <input type="hidden" name="quantity" id="cartQuantity"/>
-                <button type="submit" class="btn btn-success" onclick="addToCart()">장바구니 추가</button>
+                <button type="button" class="btn btn-success" onclick="addToCart()">장바구니 추가</button>
             </form>
         </div>
         <div class="col">
@@ -43,11 +83,38 @@
             </form>
         </div>
     </div>
-
+    <!-- 리뷰 목록 -->
+    <div class="card mt-4">
+        <div class="card-header">
+            <h3>상품 리뷰</h3>
+        </div>
+        <div class="card-body">
+            <div th:if="${reviews.empty}">
+                <p>아직 작성된 리뷰가 없습니다.</p>
+            </div>
+            <div th:each="review : ${reviews}">
+                <div class="border-bottom pb-2 mb-2">
+                    <p><strong>작성자:</strong> <span th:text="${review.member.username}"></span></p>
+                    <p><strong>평점:</strong> <span th:text="${review.rating}"></span> / 5</p>
+                    <p><strong>리뷰 내용:</strong> <span th:text="${review.content}"></span></p>
+                    <p class="text-muted" th:text="${#temporals.format(review.createdDateTime, 'yyyy-MM-dd HH:mm')}"></p>
+                </div>
+            </div>
+            <!-- 페이징 -->
+            <nav th:if="${reviews.totalPages > 1}">
+                <ul class="pagination">
+                    <li th:each="pageNumber : ${#numbers.sequence(0, reviews.totalPages - 1)}"
+                        th:classappend="${pageNumber == reviews.number} ? 'active' : ''">
+                        <a class="page-link" th:href="@{/product/{id}(id=${product.id}, page=${pageNumber})}"
+                           th:text="${pageNumber + 1}"></a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
     <br/>
-    <div th:replace="fragments/footer :: footer"/>
 </div>
-
+<div th:replace="fragments/footer :: footer"/>
 <script>
     function setQuantity(type) {
         const quantity = document.getElementById('quantity').value;
@@ -61,11 +128,15 @@
         const quantity = document.getElementById('quantity').value;
         const productId = document.querySelector('input[name="productId"]').value;
 
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
         // AJAX로 장바구니 추가 요청
-        fetch('/cart/add', {
+        fetch('/buyer/cart/add', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                [csrfHeader]: csrfToken // 동적으로 CSRF 헤더 키 설정
             },
             body: JSON.stringify({
                 productId: productId,

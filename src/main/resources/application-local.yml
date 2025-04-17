@@ -1,0 +1,33 @@
+spring:
+  datasource:
+    platform: mariadb
+    driverClassName: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://localhost:3306/shoppingmall?serverTimezone=UTC&characterEncoding=UTF-8
+    username: mallAdmin
+    password: qwe123!@#
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        default_batch_fetch_size: 100
+    open-in-view: true
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 5MB
+      max-request-size: 10MB
+  elasticsearch:
+    uris: http://localhost:9200
+
+logging:
+  level:
+    org.hibernate.SQL: INFO
+    org.springframework.security: DEBUG
+    org.springframework.security.authentication: TRACE
+
+file:
+  upload-path: C:/upload/images/
+  access-url: /images/

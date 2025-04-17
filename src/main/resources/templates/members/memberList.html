@@ -1,11 +1,52 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/header :: header" />
-<body>
+<head th:replace="fragments/header :: header">
+<style>
+.pagination a {
+    padding: 8px 16px;
+    text-decoration: none;
+    color: black;
+    border: 1px solid #ddd;
+    margin: 0 4px;
+}
 
+.pagination a.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.pagination a.disabled {
+    pointer-events: none;
+    color: grey;
+    border-color: grey;
+}
+
+</style>
+</head>
+<body>
+<div th:replace="fragments/bodyHeader :: bodyHeader" />
 <div class="container">
-    <div th:replace="fragments/bodyHeader :: bodyHeader" />
+
     <div>
+        <form th:action="@{/admin/members}" method="get" class="mb-4">
+            <div class="row">
+                <div class="col-md-3">
+                    <select name="searchType" class="form-control">
+                        <option value="">검색 유형 선택</option>
+                        <option value="loginId" th:selected="${searchRequestDto.searchType == 'loginId'}">아이디</option>
+                        <option value="username" th:selected="${searchRequestDto.searchType == 'username'}">이름</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <input type="text" name="keyword" class="form-control"
+                           th:value="${searchRequestDto.keyword}" placeholder="검색어 입력">
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary">검색</button>
+                    <a th:href="@{/admin/members}" class="btn btn-secondary">초기화</a>
+                </div>
+            </div>
+        </form>
         <table class="table table-striped">
             <thead>
             <tr>
@@ -31,10 +72,41 @@
             </tbody>
         </table>
     </div>
+    <div class="pagination">
+        <!-- 첫 번째 페이지 이동 -->
+        <li class="page-item" th:classappend="${memberPage.first} ? 'disabled'">
+            <a class="page-link" th:href="@{/admin/members(page=0, size=${memberPage.size}, searchType=${searchRequestDto.searchType}, keyword=${searchRequestDto.keyword})}">
+                &laquo;&laquo;
+            </a>
+        </li>
+        <!-- 이전 페이지 -->
+        <li class="page-item" th:classappend="${memberPage.first} ? 'disabled'">
+            <a class="page-link" th:href="@{/admin/members(page=${memberPage.number - 1}, size=${memberPage.size}, searchType=${searchRequestDto.searchType}, keyword=${searchRequestDto.keyword})}">
+                &laquo;
+            </a>
+        </li>
+        <!-- 페이지 번호 반복 -->
+        <li class="page-item" th:each="i : ${#numbers.sequence(0, memberPage.totalPages - 1)}" th:classappend="${memberPage.number == i} ? 'active' : ''">
+            <a class="page-link" th:href="@{/admin/members(page=${i}, size=${memberPage.size}, searchType=${searchRequestDto.searchType}, keyword=${searchRequestDto.keyword})}"
+               th:text="${i + 1}">
+            </a>
+        </li>
+        <!-- 다음 페이지 -->
+        <li class="page-item" th:classappend="${memberPage.last} ? 'disabled'">
+            <a class="page-link" th:href="@{/admin/members(page=${memberPage.number + 1}, size=${memberPage.size}, searchType=${searchRequestDto.searchType}, keyword=${searchRequestDto.keyword})}">
+                &raquo;
+            </a>
+        </li>
+        <!-- 마지막 페이지 이동 -->
+        <li class="page-item" th:classappend="${memberPage.last} ? 'disabled'">
+            <a class="page-link" th:href="@{/admin/members(page=${memberPage.totalPages - 1}, size=${memberPage.size}, searchType=${searchRequestDto.searchType}, keyword=${searchRequestDto.keyword})}">
+                &raquo;&raquo;
+            </a>
+        </li>
+    </div>
 
-    <div th:replace="fragments/footer :: footer" />
 
 </div> <!-- /container -->
-
+<div th:replace="fragments/footer :: footer" />
 </body>
 </html>
