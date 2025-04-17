@@ -65,3 +65,8 @@ SpringFramework : 3.4.3
 ## 2025-04-15 
 Docker에 mariadb, Elasticsearch, Flask, Springboot를 Container화 하기 위한 시도 
 Springboot와 Elasticsearch 연결에서 에러 발생
+
+## 2025-04-17
+Docker에 minikube 환경 세팅
+docker hub에 springboot와 flask repository 등록 후 kubernetes에서 사용
+CI/CD 필요
