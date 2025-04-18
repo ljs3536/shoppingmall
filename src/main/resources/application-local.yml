@@ -31,3 +31,6 @@ logging:
 file:
   upload-path: C:/upload/images/
   access-url: /images/
+
+flask:
+  base-url: http://localhost:5000
