@@ -32,3 +32,6 @@ logging:
 file:
   upload-path: ${FILE_UPLOAD_PATH:/upload/images/}
   access-url: ${FILE_ACCESS_URL:/images/}
+
+flask:
+  base-url: http://flask:5000
