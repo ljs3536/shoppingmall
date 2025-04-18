@@ -1,0 +1,132 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header" />
+<style>
+  .fieldError {
+      border-color: #bd2130;
+  }
+</style>
+<body>
+<div th:replace="fragments/bodyHeader :: bodyHeader"></div>
+
+<div class="container">
+
+  <div th:replace="fragments/error :: error"></div>
+  <form role="form" th:action="@{/admin/members/update}" th:object="${memberUpdateForm}" method="post">
+    <input type="hidden" th:field="*{id}">
+    <div class="form-group">
+      <label th:for="username">이름</label>
+
+      <input type="text" th:field="*{username}" class="form-control" placeholder="이름을 입력하세요"
+             th:class="${#fields.hasErrors('username')}? 'form-control fieldError' : 'form-control'">
+      <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Incorrect date</p>
+    </div>
+    <div class="form-group">
+      <label th:for="nickname">별명</label>
+      <input type="text" th:field="*{nickname}" class="form-control" placeholder="별명을 입력하세요"
+             th:class="${#fields.hasErrors('nickname')}? 'form-control fieldError' : 'form-control'">
+      <p th:if="${#fields.hasErrors('nickname')}" th:errors="*{nickname}">Incorrect date</p>
+    </div>
+    <div class="form-group">
+      <label th:for="region">지역</label>
+      <input type="text" th:field="*{region}" class="form-control" placeholder="지역을 입력하세요"
+             th:class="${#fields.hasErrors('region')}? 'form-control fieldError' : 'form-control'">
+      <p th:if="${#fields.hasErrors('region')}" th:errors="*{region}">Incorrect date</p>
+    </div>
+    <div class="form-group">
+      <label th:for="age">나이</label>
+      <input type="text" th:field="*{age}" class="form-control" placeholder="나이를 입력하세요"
+             th:class="${#fields.hasErrors('age')}? 'form-control fieldError' : 'form-control'">
+      <p th:if="${#fields.hasErrors('age')}" th:errors="*{age}">Incorrect date</p>
+    </div>
+    <div class="form-group">
+      <label th:for="gender">성별</label>
+      <input type="text" th:field="*{gender}" class="form-control" placeholder="성별을 입력하세요"
+             th:class="${#fields.hasErrors('gender')}? 'form-control fieldError' : 'form-control'">
+      <p th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}">Incorrect date</p>
+    </div>
+
+    <div class="form-group">
+      <label th:for="realAddress">주소</label>
+      <input type="text" th:field="*{realAddress}" class="form-control" placeholder="주소를 입력하세요"
+             th:class="${#fields.hasErrors('realAddress')}? 'form-control fieldError' : 'form-control'">
+      <p th:if="${#fields.hasErrors('realAddress')}" th:errors="*{realAddress}">Incorrect date</p>
+    </div>
+    <div class="form-group">
+      <label th:for="emailAddress">이메일</label>
+      <input type="text" th:field="*{emailAddress}" class="form-control" placeholder="이메일을 입력하세요"
+             th:class="${#fields.hasErrors('emailAddress')}? 'form-control fieldError' : 'form-control'">
+      <p th:if="${#fields.hasErrors('emailAddress')}" th:errors="*{emailAddress}">Incorrect date</p>
+    </div>
+    <div class="form-group">
+      <label th:for="cellNo">전화번호</label>
+      <input type="text" th:field="*{cellNo}" class="form-control" placeholder="전화번호를 입력하세요"
+             th:class="${#fields.hasErrors('cellNo')}? 'form-control fieldError' : 'form-control'">
+      <p th:if="${#fields.hasErrors('cellNo')}" th:errors="*{cellNo}">Incorrect date</p>
+    </div>
+    <div class="form-group">
+      <label th:for="loginId">사용자ID</label>
+
+      <input type="text" th:field="*{loginId}" class="form-control" placeholder="사용자ID를 입력하세요"
+             th:class="${#fields.hasErrors('loginId')}? 'form-control fieldError' : 'form-control'">
+      <p th:if="${#fields.hasErrors('loginId')}" th:errors="*{loginId}">Incorrect date</p>
+
+    </div>
+    <div class="form-group">
+      <label th:for="role">권한</label>
+
+      <select th:field="*{role}" th:class="${#fields.hasErrors('role')}? 'form-select fieldError' : 'form-select'">
+        <option th:each="r : ${T(com.hertz.shoppingMall.member.model.Role).values()}"
+                th:value="${r}"
+                th:text="${r}"></option>
+      </select>
+      <p th:if="${#fields.hasErrors('role')}" th:errors="*{role}">Incorrect date</p>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+  <div class="form-group">
+    <label th:for="password">비밀번호</label>
+
+    <input type="text" id="password" class="form-control" placeholder="이름을 입력하세요"
+           th:class="form-control">
+    <button type="button" class="btn btn-danger" onclick="updatePassword()">비밀번호 변경</button>
+  </div>
+  <br/>
+
+</div> <!-- /container -->
+<div th:replace="fragments/footer :: footer" />
+<script>
+
+    function updatePassword() {
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+        const id = document.getElementById('id').value;
+        const password = document.getElementById('password').value;
+
+        fetch('/admin/members/updatePassword', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                [csrfHeader]: csrfToken // 동적으로 CSRF 헤더 키 설정
+            },
+            body: JSON.stringify({
+                id: id,
+                password: password
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                alert('비밀번호 변경 실패');
+            }
+            alert('비밀번호 변경에 성공하였습니다');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('비밀번호 변경에 문제가 발생하였습니다.');
+        });
+    }
+
+</script>
+</body>
+</html>
