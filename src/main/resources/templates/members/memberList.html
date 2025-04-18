@@ -61,7 +61,7 @@
             <tbody>
             <tr th:each="member : ${members}">
                 <td>
-                    <a th:href="@{/members/view/{id}(id=${member.id})}" th:text="${member.id}"></a>
+                    <a th:href="@{/admin/members/update/{id}(id=${member.id})}" th:text="${member.id}"></a>
                 </td>
                 <td th:text="${member.username}"></td>
                 <td th:text="${member.nickname}"></td>
