@@ -1,7 +1,6 @@
 package com.hertz.shoppingMall.member.dto;
 
 import com.hertz.shoppingMall.member.model.Role;
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +10,7 @@ import java.io.Serializable;
 
 @Getter
 @Setter
-public class MemberForm implements Serializable {
+public class MemberUpdateForm implements Serializable {
 
     @Serial //클래스 버전 관리를 위해
     private static final long serialVersionUID = 1L;    //고유 식별자 필드
@@ -56,12 +55,6 @@ public class MemberForm implements Serializable {
     @Size(min = 4, max = 20, message = "로그인 ID는 4자에서 20자 사이여야 합니다")
     private String loginId;
 
-    // 비밀번호
-    @NotBlank(message = "비밀번호는 필수입니다")
-    @Size(min = 8, max = 255, message = "비밀번호는 최소 8자 이상이어야 합니다")
-//    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$",
-//            message = "비밀번호는 최소 하나의 영문자, 숫자, 특수문자를 포함해야 합니다")
-    private String password;
 
     private Role role;
 }
