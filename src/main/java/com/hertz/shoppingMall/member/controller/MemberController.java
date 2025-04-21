@@ -8,6 +8,8 @@ import com.hertz.shoppingMall.utils.search.SearchRequestDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -56,30 +58,4 @@ public class MemberController {
         return "redirect:/";
     }
 
-    // 회원 전체 조회
-    @GetMapping("/admin/members")
-    @PreAuthorize("hasRole('ADMIN')")
-    public String list(@ModelAttribute SearchRequestDto searchRequestDto, PageRequestDto pageRequestDto, Model model){
-        Page<Member> memberPage  = memberService.getAllMembers(searchRequestDto,pageRequestDto);
-        model.addAttribute("members", memberPage.getContent());  // 현재 페이지의 데이터
-        model.addAttribute("memberPage", memberPage);  // 페이지 정보
-        return "members/memberList";
-    }
-
-    @GetMapping("/members/view/{id}")
-    public String view(@PathVariable("id") Long id, Model model){
-        Member member = memberService.getMember(id);
-        model.addAttribute("member", member);
-        return "members/memberView";
-    }
-
-    @GetMapping("/test/{loginId}")
-    @ResponseBody
-    public String testMember(@PathVariable("loginId") String loginId) {
-        Member member = memberService.getMemberByLoginId(loginId);
-        if (member == null) {
-            return "회원을 찾을 수 없습니다: " + loginId;
-        }
-        return "회원 정보: ID=" + member.getLoginId() + ", 역할=" + member.getRole();
-    }
 }

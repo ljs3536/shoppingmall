@@ -53,10 +53,15 @@
                 let id = row.querySelector("td:first-child").textContent.trim();
                 let input = row.querySelector(".category-input");
                 let newName = input.value;
+                const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+                const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
                 fetch("/admin/products/category/edit", {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: {
+                        "Content-Type": "application/json",
+                        [csrfHeader]: csrfToken // 동적으로 CSRF 헤더 키 설정
+                     },
                     body: JSON.stringify({ id: id, name: newName })
                 }).then(response => response.json())
                   .then(data => {
@@ -82,10 +87,15 @@
 
             newRow.querySelector(".new-save-btn").addEventListener("click", function() {
                 let newName = newRow.querySelector(".new-category-input").value;
+                const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+                const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
                 fetch("/admin/products/category/new", {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: {
+                        "Content-Type": "application/json",
+                        [csrfHeader]: csrfToken // 동적으로 CSRF 헤더 키 설정
+                    },
                     body: JSON.stringify({ name: newName })
                 }).then(response => response.json())
                   .then(data => {

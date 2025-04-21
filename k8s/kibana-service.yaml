@@ -8,6 +8,7 @@ metadata:
     io.kompose.service: kibana
   name: kibana
 spec:
+  type: LoadBalancer
   ports:
     - name: "5601"
       port: 5601
