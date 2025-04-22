@@ -29,6 +29,16 @@ logging:
     org.springframework.security.authentication: TRACE
     org.springframework.data.elasticsearch: DEBUG
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
 file:
   upload-path: ${FILE_UPLOAD_PATH:/upload/images/}
   access-url: ${FILE_ACCESS_URL:/images/}
