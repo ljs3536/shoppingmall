@@ -27,6 +27,7 @@ spec:
             - --host=0.0.0.0
           image: ljs3536/shoppingmall-flask:latest
           name: flask-container
+          imagePullPolicy: Always
           ports:
             - containerPort: 5000
               protocol: TCP
