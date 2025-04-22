@@ -33,7 +33,10 @@ management:
   endpoints:
     web:
       exposure:
-        include: prometheus
+        include: "*"
+  endpoint:
+    prometheus:
+      enabled: true
   metrics:
     export:
       prometheus:
