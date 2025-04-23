@@ -70,3 +70,10 @@ Springboot와 Elasticsearch 연결에서 에러 발생
 Docker에 minikube 환경 세팅
 docker hub에 springboot와 flask repository 등록 후 kubernetes에서 사용
 CI/CD 필요
+
+## 2025-04-23
+dump.sql 적용
+kubectl exec -i <mariadb-pod-name> -- /bin/bash -c "mysql -u root -p<비밀번호> <DB이름>" < dump.sql
+
+jenkins와 minikube의 연결을 위한 작업
+jenkins실행.txt 참고 
