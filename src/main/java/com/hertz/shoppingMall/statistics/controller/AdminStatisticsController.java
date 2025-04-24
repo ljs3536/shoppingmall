@@ -6,17 +6,20 @@ import com.hertz.shoppingMall.ml.service.MLModelService;
 import com.hertz.shoppingMall.statistics.service.StatisticsInfoService;
 import com.hertz.shoppingMall.statistics.service.StatisticsPredictionService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 @Controller
 @RequestMapping("/admin/statistics")
 @RequiredArgsConstructor
+@Slf4j
 public class AdminStatisticsController {
 
     private final StatisticsInfoService statisticsInfoService;
@@ -32,26 +35,46 @@ public class AdminStatisticsController {
 
     @GetMapping("/stats/yearly/{year}")
     @ResponseBody
-    public Mono<Object> getYearlySales(@PathVariable("year") String year) {
-        return statisticsInfoService.getYearlySales(year);
+    public Object getYearlySales(@PathVariable("year") String year) {
+        try {
+            return statisticsInfoService.getYearlySales(year).block();
+        } catch (Exception e){
+            log.error("Error while getting yearly stats", e);
+            return new Object();
+        }
     }
 
     @GetMapping("/stats/age")
     @ResponseBody
     public List<Map<String, Object>> getAgeStats() {
-        return (List<Map<String, Object>>) statisticsInfoService.getAgeGroupFavorites().block();
+        try {
+            return (List<Map<String, Object>>) statisticsInfoService.getAgeGroupFavorites().block();
+        } catch (Exception e){
+            log.error("Error while getting age stats", e);
+            return Collections.emptyList();
+        }
     }
 
     @GetMapping("/stats/region")
     @ResponseBody
     public List<Map<String, Object>> getRegionStats() {
-        return (List<Map<String, Object>>) statisticsInfoService.getRegionFavorites().block();
+        try {
+            return (List<Map<String, Object>>) statisticsInfoService.getRegionFavorites().block();
+        } catch (Exception e){
+            log.error("Error while getting region stats", e);
+            return Collections.emptyList();
+        }
     }
 
     @GetMapping("/stats/trend")
     @ResponseBody
     public List<Map<String, Object>> getTrendStats() {
-        return (List<Map<String, Object>>) statisticsInfoService.getMonthlyTrends().block();
+        try {
+            return (List<Map<String, Object>>) statisticsInfoService.getMonthlyTrends().block();
+        } catch (Exception e){
+            log.error("Error while getting trend stats", e);
+            return Collections.emptyList();
+        }
     }
 
     @GetMapping("/prediction")
