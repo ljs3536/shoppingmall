@@ -10,7 +10,12 @@ metadata:
     release: prom-stack
   name: springboot
 spec:
-  replicas: 1
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
   selector:
     matchLabels:
       io.kompose.service: springboot

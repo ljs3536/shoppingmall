@@ -14,7 +14,7 @@ spec:
   selector:
     app: flask
   ports:
-    - name: "5000"
+    - name: "http-flask"
       port: 5000
       targetPort: 5000
   selector:

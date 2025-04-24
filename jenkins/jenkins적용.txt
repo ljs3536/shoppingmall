@@ -1,0 +1,18 @@
+minikube를 실행 시 접근 가능하도록
+minikube start --apiserver-ips=0.0.0.0 --listen-address=0.0.0.0 --driver=docker
+wsl2의 ip 확인을 위한
+ip addr show eth0
+구문으로 ip 확인
+.kube의 config 파일 복사 config.jenkins
+config.jenkins의
+server ip 수정 wsl2의 ip로
+config에서 사용하는 경로를 그대로 가져오기 위한
+.minikube 파일 마운트
+
+docker run -d \
+> -p 8090:8080 -p 50000:50000 \
+> -v /var/run/docker.sock:/var/run/docker.sock \
+> -v $HOME/.kube/config.jenkins:/var/jenkins_home/.kube/config \
+> -v $HOME/k8s:/var/jenkins_home/k8s \
+> -v $HOME/.minikube:$HOME/.minikube \
+> --name jenkins jenkins-kube
