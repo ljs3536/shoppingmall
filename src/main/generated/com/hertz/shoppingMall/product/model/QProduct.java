@@ -2,6 +2,7 @@ package com.hertz.shoppingMall.product.model;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
+import com.hertz.shoppingMall.utils.image.model.Image;
 import com.querydsl.core.types.dsl.*;
 
 import com.querydsl.core.types.PathMetadata;
@@ -46,7 +47,7 @@ public class QProduct extends EntityPathBase<Product> {
 
     public final NumberPath<Integer> stockQuantity = createNumber("stockQuantity", Integer.class);
 
-    public final ListPath<com.hertz.shoppingMall.utils.exception.image.model.Image, com.hertz.shoppingMall.utils.exception.image.model.QImage> subImages = this.<com.hertz.shoppingMall.utils.exception.image.model.Image, com.hertz.shoppingMall.utils.exception.image.model.QImage>createList("subImages", com.hertz.shoppingMall.utils.exception.image.model.Image.class, com.hertz.shoppingMall.utils.exception.image.model.QImage.class, PathInits.DIRECT2);
+    public final ListPath<Image, com.hertz.shoppingMall.utils.exception.image.model.QImage> subImages = this.<Image, com.hertz.shoppingMall.utils.exception.image.model.QImage>createList("subImages", Image.class, com.hertz.shoppingMall.utils.exception.image.model.QImage.class, PathInits.DIRECT2);
 
     public QProduct(String variable) {
         this(Product.class, forVariable(variable), INITS);

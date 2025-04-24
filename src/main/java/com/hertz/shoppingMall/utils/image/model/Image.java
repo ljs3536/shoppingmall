@@ -1,4 +1,4 @@
-package com.hertz.shoppingMall.utils.exception.image.model;
+package com.hertz.shoppingMall.utils.image.model;
 
 import com.hertz.shoppingMall.config.jpa.BaseDateEntity;
 import jakarta.persistence.*;

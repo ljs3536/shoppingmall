@@ -1,7 +1,7 @@
-package com.hertz.shoppingMall.utils.exception.image.repository;
+package com.hertz.shoppingMall.utils.image.repository;
 
-import com.hertz.shoppingMall.utils.exception.image.model.Image;
-import com.hertz.shoppingMall.utils.exception.image.model.ImageType;
+import com.hertz.shoppingMall.utils.image.model.Image;
+import com.hertz.shoppingMall.utils.image.model.ImageType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
