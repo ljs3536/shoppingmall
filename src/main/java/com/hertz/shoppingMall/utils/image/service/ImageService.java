@@ -1,7 +1,7 @@
-package com.hertz.shoppingMall.utils.exception.image.service;
+package com.hertz.shoppingMall.utils.image.service;
 
-import com.hertz.shoppingMall.utils.exception.image.model.Image;
-import com.hertz.shoppingMall.utils.exception.image.repository.ImageRepository;
+import com.hertz.shoppingMall.utils.image.model.Image;
+import com.hertz.shoppingMall.utils.image.repository.ImageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

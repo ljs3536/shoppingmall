@@ -7,7 +7,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: springboot
+      io.kompose.service: springboot
   endpoints:
     - port: "8080"
       path: /actuator/prometheus

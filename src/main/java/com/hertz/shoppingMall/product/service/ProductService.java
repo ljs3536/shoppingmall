@@ -4,14 +4,12 @@ import com.hertz.shoppingMall.member.model.Member;
 import com.hertz.shoppingMall.product.dto.ProductForm;
 import com.hertz.shoppingMall.product.model.Product;
 import com.hertz.shoppingMall.product.repository.ProductRepository;
-import com.hertz.shoppingMall.utils.exception.image.component.SaveImageUtil;
-import com.hertz.shoppingMall.utils.exception.image.model.Image;
-import com.hertz.shoppingMall.utils.exception.image.model.ImageType;
-import com.hertz.shoppingMall.utils.exception.image.repository.ImageRepository;
+import com.hertz.shoppingMall.utils.image.component.SaveImageUtil;
+import com.hertz.shoppingMall.utils.image.model.Image;
+import com.hertz.shoppingMall.utils.image.model.ImageType;
+import com.hertz.shoppingMall.utils.image.repository.ImageRepository;
 import com.hertz.shoppingMall.utils.page.PageRequestDto;
 import com.hertz.shoppingMall.utils.search.SearchRequestDto;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,9 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

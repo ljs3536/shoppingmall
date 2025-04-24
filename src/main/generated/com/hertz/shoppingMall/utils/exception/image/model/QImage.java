@@ -2,6 +2,8 @@ package com.hertz.shoppingMall.utils.exception.image.model;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
+import com.hertz.shoppingMall.utils.image.model.Image;
+import com.hertz.shoppingMall.utils.image.model.ImageType;
 import com.querydsl.core.types.dsl.*;
 
 import com.querydsl.core.types.PathMetadata;

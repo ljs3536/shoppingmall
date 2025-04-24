@@ -4,7 +4,7 @@ package com.hertz.shoppingMall.product.model;
 import com.hertz.shoppingMall.config.jpa.BaseDateEntity;
 import com.hertz.shoppingMall.member.model.Member;
 import com.hertz.shoppingMall.utils.exception.custom.NotEnoughStockException;
-import com.hertz.shoppingMall.utils.exception.image.model.Image;
+import com.hertz.shoppingMall.utils.image.model.Image;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;

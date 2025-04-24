@@ -1,0 +1,9 @@
+grafana:
+  service:
+    type: LoadBalancer
+    port: 3000
+
+prometheus:
+  service:
+    type: LoadBalancer
+    servicePort: 9090

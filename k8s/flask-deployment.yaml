@@ -10,7 +10,12 @@ metadata:
     release: prom-stack
   name: flask
 spec:
-  replicas: 1
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
   selector:
     matchLabels:
       io.kompose.service: flask
@@ -29,7 +34,6 @@ spec:
             - --host=0.0.0.0
           image: ljs3536/shoppingmall-flask:latest
           name: flask-container
-          imagePullPolicy: Always
           ports:
             - containerPort: 5000
               protocol: TCP

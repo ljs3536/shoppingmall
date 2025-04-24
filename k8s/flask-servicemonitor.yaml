@@ -7,9 +7,9 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: flask
+      io.kompose.service: flask
   endpoints:
-    - port: "5000"
+    - port: "http-flask"
       path: /metrics
       interval: 15s
   namespaceSelector:

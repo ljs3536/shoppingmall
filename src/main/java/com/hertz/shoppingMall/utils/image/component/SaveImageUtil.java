@@ -1,8 +1,7 @@
-package com.hertz.shoppingMall.utils.exception.image.component;
+package com.hertz.shoppingMall.utils.image.component;
 
-import com.hertz.shoppingMall.utils.exception.image.model.Image;
-import com.hertz.shoppingMall.utils.exception.image.model.ImageType;
-import com.hertz.shoppingMall.utils.exception.image.repository.ImageRepository;
+import com.hertz.shoppingMall.utils.image.model.Image;
+import com.hertz.shoppingMall.utils.image.model.ImageType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
