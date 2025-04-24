@@ -10,9 +10,8 @@ import java.io.Serializable;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Table(name = "model_config")
 public class MLModel extends BaseDateEntity implements Serializable {
 
