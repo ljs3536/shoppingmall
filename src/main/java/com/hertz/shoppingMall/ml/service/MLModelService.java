@@ -55,14 +55,15 @@ public class MLModelService {
             log.error("{} 모델 학습 실패: {}", type, result, e);
         }
 
+        ModelTrainLog trainlog = new ModelTrainLog();
+        trainlog.setModelName(algo);
+        trainlog.setType(type);
+        trainlog.setSuccess(success);
+        trainlog.setMessage(result);
+        trainlog.setExecutedAt(LocalDateTime.now());
+
         // 로그 저장
-        modelTrainLogRepository.save(ModelTrainLog.builder()
-                .modelName(algo)
-                .type(type)
-                .success(success)
-                .message(result)
-                .executedAt(LocalDateTime.now())
-                .build());
+        modelTrainLogRepository.save(trainlog);
 
         return result;
     }
@@ -73,12 +74,13 @@ public class MLModelService {
 
     @Transactional
     public void addNewModel(MLModelForm form) {
-        MLModel model = MLModel.builder()
-                .name(form.getName())
-                .active(false)
-                .description(form.getDescription())
-                .type(form.getType())
-                .build();
+
+        MLModel model = new MLModel();
+        model.setName(form.getName());
+        model.setActive(false);
+        model.setDescription(form.getDescription());
+        model.setType(form.getType());
+
         mlModelRepository.save(model);
     }
 
