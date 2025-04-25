@@ -4,26 +4,65 @@
   <th:block th:replace="fragments/header :: header"/>
   <title>상품 예측</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .form-container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: #f8f9fa;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-weight: 600;
+    }
+
+    button[type="submit"] {
+      width: 100%;
+    }
+
+    #result {
+      margin-top: 40px;
+    }
+
+    canvas {
+      max-width: 100%;
+      height: auto !important;
+    }
+  </style>
 </head>
 <body>
 <div th:replace="fragments/bodyHeader :: bodyHeader"/>
-<h2>상품 수요 예측</h2>
+<h2 class="text-center mt-4">상품 수요 예측</h2>
 <div class="container">
-  <form id="predictForm">
-    <label>상품명: <input type="text" name="productName" id="productName" required></label><br/>
-    <label>알고리즘 선택:
-      <select name="algorithm" id="algorithm">
-        <option th:each="algo : ${algorithms}" th:value="${algo}" th:text="${algo}"></option>
-      </select>
-    </label><br/>
-    <button type="submit">예측하기</button>
-  </form>
+  <div class="form-container">
+    <form id="predictForm">
+      <div class="form-group">
+        <label for="productName">상품명</label>
+        <input type="text" name="productName" id="productName" class="form-control" required>
+      </div>
+
+      <div class="form-group">
+        <label for="algorithm">알고리즘 선택</label>
+        <select name="algorithm" id="algorithm" class="form-select">
+          <option th:each="algo : ${algorithms}" th:value="${algo}" th:text="${algo}"></option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary">예측하기</button>
+    </form>
+  </div>
 
   <div id="result" style="display: none;">
-    <h3>예측 결과</h3>
+    <h3 class="mt-5">예측 결과</h3>
     <p><strong>상품명:</strong> <span id="resultProduct"></span></p>
     <p><strong>알고리즘:</strong> <span id="resultAlgorithm"></span></p>
-    <canvas id="predictionChart" width="400" height="200"></canvas>
+    <canvas id="predictionChart"></canvas>
   </div>
 </div>
 <div th:replace="fragments/footer :: footer" />
@@ -42,17 +81,12 @@
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
-          [csrfHeader]: csrfToken // 동적으로 CSRF 헤더 키 설정
+          [csrfHeader]: csrfToken
         },
-        body: new URLSearchParams({
-          productName,
-          algorithm
-        })
+        body: new URLSearchParams({ productName, algorithm })
       });
 
-      if (!response.ok) {
-        throw new Error("서버 요청 실패");
-      }
+      if (!response.ok) throw new Error("서버 요청 실패");
 
       const data = await response.json();
 
@@ -68,9 +102,7 @@
       const labels = data.future_months;
       const values = data.predictions;
 
-      if (chartInstance) {
-        chartInstance.destroy();
-      }
+      if (chartInstance) chartInstance.destroy();
 
       const ctx = document.getElementById('predictionChart').getContext('2d');
       chartInstance = new Chart(ctx, {
@@ -100,6 +132,5 @@
     }
   });
 </script>
-
 </body>
 </html>

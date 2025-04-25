@@ -2,15 +2,68 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: header" />
 <style>
+  body {
+      background-color: #f8f9fa;
+  }
+
+  .container {
+      max-width: 600px;
+      margin-top: 40px;
+      margin-bottom: 40px;
+      background-color: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  }
+
+  .form-group {
+      margin-bottom: 20px;
+  }
+
+  label {
+      font-weight: bold;
+      margin-bottom: 8px;
+      display: block;
+  }
+
+  input.form-control,
+  select.form-select {
+      padding: 10px;
+      font-size: 0.95rem;
+      border-radius: 10px;
+  }
+
   .fieldError {
-      border-color: #bd2130;
+      border-color: #dc3545;
+  }
+
+  .form-control:focus,
+  .form-select:focus {
+      border-color: #80bdff;
+      outline: 0;
+      box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+  }
+
+  .error-message,
+  .form-group p {
+      color: #dc3545;
+      font-size: 0.85rem;
+      margin-top: 5px;
+  }
+
+  button[type="submit"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 10px;
   }
 </style>
 <body>
 <div th:replace="fragments/bodyHeader :: bodyHeader"></div>
 
 <div class="container">
-
+  <h3 class="text-center mb-4">회원 정보 수정</h3>
   <div th:replace="fragments/error :: error"></div>
   <form role="form" th:action="@{/admin/members/update}" th:object="${memberUpdateForm}" method="post">
     <input type="hidden" th:field="*{id}">
@@ -87,7 +140,7 @@
   <div class="form-group">
     <label th:for="password">비밀번호</label>
 
-    <input type="text" id="password" class="form-control" placeholder="이름을 입력하세요"
+    <input type="text" id="password" class="form-control" placeholder="변경할 비밀번호를 입력해주세요"
            th:class="form-control">
     <button type="button" class="btn btn-danger" onclick="updatePassword()">비밀번호 변경</button>
   </div>

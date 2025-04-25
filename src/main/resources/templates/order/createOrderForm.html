@@ -1,28 +1,65 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: header">
-<style>
-    .fieldError {
-        border-color: #bd2130;
-    }
-    .error-message {
-            color: red;
-            font-size: 0.8em;
-    }
-</style>
+    <style>
+        .fieldError {
+            border-color: #dc3545;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+
+        h2, h3 {
+            margin-top: 30px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .table th, .table td {
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 40px 20px;
+        }
+    </style>
 </head>
 <body>
 <div th:replace="fragments/bodyHeader :: bodyHeader"></div>
-<div class="container">
 
+<div class="container">
     <h2>주문서 작성</h2>
 
     <form th:action="@{/buyer/order/new/orders}" method="post" th:object="${orderForm}">
         <input type="hidden" th:field="${orderForm.formCart}" />
-        <input type="hidden" th:value="${productId}" name="productId">
+        <input type="hidden" th:value="${productId}" name="productId" />
+
+        <!-- 상품 정보 -->
         <h3>상품 정보</h3>
-        <table class="table table-striped">
-            <thead>
+        <table class="table table-bordered">
+            <thead class="table-light">
             <tr>
                 <th>상품명</th>
                 <th>수량</th>
@@ -32,52 +69,56 @@
             <tbody>
             <tr th:each="item, stat : *{orderItems}">
                 <td>
-                    <input type="hidden" th:field="*{orderItems[__${stat.index}__].productId}"/>
-                    <input type="text" th:field="*{orderItems[__${stat.index}__].productName}" readonly>
+                    <input type="hidden" th:field="*{orderItems[__${stat.index}__].productId}" />
+                    <input type="text" th:field="*{orderItems[__${stat.index}__].productName}" class="form-control" readonly />
                 </td>
                 <td>
-                    <input type="number" th:field="*{orderItems[__${stat.index}__].quantity}" min="1"/>
+                    <input type="number" th:field="*{orderItems[__${stat.index}__].quantity}" min="1" class="form-control" />
                 </td>
                 <td>
-                    <input type="text" th:field="*{orderItems[__${stat.index}__].price}" readonly>원
+                    <input type="text" th:field="*{orderItems[__${stat.index}__].price}" class="form-control" readonly /> 원
                 </td>
             </tr>
             </tbody>
         </table>
-        <!-- 재고 부족 에러 메시지 -->
-        <div th:if="${#fields.hasErrors('orderItems')}">
-            <p th:errors="*{orderItems}" class="error-message"></p>
+        <div th:if="${#fields.hasErrors('orderItems')}" class="error-message">
+            <p th:errors="*{orderItems}"></p>
         </div>
+
+        <!-- 배송 정보 -->
         <h3>배송 정보</h3>
         <div class="form-group">
-            <label th:for="recipient">수령인:</label>
+            <label th:for="recipient">수령인</label>
             <input type="text" th:field="*{recipient}"
-                   th:class="${#fields.hasErrors('recipient')}? 'form-control fieldError' : 'form-control'">
-            <p th:if="${#fields.hasErrors('recipient')}" th:errors="*{recipient}">Incorrect date</p>
+                   th:classappend="${#fields.hasErrors('recipient')} ? ' fieldError'" class="form-control" />
+            <p th:if="${#fields.hasErrors('recipient')}" th:errors="*{recipient}" class="error-message"></p>
         </div>
+
         <div class="form-group">
             <label th:for="phoneNumber">연락처</label>
             <input type="text" th:field="*{phoneNumber}"
-                   th:class="${#fields.hasErrors('phoneNumber')}? 'form-control fieldError' : 'form-control'">
-            <p th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}">Incorrect date</p>
+                   th:classappend="${#fields.hasErrors('phoneNumber')} ? ' fieldError'" class="form-control" />
+            <p th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}" class="error-message"></p>
         </div>
-        <div class="form-group">
-        <label th:for="address">주소</label>
-        <input type="text" th:field="*{address}"
-               th:class="${#fields.hasErrors('address')}? 'form-control fieldError' : 'form-control'">
-        <p th:if="${#fields.hasErrors('address')}" th:errors="*{address}">Incorrect date</p>
-        </div>
-        <div class="form-group">
-            <label th:for="orderRequest">요청 사항:</label>
-            <textarea th:field="*{orderRequest}"
-                      th:class="${#fields.hasErrors('orderRequest')}? 'form-control fieldError' : 'form-control'">
-            </textarea>
-            <p th:if="${#fields.hasErrors('orderRequest')}" th:errors="*{orderRequest}">Incorrect date</p>
-        </div>
-        <button class="btn btn-primary" type="submit">주문하기</button>
-    </form>
 
+        <div class="form-group">
+            <label th:for="address">주소</label>
+            <input type="text" th:field="*{address}"
+                   th:classappend="${#fields.hasErrors('address')} ? ' fieldError'" class="form-control" />
+            <p th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="error-message"></p>
+        </div>
+
+        <div class="form-group">
+            <label th:for="orderRequest">요청 사항</label>
+            <textarea th:field="*{orderRequest}"
+                      th:classappend="${#fields.hasErrors('orderRequest')} ? ' fieldError'" class="form-control"></textarea>
+            <p th:if="${#fields.hasErrors('orderRequest')}" th:errors="*{orderRequest}" class="error-message"></p>
+        </div>
+
+        <button type="submit" class="btn btn-primary">주문하기</button>
+    </form>
 </div>
+
 <div th:replace="fragments/footer :: footer"></div>
 </body>
 </html>
