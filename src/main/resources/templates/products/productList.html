@@ -6,7 +6,6 @@
 <div th:replace="fragments/bodyHeader :: bodyHeader"/>
 <div class="container">
   <div>
-    <a class="btn btn-lg btn-info" href="/">메인페이지</a>
     <div th:remove="tag"
          th:with="baseUrl=${#authorization.expression('hasRole(''BUYER'')')} ?
                    '/buyer/products/list' :
