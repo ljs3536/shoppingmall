@@ -33,7 +33,7 @@ file:
   access-url: /images/
 
 flask:
-  base-url: http://localhost:5000
+  base-url: http://localhost:6000
 
 server:
-  port: 8090
+  port: 8088
