@@ -46,8 +46,13 @@ spec:
           volumeMounts:
             - mountPath: /usr/share/elasticsearch/data
               name: elasticsearch-data
+            - mountPath: /usr/share/elasticsearch/backup
+              name: elasticsearch-backup
       restartPolicy: Always
       volumes:
         - name: elasticsearch-data
           persistentVolumeClaim:
             claimName: elasticsearch-data
+        - name: elasticsearch-backup
+          hostPath:
+            path: /mnt/data/es-backup
