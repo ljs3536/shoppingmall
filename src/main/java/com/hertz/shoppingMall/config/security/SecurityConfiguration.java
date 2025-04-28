@@ -90,7 +90,8 @@ public class SecurityConfiguration {
                         .requestMatchers("/seller/**").hasRole("SELLER")
                         .requestMatchers("/buyer/**").hasRole("BUYER")
                         // 여기에 메인 페이지("/")를 permitAll에 추가
-                        .requestMatchers("/", "/login", "/members/form", "/resources/**", "/css/**", "/js/**", "/test/**", "/fragments/**","/actuator/prometheus").permitAll()
+                        .requestMatchers("/", "/login", "/members/form", "/resources/**", "/css/**", "/js/**"
+                                , "/test/**", "/fragments/**","/actuator/prometheus", "/test/*").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

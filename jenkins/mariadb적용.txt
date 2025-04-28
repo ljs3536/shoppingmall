@@ -1,0 +1,7 @@
+kubectl exec -it <mariadb-pod> -- bash
+mysqldump -u root -p shoppingmall > /var/lib/mysql/dump.sql
+exit
+kubectl cp <mariadb-pod>:var/lib/mysql/dump.sql ./dump.sql
+
+
+kubectl exec -i <mariadb-pod-name> -- /bin/bash -c "mysql -u root -p<비밀번호> <DB이름>" < dump.sql
