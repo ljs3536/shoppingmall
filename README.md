@@ -74,6 +74,10 @@ CI/CD 필요
 ## 2025-04-23
 dump.sql 적용
 kubectl exec -i <mariadb-pod-name> -- /bin/bash -c "mysql -u root -p<비밀번호> <DB이름>" < dump.sql
-
 jenkins와 minikube의 연결을 위한 작업
 jenkins실행.txt 참고 
+
+
+## 2025-04-28
+minikube start --apiserver-ips=0.0.0.0 --listen-address=0.0.0.0 --driver=docker
+mariadb적용.txt 파일 참고 (dump)
