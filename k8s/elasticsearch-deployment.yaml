@@ -52,7 +52,7 @@ spec:
       volumes:
         - name: elasticsearch-data
           persistentVolumeClaim:
-            claimName: elasticsearch-data
+            claimName: elasticsearch-pvc
         - name: elasticsearch-backup
           hostPath:
             path: /mnt/data/es-backup
