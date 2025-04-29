@@ -2,8 +2,8 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   labels:
-    io.kompose.service: elasticsearch-data
-  name: elasticsearch-data
+    io.kompose.service: elasticsearch-pvc
+  name: elasticsearch-pvc
 spec:
   accessModes:
     - ReadWriteOnce
@@ -11,3 +11,4 @@ spec:
     requests:
       storage: 1Gi
   volumeName: elasticsearch-pv
+  storageClassName: ""  # 명시적으로 none
