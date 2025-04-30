@@ -1,10 +1,14 @@
 package com.hertz.shoppingMall.ml.service;
 
+import com.hertz.shoppingMall.alarm.model.Alarm;
+import com.hertz.shoppingMall.alarm.model.AlarmTarget;
+import com.hertz.shoppingMall.alarm.repository.AlarmRepository;
 import com.hertz.shoppingMall.ml.repository.ModelTrainLogRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -15,6 +19,9 @@ public class ModelTrainLogService {
 
     private final ModelTrainLogRepository modelTrainLogRepository;
 
+    private final AlarmRepository alarmRepository;
+
+    @Transactional
     public void setModelTrainResult(String message){
 
         JSONObject json = new JSONObject(message);
@@ -31,5 +38,12 @@ public class ModelTrainLogService {
             log.setExecutedAt(LocalDateTime.now());
             modelTrainLogRepository.save(log);
         });
+
+        Alarm alarm = new Alarm();
+        alarm.setTitle("모델 학습 결과 도착");
+        alarm.setContent(algoName + " [" + modelType + "] → " + status);
+        alarm.setCreatedAt(LocalDateTime.now());
+        alarm.setTarget(AlarmTarget.ADMIN);
+        alarmRepository.save(alarm);
     }
 }
