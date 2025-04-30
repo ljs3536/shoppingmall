@@ -43,23 +43,24 @@ public class MLModelService {
     private String trainModel(String algo, ModelType type, String uri) {
         String result;
         boolean success = true;
-//        try {
-//            result = webClient.post()
-//                    .uri(uri)
-//                    .contentType(MediaType.APPLICATION_JSON)
-//                    .bodyValue(Map.of("algo_name", algo))
-//                    .retrieve()
-//                    .bodyToMono(String.class)
-//                    .block();
-//
-//            log.info("{} 모델 학습 성공: {}", type, algo);
-//        } catch (Exception e) {
-//            success = false;
-//            result = e.getMessage();
-//            log.error("{} 모델 학습 실패: {}", type, result, e);
-//        }
+
+        ModelTrainLog trainlog = new ModelTrainLog();
+        trainlog.setModelName(algo);
+        trainlog.setType(type);
+        trainlog.setSuccess(success);
+
+        trainlog.setExecutedAt(LocalDateTime.now());
+
+        // 로그 저장
+        trainlog = modelTrainLogRepository.save(trainlog);
+
         try {
-            String jsonMessage = new ObjectMapper().writeValueAsString(Map.of("algo_name", algo,"uri", uri));
+            String jsonMessage = new ObjectMapper().writeValueAsString(Map.of(
+                    "algo_name", algo,
+                    "uri", uri,
+                    "model_type", type.toString(),
+                    "log_id", trainlog.getId()  // 💡 추가
+            ));
             kafkaProducerService.sendMessage("model-train-topic", jsonMessage);
             result = algo + "모델 학습 요청";
             log.info("{} 모델 학습 요청 Kafka 전송 성공: {}", type, algo);
@@ -68,14 +69,7 @@ public class MLModelService {
             log.error("{} 모델 학습 요청 Kafka 전송 실패", type, e);
         }
 
-        ModelTrainLog trainlog = new ModelTrainLog();
-        trainlog.setModelName(algo);
-        trainlog.setType(type);
-        trainlog.setSuccess(success);
         trainlog.setMessage(result);
-        trainlog.setExecutedAt(LocalDateTime.now());
-
-        // 로그 저장
         modelTrainLogRepository.save(trainlog);
 
         return result;
