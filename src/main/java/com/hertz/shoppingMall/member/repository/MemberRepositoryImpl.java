@@ -2,6 +2,7 @@ package com.hertz.shoppingMall.member.repository;
 
 import com.hertz.shoppingMall.member.model.Member;
 import com.hertz.shoppingMall.member.model.QMember;
+import com.hertz.shoppingMall.member.model.Role;
 import com.hertz.shoppingMall.utils.search.SearchRequestDto;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -41,5 +42,15 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom{
         long total = query.fetchCount();
 
         return new PageImpl<>(members, pageable, total);
+    }
+
+    @Override
+    public List<Member> findByRole(Role role) {
+
+        QMember member = QMember.member;
+        return queryFactory
+                .selectFrom(member)
+                .where(member.role.eq(role))
+                .fetch();
     }
 }

@@ -1,6 +1,7 @@
 package com.hertz.shoppingMall.alarm.model;
 
 import com.hertz.shoppingMall.config.jpa.BaseDateEntity;
+import com.hertz.shoppingMall.member.model.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,7 +31,9 @@ public class Alarm extends BaseDateEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     private AlarmTarget target; // ADMIN, BUYER, SELLER, ALL, PERSONAL
 
-    private Long targetMemberId; // 개인 대상일 경우에만 사용
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "target_member_id")
+    private Member targetMember;
 
     private boolean isRead = false; // 읽음 여부 (옵션)
 }

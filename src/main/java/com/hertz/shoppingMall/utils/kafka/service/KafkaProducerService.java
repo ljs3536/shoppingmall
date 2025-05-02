@@ -1,4 +1,4 @@
-package com.hertz.shoppingMall.kafka.service;
+package com.hertz.shoppingMall.utils.kafka.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;

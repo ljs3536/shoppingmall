@@ -1,4 +1,4 @@
-package com.hertz.shoppingMall.kafka.service;
+package com.hertz.shoppingMall.utils.kafka.service;
 
 import com.hertz.shoppingMall.ml.repository.MLModelRepository;
 import com.hertz.shoppingMall.ml.repository.ModelTrainLogRepository;

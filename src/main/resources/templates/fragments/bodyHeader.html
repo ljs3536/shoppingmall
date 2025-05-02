@@ -78,7 +78,23 @@
                         </ul>
                     </li>
                 </ul>
-
+                <!-- 알림 종 아이콘 및 알림 수 표시 -->
+                <div sec:authorize="isAuthenticated()" class="position-relative me-3" onclick="toggleAlarmPanel()">
+                    <i id="alarmBell" class="bi bi-bell" style="font-size: 1.5rem; cursor: pointer;"></i>
+                    <span id="alarmCount" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        0
+                    </span>
+                </div>
+                <!-- 알림 패널 -->
+                <div id="alarmPanel" class="position-fixed top-0 end-0 bg-white border shadow" style="width: 300px; height: 100%; z-index: 1050; display: none;">
+                    <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+                        <strong>알림 목록</strong>
+                        <button class="btn btn-sm btn-outline-secondary" onclick="toggleAlarmPanel()">닫기</button>
+                    </div>
+                    <div id="alarmList" class="p-3 overflow-auto" style="height: calc(100% - 60px);">
+                        <!-- 여기에 알림 항목들이 JavaScript로 렌더링됨 -->
+                    </div>
+                </div>
                 <!-- 로그인 영역 -->
                 <div class="d-flex">
                     <div sec:authorize="!isAuthenticated()">

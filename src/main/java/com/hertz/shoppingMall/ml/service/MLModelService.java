@@ -1,7 +1,7 @@
 package com.hertz.shoppingMall.ml.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hertz.shoppingMall.kafka.service.KafkaProducerService;
+import com.hertz.shoppingMall.utils.kafka.service.KafkaProducerService;
 import com.hertz.shoppingMall.ml.dto.MLModelForm;
 import com.hertz.shoppingMall.ml.model.MLModel;
 import com.hertz.shoppingMall.ml.model.ModelTrainLog;
@@ -10,7 +10,6 @@ import com.hertz.shoppingMall.ml.repository.MLModelRepository;
 import com.hertz.shoppingMall.ml.repository.ModelTrainLogRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;

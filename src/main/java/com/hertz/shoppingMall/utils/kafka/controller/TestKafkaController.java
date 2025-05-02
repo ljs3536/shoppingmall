@@ -1,9 +1,8 @@
-package com.hertz.shoppingMall.kafka.controller;
+package com.hertz.shoppingMall.utils.kafka.controller;
 
-import com.hertz.shoppingMall.kafka.service.KafkaProducerService;
+import com.hertz.shoppingMall.utils.kafka.service.KafkaProducerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
