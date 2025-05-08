@@ -7,6 +7,7 @@ spec:
     storage: 1Gi
   accessModes:
     - ReadWriteOnce
-  storageClassName: standard  # 👈 추가
+  storageClassName: ""  # static PV는 이거 없어도 됨
   hostPath:
     path: /mnt/data/elasticsearch
+  persistentVolumeReclaimPolicy: Retain
