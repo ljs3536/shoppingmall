@@ -7,5 +7,7 @@ spec:
     storage: 1Gi
   accessModes:
     - ReadWriteOnce
+  storageClassName: ""
   hostPath:
     path: /mnt/data/mariadb
+  persistentVolumeReclaimPolicy: Retain
