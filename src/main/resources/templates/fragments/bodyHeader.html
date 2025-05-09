@@ -114,5 +114,101 @@
             </div>
         </div>
     </nav>
+    <script th:inline="javascript">
+
+        let memberId = [[${memberId}]];
+
+        document.addEventListener("DOMContentLoaded", function () {
+            if (memberId !== null) {
+                // 초기 알림 불러오기
+                fetch('/api/alarms')
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(alarm => {
+                            addAlarmItem(alarm);
+                        });
+                        updateAlarmCount(data.length);
+                    })
+                    .catch(error => console.error("알림 불러오기 실패:", error));
+            }
+        });
+
+        if (memberId !== null) {
+            const socket = new SockJS('/ws');
+            const stompClient = Stomp.over(socket);
+
+            stompClient.connect({}, function () {
+                stompClient.subscribe('/topic/notifications/' + memberId, function (notification) {
+                    const data = JSON.parse(notification.body);
+                    showNotification(data);
+                    addAlarmItem(data);
+                    updateAlarmCount(1);
+                });
+            });
+        }
+
+        function showNotification(data) {
+            alert("🔔 " + data.title + ": " + data.content); // 커스터마이징 가능
+            // TODO: 알림 뱃지 증가, UI 업데이트 등
+        }
+
+        function toggleAlarmPanel() {
+            const panel = document.getElementById("alarmPanel");
+            panel.style.display = (panel.style.display === "none") ? "block" : "none";
+        }
+
+        function addAlarmItem(alarm) {
+            const list = document.getElementById("alarmList");
+            const item = document.createElement("div");
+            item.className = "border-bottom py-2";
+
+            item.innerHTML = `
+                <div><strong>${alarm.title}</strong></div>
+                <div class="text-muted small">${alarm.time}</div>
+                <div class="mt-1">
+                    <button class="btn btn-sm btn-outline-success me-2" onclick="markAsRead(${alarm.id}, this)">읽음</button>
+                    <button class="btn btn-sm btn-outline-danger" onclick="deleteAlarm(${alarm.id}, this)">삭제</button>
+                </div>
+            `;
+
+            list.prepend(item);
+        }
+
+        function updateAlarmCount(diff) {
+            const badge = document.getElementById("alarmCount");
+            let count = parseInt(badge.textContent) || 0;
+            count += diff;
+            badge.textContent = count > 0 ? count : '';
+        }
+
+        function markAsRead(alarmId, btn) {
+            const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+            fetch('/api/alarms/'+alarmId+'/read', {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    [csrfHeader]: csrfToken // 동적으로 CSRF 헤더 키 설정
+                }
+            }).then(() => {
+                btn.closest("div.border-bottom").classList.add("text-muted");
+            });
+        }
+
+        function deleteAlarm(alarmId, btn) {
+            const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+            fetch('/api/alarms/'+alarmId, {
+                method: "DELETE",
+                headers: {
+                    'Content-Type': 'application/json',
+                    [csrfHeader]: csrfToken // 동적으로 CSRF 헤더 키 설정
+                }
+            }).then(() => {
+                btn.closest("div.border-bottom").remove();
+                updateAlarmCount(-1);
+            });
+        }
+    </script>
 </div>
 </html>
