@@ -56,6 +56,9 @@ public class Member extends BaseDateEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Column(nullable = false)
+    private boolean alarmEnabled = true;
+
     // 생성 메서드 추가
     public static Member createMember(CustomUserDetails userDetails){
         Member member = new Member();
