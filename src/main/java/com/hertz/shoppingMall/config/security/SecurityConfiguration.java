@@ -81,6 +81,7 @@ public class SecurityConfiguration {
 
         http
                 .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/ws/**") //웹소켓 관련 csrf검증 제외
                         // csrf 토큰 요청 핸들러 설정
                         .csrfTokenRequestHandler(requestHandler)
                         // csrf 토큰을 쿠키로 저장, HttpOnly 설정 비활성화
