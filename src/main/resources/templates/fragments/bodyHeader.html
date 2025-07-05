@@ -121,9 +121,13 @@
         document.addEventListener("DOMContentLoaded", function () {
             if (memberId !== null) {
                 // 초기 알림 불러오기
+                const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+                const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
                 fetch('/api/alarms', {
                         headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
+                            'X-Requested-With': 'XMLHttpRequest',
+                            [csrfHeader]: csrfToken // 동적으로 CSRF 헤더 키 설정
                         }
                     })
                     .then(response => {
