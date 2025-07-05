@@ -15,6 +15,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -81,6 +82,9 @@ public class SecurityConfiguration {
         requestHandler.setCsrfRequestAttributeName("_csrf");
 
         http
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // 또는 DEFAULT
+                )
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers("/ws/**") //웹소켓 관련 csrf검증 제외
                         // csrf 토큰 요청 핸들러 설정
