@@ -121,8 +121,17 @@
         document.addEventListener("DOMContentLoaded", function () {
             if (memberId !== null) {
                 // 초기 알림 불러오기
-                fetch('/api/alarms')
-                    .then(response => response.json())
+                fetch('/api/alarms', {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("Unauthorized or not logged in");
+                        }
+                        return response.json();
+                    })
                     .then(data => {
                         data.forEach(alarm => {
                             addAlarmItem(alarm);

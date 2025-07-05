@@ -3,6 +3,7 @@ package com.hertz.shoppingMall.config.security;
 import com.hertz.shoppingMall.login.service.LoginService;
 import com.hertz.shoppingMall.member.model.Member;
 import com.hertz.shoppingMall.member.service.MemberService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -113,11 +114,24 @@ public class SecurityConfiguration {
                         .permitAll()
                 )
                 .exceptionHandling(exception -> exception
+                        // AJAX 요청 시 401 에러 반환하도록 설정
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            String requestedWith = request.getHeader("X-Requested-With");
+                            if ("XMLHttpRequest".equals(requestedWith)) {
+                                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized AJAX request");
+                            } else {
+                                response.sendRedirect("/login");
+                            }
+                        })
                         .accessDeniedHandler((request, response, accessDeniedException) -> {
                             System.out.println("Access Denied: " + accessDeniedException.getMessage());
                             response.sendRedirect("/access-denied");
                         })
-                ).authenticationManager(authenticationManager);
+                )
+                .headers(headers -> headers
+                        .frameOptions(frameOptions -> frameOptions.sameOrigin())
+                )
+                .authenticationManager(authenticationManager);
 
         return http.build();
     }
