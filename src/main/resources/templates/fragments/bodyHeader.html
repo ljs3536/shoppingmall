@@ -140,19 +140,19 @@
                     })
                     .catch(error => console.error("알림 불러오기 실패:", error));
             }
-            if (memberId !== null && !window.stompClient) {
-                const socket = new SockJS('/ws');
-                window.stompClient = Stomp.over(socket);
+<!--            if (memberId !== null && !window.stompClient) {-->
+<!--                const socket = new SockJS('/ws');-->
+<!--                window.stompClient = Stomp.over(socket);-->
 
-                window.stompClient.connect({}, function () {
-                    window.stompClient.subscribe('/topic/notifications/' + memberId, function (notification) {
-                        const data = JSON.parse(notification.body);
-                        showNotification(data);
-                        addAlarmItem(data);
-                        updateAlarmCount(1);
-                    });
-                });
-            }
+<!--                window.stompClient.connect({}, function () {-->
+<!--                    window.stompClient.subscribe('/topic/notifications/' + memberId, function (notification) {-->
+<!--                        const data = JSON.parse(notification.body);-->
+<!--                        showNotification(data);-->
+<!--                        addAlarmItem(data);-->
+<!--                        updateAlarmCount(1);-->
+<!--                    });-->
+<!--                });-->
+<!--            }-->
         });
 
 
