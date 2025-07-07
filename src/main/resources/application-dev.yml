@@ -25,10 +25,6 @@ spring:
       host: ${REDIS_HOST:my-redis-master}
       port: ${REDIS_PORT:6379}
       password: ${REDIS_PASSWORD:my320redis}
-  redis:
-    host: ${REDIS_HOST:my-redis-master}
-    port: ${REDIS_PORT:6379}
-    password: ${REDIS_PASSWORD:my320redis}
   elasticsearch:
     uris: ${ELASTICSEARCH_URI:http://localhost:9200}
   kafka:
