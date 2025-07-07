@@ -12,7 +12,7 @@ import org.springframework.test.context.TestPropertySource;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-//@TestPropertySource(locations = "classpath:application.yml")
+//@TestPropertySource(locations = "classpath:application-local.yml")
 public class DataBaseConnectionTest {
 
 //    @Autowired
