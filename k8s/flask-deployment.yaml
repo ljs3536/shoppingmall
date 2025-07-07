@@ -34,6 +34,9 @@ spec:
             - --host=0.0.0.0
           image: ljs3536/shoppingmall-flask:latest
           name: flask-container
+          volumeMounts:
+            - name: shared-storage
+              mountPath: /model_storage
           ports:
             - containerPort: 5000
               protocol: TCP
@@ -41,4 +44,8 @@ spec:
             - configMapRef:
                 name: spring-app-config
           workingDir: /app
+      volumes:
+        - name: shared-storage
+          persistentVolumeClaim:
+            claimName: shared-pvc
       restartPolicy: Always

@@ -33,10 +33,17 @@ spec:
               value: dev
           image: ljs3536/shoppingmall-springboot:latest
           name: springboot-container
+          volumeMounts:
+            - name: shared-storage
+              mountPath: /upload
           ports:
             - containerPort: 8080
               protocol: TCP
           envFrom:
             - configMapRef:
                 name: spring-app-config
+      volumes:
+        - name: shared-storage
+          persistentVolumeClaim:
+            claimName: shared-pvc
       restartPolicy: Always

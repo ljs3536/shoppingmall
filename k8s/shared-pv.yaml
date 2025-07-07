@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: shared-pv
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteMany   # 여러 Pod에서 동시에 읽고 쓸 수 있도록
+  hostPath:
+    path: /data/shared-storage
