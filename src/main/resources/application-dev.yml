@@ -24,7 +24,7 @@ spring:
     redis:
       host: my-redis-master  # Helm으로 올렸을 때 서비스 이름 (예: my-redis-master)
       port: 6379
-      password: myRedis
+      password: 'myRedis%'
   elasticsearch:
     uris: ${ELASTICSEARCH_URI:http://localhost:9200}
   kafka:
