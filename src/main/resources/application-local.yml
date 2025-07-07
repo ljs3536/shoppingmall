@@ -19,6 +19,11 @@ spring:
       enabled: true
       max-file-size: 5MB
       max-request-size: 10MB
+  session:
+    store-type: redis
+    redis:
+      host: localhost
+      port: 6379
   elasticsearch:
     uris: http://localhost:9200
   kafka:

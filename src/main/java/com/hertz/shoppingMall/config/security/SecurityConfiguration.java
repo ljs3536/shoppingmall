@@ -104,7 +104,7 @@ public class SecurityConfiguration {
                 .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/login-process")
-                        .defaultSuccessUrl("/")
+                        .defaultSuccessUrl("/", true)
                         .failureHandler(authenticationFailureHandler())
                         .usernameParameter("loginId")
                         .passwordParameter("password")
