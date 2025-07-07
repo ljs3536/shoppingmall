@@ -1,7 +1,7 @@
 architecture: standalone
 auth:
   enabled: true
-  password: myRedis
+  password: my320redis
 replica:
   replicaCount: 1
 master:
