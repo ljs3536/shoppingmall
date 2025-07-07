@@ -1,6 +1,7 @@
 architecture: standalone
 auth:
   enabled: true
+  existingSecret: ""
   password: my320redis
 replica:
   replicaCount: 1
