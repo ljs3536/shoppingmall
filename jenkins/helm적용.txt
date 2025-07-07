@@ -1,0 +1,11 @@
+
+helm get values grafana -n monitoring > grafana-values.yaml
+helm get values prometheus -n monitoring > prometheus-values.yaml
+helm get values kafka -n monitoring > kafka-values.yaml
+helm get values redis -n monitoring > redis-values.yaml
+
+# values 적용 방법
+helm install grafana bitnami/grafana -f grafana-values.yaml
+helm install prometheus bitnami/kube-prometheus -f prometheus-values.yaml
+helm install kafka bitnami/kafka -f kafka-values.yaml
+helm install redis bitnami/redis -f redis-values.yaml

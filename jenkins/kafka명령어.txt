@@ -1,0 +1,18 @@
+# kafka pod 확인
+kubectl get pods
+
+# kafka pod bash
+kubectl exec -it <kafka-pod-name> -- /bin/bash
+
+# kafka sh 경로
+/opt/bitnami/kafka/bin
+
+# Kafka topic list 확인
+kafka-topics.sh \
+--bootstrap-server localhost:9092 \
+--list
+
+# Kafka consumer group offset 확인
+kafka-consumer-groups.sh \
+--bootstrap-server localhost:9092 \
+--group flask-group-test-01 --describe
