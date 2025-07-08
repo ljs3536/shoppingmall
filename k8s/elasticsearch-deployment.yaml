@@ -52,6 +52,13 @@ spec:
               protocol: TCP
             - containerPort: 9300
               protocol: TCP
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "500m"
+            limits:
+              memory: "2Gi"
+              cpu: "1000m"
           volumeMounts:
             - mountPath: /usr/share/elasticsearch/data
               name: elasticsearch-data

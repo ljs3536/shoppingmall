@@ -10,7 +10,7 @@ metadata:
     release: prom-stack
   name: flask
 spec:
-  replicas: 2
+  replicas: 1
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -36,7 +36,7 @@ spec:
           name: flask-container
           volumeMounts:
             - name: shared-storage
-              mountPath: /model_storage
+              mountPath: /app/model_storage
           ports:
             - containerPort: 5000
               protocol: TCP

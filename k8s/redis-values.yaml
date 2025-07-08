@@ -9,3 +9,5 @@ master:
   persistence:
     enabled: true
     size: 8Gi
+
+fullnameOverride: my-redis

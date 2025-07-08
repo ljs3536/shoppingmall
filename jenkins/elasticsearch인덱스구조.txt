@@ -1,0 +1,108 @@
+GET /cart_products-logs/_search
+
+DELETE /cart_products-logs
+
+PUT /cart_products-logs
+{
+    "mappings": {
+      "properties": {
+        "_class": {
+          "type": "keyword",
+          "index": false,
+          "doc_values": false
+        },
+        "actionType": {
+          "type": "keyword"
+        },
+        "productCategory": {
+          "type": "keyword"
+        },
+        "productDescription": {
+          "type": "text"
+        },
+        "productName": {
+          "type": "keyword"
+        },
+        "productPrice": {
+          "type": "integer"
+        },
+        "productQuantity": {
+          "type": "integer"
+        },
+        "sellerId": {
+          "type": "keyword"
+        },
+        "timestamp": {
+          "type": "date",
+          "format": "date_optional_time||epoch_millis"
+        },
+        "userAge": {
+          "type": "integer"
+        },
+        "userGender": {
+          "type": "keyword"
+        },
+        "userId": {
+          "type": "keyword"
+        },
+        "userRegion": {
+          "type": "keyword"
+        }
+      }
+    }
+}
+
+
+GET order_products-logs/_search
+
+DELETE /order_products-logs
+
+PUT /order_products-logs
+{
+    "mappings": {
+      "properties": {
+        "_class": {
+          "type": "keyword",
+          "index": false,
+          "doc_values": false
+        },
+        "orderType": {
+          "type": "keyword"
+        },
+        "productCategory": {
+          "type": "keyword"
+        },
+        "productDescription": {
+          "type": "text"
+        },
+        "productName": {
+          "type": "keyword"
+        },
+        "productPrice": {
+          "type": "integer"
+        },
+        "productQuantity": {
+          "type": "integer"
+        },
+        "sellerId": {
+          "type": "keyword"
+        },
+        "timestamp": {
+          "type": "date",
+          "format": "date_optional_time||epoch_millis"
+        },
+        "userAge": {
+          "type": "integer"
+        },
+        "userGender": {
+          "type": "keyword"
+        },
+        "userId": {
+          "type": "keyword"
+        },
+        "userRegion": {
+          "type": "keyword"
+        }
+      }
+    }
+}

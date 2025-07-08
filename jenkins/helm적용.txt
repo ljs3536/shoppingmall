@@ -8,4 +8,4 @@ helm get values redis -n monitoring > redis-values.yaml
 helm install grafana bitnami/grafana -f grafana-values.yaml
 helm install prometheus bitnami/kube-prometheus -f prometheus-values.yaml
 helm install kafka bitnami/kafka -f kafka-values.yaml
-helm install redis bitnami/redis -f redis-values.yaml
+helm install my-redis bitnami/redis -f redis-values.yaml
