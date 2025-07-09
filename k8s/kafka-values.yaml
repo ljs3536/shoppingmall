@@ -12,3 +12,13 @@ listeners:
 advertisedListeners:
   client:
     - PLAINTEXT://kafka:9092
+
+metrics:
+  kafka:
+    enabled: true
+
+  jmx:
+    enabled: true
+
+serviceMonitor:
+  enabled: true

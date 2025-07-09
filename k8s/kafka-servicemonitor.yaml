@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: kafka-servicemonitor
+  labels:
+    release: prom-stack   # prom-stack 이름은 Prometheus Helm release 이름과 맞추기
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kafka
+      app.kubernetes.io/component: metrics
+  namespaceSelector:
+    matchNames:
+      - default
+  endpoints:
+    - port: http-metrics
+      interval: 30s
+      path: /metrics
