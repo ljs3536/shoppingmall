@@ -1,13 +1,13 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: flask-monitor
+  name: flask-servicemonitor
   labels:
     release: prom-stack
 spec:
   selector:
     matchLabels:
-      io.kompose.service: flask
+      app: flask
   endpoints:
     - port: "http-flask"
       path: /metrics
