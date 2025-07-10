@@ -15,7 +15,7 @@
 <body>
 <div th:replace="fragments/bodyHeader :: bodyHeader"/>
 <h2>Recommend 모델 목록</h2>
-<button class="add-btn" onclick="addModel('RECOMMEND')">+ 모델 추가</button>
+<button class="add-btn btn btn-primary" onclick="addModel('RECOMMEND')">+ 모델 추가</button>
 <table>
   <thead>
   <tr>
@@ -36,15 +36,15 @@
       <span th:if="${model.active}" class="active-label">활성</span>
     </td>
     <td>
-      <button th:modelId="${model.id}" onclick="saveModel(this, this.getAttribute('modelId'))">저장</button>
-      <button th:modelName="${model.name}" onclick="trainModel('recommend',this.getAttribute('modelName'))">학습</button>
+      <button class="btn btn-success" th:modelId="${model.id}" onclick="saveModel(this, this.getAttribute('modelId'))">저장</button>
+      <button class="btn btn-warning" th:modelName="${model.name}" onclick="trainModel('recommend',this.getAttribute('modelName'))">학습</button>
     </td>
   </tr>
   </tbody>
 </table>
 
 <h2>Predict 모델 목록</h2>
-<button class="add-btn" onclick="addModel('PREDICT')">+ 모델 추가</button>
+<button class="add-btn btn btn-primary" onclick="addModel('PREDICT')">+ 모델 추가</button>
 <table>
   <thead>
   <tr>
@@ -65,8 +65,8 @@
       <span th:if="${model.active}" class="active-label">활성</span>
     </td>
     <td>
-      <button th:modelId="${model.id}" onclick="saveModel(this, this.getAttribute('modelId'))">저장</button>
-      <button th:modelName="${model.name}" onclick="trainModel('predict',this.getAttribute('modelName'))">학습</button>
+      <button class="btn btn-success" th:modelId="${model.id}" onclick="saveModel(this, this.getAttribute('modelId'))">저장</button>
+      <button class="btn btn-warning" th:modelName="${model.name}" onclick="trainModel('predict',this.getAttribute('modelName'))">학습</button>
     </td>
   </tr>
   </tbody>

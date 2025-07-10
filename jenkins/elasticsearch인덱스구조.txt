@@ -106,3 +106,61 @@ PUT /order_products-logs
       }
     }
 }
+
+
+GET review_products-logs/_search
+
+DELETE review_products-logs
+
+PUT /review_products-logs
+{
+    "mappings": {
+      "properties": {
+        "_class": {
+          "type": "keyword",
+          "index": false,
+          "doc_values": false
+        },
+        "description": {
+          "type": "keyword"
+        },
+        "productCategory": {
+          "type": "keyword"
+        },
+        "productDescription": {
+          "type": "text"
+        },
+        "productName": {
+          "type": "keyword"
+        },
+        "productPrice": {
+          "type": "keyword"
+        },
+        "productQuantity": {
+          "type": "keyword"
+        },
+        "rating": {
+          "type": "float"
+        },
+        "sellerId": {
+          "type": "keyword"
+        },
+        "timestamp": {
+          "type": "date",
+          "format": "date_optional_time||epoch_millis"
+        },
+        "userAge": {
+          "type": "keyword"
+        },
+        "userGender": {
+          "type": "keyword"
+        },
+        "userId": {
+          "type": "keyword"
+        },
+        "userRegion": {
+          "type": "keyword"
+        }
+      }
+    }
+}

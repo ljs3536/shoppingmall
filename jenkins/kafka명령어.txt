@@ -16,3 +16,12 @@ kafka-topics.sh \
 kafka-consumer-groups.sh \
 --bootstrap-server localhost:9092 \
 --group flask-group-test-01 --describe
+
+
+# Kafka consumer group reset
+kafka-consumer-groups.sh \
+--bootstrap-server localhost:9092
+--group flask-group-test-01 \
+--topic model-train-topic \
+--reset-offsets \
+--to-latest --execute

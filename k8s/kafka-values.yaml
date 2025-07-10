@@ -18,7 +18,7 @@ metrics:
     enabled: true
 
   jmx:
-    enabled: true
+    enabled: false
 
 serviceMonitor:
   enabled: true
