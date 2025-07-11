@@ -19,9 +19,8 @@ kafka-consumer-groups.sh \
 
 
 # Kafka consumer group reset
-kafka-consumer-groups.sh \
---bootstrap-server localhost:9092
---group flask-group-test-01 \
---topic model-train-topic \
---reset-offsets \
---to-latest --execute
+kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group flask-group-test-01 --topic model-train-topic --reset-offsets --to-latest --execute
+
+
+# kafka 환경 확인 (servicemonitor세팅을 위한 체크)
+kubectl get svc kafka -o yaml

@@ -16,9 +16,11 @@ advertisedListeners:
 metrics:
   kafka:
     enabled: true
-
+  service:
+    enabled: true
   jmx:
-    enabled: false
+    enabled: true
+    port: ""
 
 serviceMonitor:
   enabled: true
