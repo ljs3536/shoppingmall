@@ -24,6 +24,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public final NumberPath<Integer> age = createNumber("age", Integer.class);
 
+    public final BooleanPath alarmEnabled = createBoolean("alarmEnabled");
+
     public final StringPath cellNo = createString("cellNo");
 
     //inherited

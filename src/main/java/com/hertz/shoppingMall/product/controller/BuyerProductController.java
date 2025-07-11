@@ -52,7 +52,7 @@ public class BuyerProductController {
         Page<Review> reviews = reviewService.getReviewsByProduct(productId, PageRequest.of(page, 5));
         model.addAttribute("product", productForm);
         model.addAttribute("reviews", reviews);
-        return "/products/productView";
+        return "products/productView";
     }
 
 }
