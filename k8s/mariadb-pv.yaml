@@ -7,7 +7,7 @@ spec:
     storage: 1Gi
   accessModes:
     - ReadWriteOnce
-  storageClassName: ""
+  storageClassName: "maria-storage"
   hostPath:
     path: /mnt/data/mariadb
   persistentVolumeReclaimPolicy: Retain

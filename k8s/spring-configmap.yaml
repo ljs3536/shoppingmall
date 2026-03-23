@@ -12,3 +12,4 @@ data:
   REDIS_HOST: my-redis-master
   REDIS_PORT: "6379"
   REDIS_PASSWORD: my320redis
+  SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
