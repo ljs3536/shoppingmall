@@ -1,0 +1,6 @@
+# 1. ArgoCD 설치 (이게 먼저 되어야 관리자가 생깁니다)
+kubectl create namespace argocd
+kubectl apply -f k8s/argocd/install.yaml
+
+# 2. ArgoCD가 내 프로젝트를 감시하도록 명령 (App-of-Apps 적용)
+kubectl apply -f k8s/argocd/my-apps.yaml
