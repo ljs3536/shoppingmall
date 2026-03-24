@@ -5,6 +5,10 @@ on:
     branches:
       - master  # 혹은 사용 중인 브랜치
 
+# 쓰기 권한 추가
+permissions:
+  contents: write
+  
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
