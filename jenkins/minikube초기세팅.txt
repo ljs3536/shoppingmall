@@ -1,3 +1,6 @@
 minikube ssh
 sudo mkdir -p /data/shared-storage
 sudo chmod 777 /data/shared-storage
+
+# minikube start
+minikube start --apiserver-ips=0.0.0.0 --listen-address=0.0.0.0 --driver=docker --cpus=4 --memory=6144
