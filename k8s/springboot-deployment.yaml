@@ -30,7 +30,7 @@ spec:
         - env:
             - name: SPRING_PROFILES_ACTIVE
               value: dev
-          image: ljs3536/shoppingmall-springboot:latest
+          image: ljs3536/shoppingmall-springboot:0361f9f9f920e39a9ee62376e4bf97663ecc85c4
           name: springboot-container
           volumeMounts:
             - name: shared-storage
