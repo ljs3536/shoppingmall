@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-exporter
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-exporter
+  template:
+    metadata:
+      labels:
+        app: kafka-exporter
+    spec:
+      containers:
+        - name: kafka-exporter
+          image: danielqsj/kafka-exporter:latest
+          # --kafka.server 부분은 실제 kafka 서비스 이름과 포트에 맞춰야 합니다.
+          args: ["--kafka.server=kafka:9092"]
+          ports:
+            - containerPort: 9308
+              name: http-metrics
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-exporter-service
+  namespace: default
+  labels:
+    app: kafka-exporter
+spec:
+  ports:
+    - name: http-metrics
+      port: 9308
+      targetPort: 9308
+  selector:
+    app: kafka-exporter
