@@ -1,19 +1,17 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: kafka-servicemonitor
-  namespace: default
+  name: flask-servicemonitor
   labels:
-    release: prom-stack  # 이건 Prometheus가 이 설정파일을 읽게 하는 열쇠
+    release: prom-stack
 spec:
   selector:
     matchLabels:
-      # 핵심 수정: kafka-exporter-service가 실제로 가진 라벨로 변경
-      app: kafka-exporter
+      app: flask
+  endpoints:
+    - port: "http-flask"
+      path: /metrics
+      interval: 15s
   namespaceSelector:
     matchNames:
       - default
-  endpoints:
-    - port: http-metrics
-      interval: 30s
-      path: /metrics

@@ -2,13 +2,14 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: kafka-servicemonitor
+  namespace: default
   labels:
-    release: prom-stack   # prom-stack 이름은 Prometheus Helm release 이름과 맞추기
+    release: prom-stack  # 이건 Prometheus가 이 설정파일을 읽게 하는 열쇠
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/name: kafka
-      app.kubernetes.io/component: metrics
+      # 핵심 수정: kafka-exporter-service가 실제로 가진 라벨로 변경
+      app: kafka-exporter
   namespaceSelector:
     matchNames:
       - default
