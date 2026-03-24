@@ -32,7 +32,7 @@ spec:
             - python
             - app.py
             - --host=0.0.0.0
-          image: ljs3536/shoppingmall-flask:latest
+          image: ljs3536/shoppingmall-flask:e08162e84855f9b688b318c4c56f37e020f05404
           name: flask-container
           volumeMounts:
             - name: shared-storage
